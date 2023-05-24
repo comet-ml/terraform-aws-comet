@@ -65,3 +65,15 @@ variable "rds_engine_version" {
   type        = string
   default     = "5.7.mysql_aurora.2.07.2"
 }
+
+variable "vpc_id" {
+  description = "ID of the VPC that will contain the provisioned resources"
+  type        = string
+  default     = ""
+}
+
+variable "vpc_private_subnets" {
+  description = "IDs of private subnets within the VPC"
+  type        = list(string)
+  default     = []
+}

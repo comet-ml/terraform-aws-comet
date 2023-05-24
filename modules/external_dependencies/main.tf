@@ -25,14 +25,14 @@ resource "aws_elasticache_cluster" "comet-ml-ec-redis" {
 resource "aws_elasticache_subnet_group" "comet-ml-ec-subnet-group" {
   name       = "cometml-ec_sng-${var.environment}"
   # VPC module output ref
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = var.vpc_private_subnets
 }
 
 resource "aws_security_group" "redis_inbound_sg" {
   name        = "cometml-redis_in_sg-${var.environment}"
   description = "Redis Security Group"
   # VPC module output ref
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port       = local.redis_port
@@ -48,7 +48,7 @@ resource "aws_security_group" "aurora_inbound_sg" {
   name        = "${var.environment}-aurora_inbound_sg"
   description = "Aurora Mysql RDS Security Group"
   # VPC module output ref
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port       = local.mysql_port
@@ -63,7 +63,7 @@ resource "aws_security_group" "aurora_inbound_sg" {
 resource "aws_db_subnet_group" "comet-ml-rds-subnet" {
   name       = "cometml-rds_sgn-${var.environment}"
   # VPC module output ref
-  subnet_ids = module.vpc.private_subnets
+  subnet_ids = var.vpc_private_subnets
   tags = merge(local.tags, {
     Name = "cometml-rds_sng-${var.environment}"
   })
