@@ -40,6 +40,8 @@ module "eks" {
   subnet_ids = var.vpc_private_subnets
 
   manage_aws_auth_configmap = true
+  
+  /* Remove additional IAM configuration for now; Enable later if warranted
   aws_auth_roles = [
     {
       rolearn  = aws_iam_role.eks_admin.arn
@@ -50,6 +52,7 @@ module "eks" {
 
     }
   ]
+  */
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2_x86_64"
@@ -96,6 +99,7 @@ module "eks_blueprints_kubernetes_addons" {
   tags = local.tags
 }
 
+/* Remove additional IAM configuration for now; Enable later if warranted
 resource "aws_iam_role" "eks_admin" {
   name = "admin-${var.cluster_name}"
   
@@ -122,3 +126,4 @@ resource "aws_iam_role_policy_attachment" "eks_adminrole_policy_attach" {
   role       = "${aws_iam_role.eks_admin.name}"
   policy_arn = "${data.aws_iam_policy.administrator_access.arn}"
 }
+*/
