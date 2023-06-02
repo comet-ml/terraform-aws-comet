@@ -15,9 +15,11 @@ data "aws_iam_policy" "ebs_csi_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
+/*
 data "aws_iam_policy" "administrator_access" {
   arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
+*/
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
