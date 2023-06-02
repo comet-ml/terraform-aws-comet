@@ -1,5 +1,5 @@
 variable "environment" {
-  description = "Deployment environment, i.e. dev/stage/prod, etcs"
+  description = "Deployment environment, i.e. dev/stage/prod, etc"
   type        = string
   default     = "dev"
 }
@@ -34,7 +34,10 @@ variable "elasticcache_num_cache_nodes" {
   default     = 1
 }
 
-variable "comet_ml_s3_bucket" {}
+variable "comet_ml_s3_bucket" {
+  description = "Name of S3 bucket"
+  type        = string
+}
 
 variable "rds_root_password" {
   description = "Root password for RDS database"
@@ -72,8 +75,20 @@ variable "vpc_id" {
   default     = ""
 }
 
+variable "elasticcache_rds_allowfrom_sg" {
+  description = "Security group(s) attached to the Comet instance(s); Specified in the ingress allow rules on the ElasticCache and RDS security groups"
+  type        = string
+  default     = ""
+}
+
 variable "vpc_private_subnets" {
   description = "IDs of private subnets within the VPC"
+  type        = list(string)
+  default     = []
+}
+
+variable "availability_zones" {
+  description = "List of availability zones from VPC"
   type        = list(string)
   default     = []
 }
