@@ -1,8 +1,10 @@
 data "aws_availability_zones" "available" {}
 
+/*
 data "aws_eks_cluster_auth" "this" {
   name = module.eks_deployment[0].cluster_name
 }
+*/
 
 locals {
   resource_name = "comet-${var.environment}"
