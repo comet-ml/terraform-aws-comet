@@ -51,3 +51,9 @@ variable "allinone_subnet" {
   type        = string
   default     = ""
 }
+
+variable "comet_ml_s3_bucket" {
+  description = "Name of the S3 bucket provisioned for Comet"
+  type        = string
+  default     = null
+}

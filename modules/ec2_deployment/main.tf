@@ -124,7 +124,17 @@ resource "aws_iam_instance_profile" "comet-ml-s3-access-profile" {
 resource "aws_iam_policy" "comet-ml-s3-policy" {
   name        = "comet-ml-s3-access-policy"
   description = "comet-ml-s3-access-policy"
-  policy = file("${path.module}/templates/s3bucketpolicy.json")
+  #policy = file("${path.module}/templates/s3bucketpolicy.json")
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource":"arn:aws:s3:::${var.comet_ml_s3_bucket}"
+        }
+    ]
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "comet-ml-s3-access-attachment" {

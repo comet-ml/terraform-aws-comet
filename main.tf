@@ -54,6 +54,8 @@ module "ec2_deployment" {
   vpc_id = module.vpc.vpc_id
   allinone_ami = "ami-05842f1afbf311a43"
   allinone_subnet = module.vpc.public_subnets[count.index % length(module.vpc.public_subnets)]
+
+  comet_ml_s3_bucket  = var.s3_bucket_name
 }
 
 module "eks_deployment" {
