@@ -2,8 +2,6 @@ enable_ec2_deployment = true
 
 enable_eks_deployment = false
 
-#enable_external_dependencies = false
-
 enable_elasticache = true
 
 enable_rds = true

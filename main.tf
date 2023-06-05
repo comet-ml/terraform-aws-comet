@@ -2,7 +2,7 @@ data "aws_availability_zones" "available" {}
 
 /*
 data "aws_eks_cluster_auth" "this" {
-  name = module.eks_deployment[0].cluster_name
+  name = module.comet_eks[0].cluster_name
 }
 */
 
@@ -43,15 +43,15 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.resource_name}-default" }
 
   # if EKS deployment, set subnet tags for AWS Load Balancer Controller auto-discovery
-  public_subnet_tags = var.enable_eks_deployment ? {"kubernetes.io/role/elb" = 1} : null
-  private_subnet_tags = var.enable_eks_deployment ? {"kubernetes.io/role/internal-elb" = 1} : null
+  public_subnet_tags = var.enable_eks ? {"kubernetes.io/role/elb" = 1} : null
+  private_subnet_tags = var.enable_eks ? {"kubernetes.io/role/internal-elb" = 1} : null
 
   tags = local.tags
 }
 
-module "ec2_deployment" {
-  source = "./modules/ec2_deployment"
-  count  = var.enable_ec2_deployment ? 1 : 0
+module "comet_ec2" {
+  source = "./modules/comet_ec2"
+  count  = var.enable_comet_ec2 ? 1 : 0
   
   vpc_id = module.vpc.vpc_id
   allinone_ami = "ami-05842f1afbf311a43"
@@ -60,30 +60,15 @@ module "ec2_deployment" {
   comet_ml_s3_bucket  = var.s3_bucket_name
 }
 
-module "eks_deployment" {
-  source = "./modules/eks_deployment"
-  count  = var.enable_eks_deployment ? 1 : 0
+module "comet_eks" {
+  source = "./modules/comet_eks"
+  count  = var.enable_eks ? 1 : 0
 
   vpc_id = module.vpc.vpc_id
   vpc_private_subnets = module.vpc.private_subnets
   cluster_name = var.eks_cluster_name
   cluster_version = var.eks_cluster_version
 }
-
-/*
-module "external_dependencies" {
-  source = "./modules/external_dependencies"
-  count  = var.enable_external_dependencies ? 1 : 0
-
-  availability_zones = local.azs
-  vpc_id              = module.vpc.vpc_id
-  vpc_private_subnets = module.vpc.private_subnets
-
-  comet_ml_s3_bucket  = var.s3_bucket_name
-
-  elasticache_rds_allowfrom_sg = module.ec2_deployment[0].allinone_sg_id
-}
-*/
 
 module "comet_elasticache" {
   source = "./modules/comet_elasticache"
@@ -92,9 +77,9 @@ module "comet_elasticache" {
   vpc_id              = module.vpc.vpc_id
   vpc_private_subnets = module.vpc.private_subnets
 
-  # need to get SGs from ec2_deployment or eks_deployment, depending on which is used
-  # index is used on the ec2_deployment becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  elasticache_rds_allowfrom_sg = module.ec2_deployment[0].allinone_sg_id
+  # need to get SGs from comet_ec2 or comet_eks, depending on which is used
+  # index is used on the comet_ec2 becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
+  elasticache_rds_allowfrom_sg = module.comet_ec2[0].allinone_sg_id
 }
 
 module "comet_rds" {
@@ -105,9 +90,9 @@ module "comet_rds" {
   vpc_id              = module.vpc.vpc_id
   vpc_private_subnets = module.vpc.private_subnets
 
-  # need to get SGs from ec2_deployment or eks_deployment, depending on which is used
-  # index is used on the ec2_deployment becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  elasticache_rds_allowfrom_sg = module.ec2_deployment[0].allinone_sg_id
+  # need to get SGs from comet_ec2 or comet_eks, depending on which is used
+  # index is used on the comet_ec2 becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
+  elasticache_rds_allowfrom_sg = module.comet_ec2[0].allinone_sg_id
   
 }
 

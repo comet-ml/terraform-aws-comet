@@ -4,25 +4,18 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "enable_ec2_deployment" {
-  description = "Toggles the ec2_deployment module, to provision EC2 resources for running Comet"
+variable "enable_ec2" {
+  description = "Toggles the EC2 module, to provision EC2 resources for running Comet"
   type        = bool
 }
 
-variable "enable_eks_deployment" {
-  description = "Toggles the ec2_deployment module, to provision EKS resources for running Comet"
+variable "enable_eks" {
+  description = "Toggles the EKS module, to provision EKS resources for running Comet"
   type        = bool
 }
-
-/*
-variable "enable_external_dependencies" {
-  description = "Toggles the external_dependencies module for provisioning ElasticCache Redis/RDS/S3"
-  type        = bool
-}
-*/
 
 variable "enable_elasticache" {
-  description = "Toggles the Elasticache module for provisioning Comet Redis on Elasticache"
+  description = "Toggles the ElastiCache module for provisioning Comet Redis on ElastiCache"
   type        = bool
 }
 
