@@ -70,6 +70,7 @@ module "eks_deployment" {
   cluster_version = var.eks_cluster_version
 }
 
+/*
 module "external_dependencies" {
   source = "./modules/external_dependencies"
   count  = var.enable_external_dependencies ? 1 : 0
@@ -80,7 +81,39 @@ module "external_dependencies" {
 
   comet_ml_s3_bucket  = var.s3_bucket_name
 
+  elasticache_rds_allowfrom_sg = module.ec2_deployment[0].allinone_sg_id
+}
+*/
+
+module "comet_elasticache" {
+  source = "./modules/comet_elasticache"
+  count  = var.enable_elasticache ? 1 : 0
+
+  vpc_id              = module.vpc.vpc_id
+  vpc_private_subnets = module.vpc.private_subnets
+
   # need to get SGs from ec2_deployment or eks_deployment, depending on which is used
   # index is used on the ec2_deployment becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  elasticcache_rds_allowfrom_sg = module.ec2_deployment[0].allinone_sg_id
+  elasticache_rds_allowfrom_sg = module.ec2_deployment[0].allinone_sg_id
+}
+
+module "comet_rds" {
+  source = "./modules/comet_rds"
+  count  = var.enable_rds ? 1 : 0
+
+  availability_zones = local.azs
+  vpc_id              = module.vpc.vpc_id
+  vpc_private_subnets = module.vpc.private_subnets
+
+  # need to get SGs from ec2_deployment or eks_deployment, depending on which is used
+  # index is used on the ec2_deployment becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
+  elasticache_rds_allowfrom_sg = module.ec2_deployment[0].allinone_sg_id
+  
+}
+
+module "comet_s3" {
+  source = "./modules/comet_s3"
+  count  = var.enable_s3 ? 1 : 0
+
+  comet_ml_s3_bucket  = var.s3_bucket_name
 }

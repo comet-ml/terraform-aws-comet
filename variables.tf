@@ -14,8 +14,25 @@ variable "enable_eks_deployment" {
   type        = bool
 }
 
+/*
 variable "enable_external_dependencies" {
-  description = "Toggles the external_dependencies module, for provisioning ElasticCache Redis/RDS/S3"
+  description = "Toggles the external_dependencies module for provisioning ElasticCache Redis/RDS/S3"
+  type        = bool
+}
+*/
+
+variable "enable_elasticache" {
+  description = "Toggles the Elasticache module for provisioning Comet Redis on Elasticache"
+  type        = bool
+}
+
+variable "enable_rds" {
+  description = "Toggles the RDS module for provisioning Comet RDS database"
+  type        = bool
+}
+
+variable "enable_s3" {
+  description = "Toggles the S3 module for provisioning Comet S3 bucket"
   type        = bool
 }
 
