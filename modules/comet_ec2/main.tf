@@ -38,34 +38,9 @@ resource "aws_instance" "allinone" {
 }
 
 resource "aws_security_group" "allinone_sg" {
-  name        = "${var.environment}-allinone_sg"
-  description = "Comet.ML AllInOne Security Group"
+  name        = "comet_${var.environment}_ec2_sg"
+  description = "Comet EC2 instance security group"
   vpc_id      = var.vpc_id
-  /* remove inline rules in favor of separate resource declarations
-  ingress {
-    from_port   = local.ssh_port
-    to_port     = local.ssh_port
-    protocol    = "tcp"
-    # We recommend restricting that to your company IP or by Using a bastion host
-    #security_groups = [aws_security_group.bastion_inbound_sg.id]
-    cidr_blocks = [local.cidr_anywhere]
-
-  }
-
-  ingress {
-    from_port   = local.http_port
-    to_port     = local.http_port
-    protocol    = "tcp"
-    security_groups = [aws_security_group.lb_inbound_sg.id]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = [local.cidr_anywhere]
-  }
-  */
 }
 
 resource "aws_vpc_security_group_ingress_rule" "allinone_ingress_ssh" {
@@ -74,8 +49,6 @@ resource "aws_vpc_security_group_ingress_rule" "allinone_ingress_ssh" {
   from_port   = local.ssh_port
   to_port     = local.ssh_port
   ip_protocol    = "tcp"
-  # We recommend restricting that to your company IP or by Using a bastion host
-  #security_groups = [aws_security_group.bastion_inbound_sg.id]
   cidr_ipv4 = local.cidr_anywhere
 }
 
@@ -103,10 +76,6 @@ resource "aws_vpc_security_group_ingress_rule" "allinone_ingress_http" {
 
 resource "aws_vpc_security_group_egress_rule" "allinone_egress_any" {
   security_group_id = aws_security_group.allinone_sg.id
-  /* no port ranges permitted when specifying all protocols
-  from_port   = local.any_port
-  to_port     = local.any_port
-  */
   ip_protocol    = "-1"
   cidr_ipv4 = local.cidr_anywhere
 }

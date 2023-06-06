@@ -7,22 +7,6 @@ locals {
   }
 }
 
-resource "aws_security_group" "aurora_inbound_sg" {
-  name        = "${var.environment}_aurora_inbound_sg"
-  description = "Aurora Mysql RDS Security Group"
-  vpc_id = var.vpc_id
-}
-
-resource "aws_vpc_security_group_ingress_rule" "aurora_port_inbound_allow" {
-  security_group_id = aws_security_group.aurora_inbound_sg.id
-
-  from_port   = local.mysql_port
-  to_port     = local.mysql_port
-  ip_protocol    = "tcp"
-  # security groups need to change depending on whether Cx is using eks or ec2 deployment; hard-coded index won't work
-  referenced_security_group_id = var.elasticache_rds_allowfrom_sg
-}
-
 resource "aws_db_subnet_group" "comet-ml-rds-subnet" {
   name = "cometml_rds_sgn_${var.environment}"
   subnet_ids = var.vpc_private_subnets
@@ -55,7 +39,7 @@ resource "aws_rds_cluster" "comet-ml-cluster" {
   backup_retention_period             = 7
   final_snapshot_identifier           = "comet-ml-rds-backup-${var.environment}"
   preferred_backup_window             = "07:00-09:00"
-  vpc_security_group_ids              = [aws_security_group.aurora_inbound_sg.id]
+  vpc_security_group_ids              = [aws_security_group.mysql_sg.id]
   db_cluster_parameter_group_name     = aws_rds_cluster_parameter_group.comet-ml-cluster-pg.name
 }
 
@@ -114,4 +98,30 @@ resource "aws_rds_cluster_parameter_group" "comet-ml-cluster-pg" {
     name  = "thread_stack"
     value = "2000000"
   }
+}
+
+resource "aws_security_group" "mysql_sg" {
+  name        = "${var.environment}_mysql_sg"
+  description = "Aurora MySQL RDS Security Group"
+  vpc_id = var.vpc_id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "mysql_port_inbound_ec2" {
+  count = var.ec2_enabled ? 1 : 0
+  security_group_id = aws_security_group.mysql_sg.id
+
+  from_port   = local.mysql_port
+  to_port     = local.mysql_port
+  ip_protocol    = "tcp"
+  referenced_security_group_id = var.rds_allow_ec2_sg
+}
+
+resource "aws_vpc_security_group_ingress_rule" "mysql_port_inbound_eks" {
+  count = var.eks_enabled ? 1 : 0
+  security_group_id = aws_security_group.mysql_sg.id
+
+  from_port   = local.mysql_port
+  to_port     = local.mysql_port
+  ip_protocol    = "tcp"
+  referenced_security_group_id = var.rds_allow_eks_sg
 }

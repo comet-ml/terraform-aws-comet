@@ -1,11 +1,11 @@
-enable_ec2_deployment = true
+enable_ec2 = false
 
-enable_eks_deployment = false
+enable_eks = true
 
 enable_elasticache = true
 
-enable_rds = true
+enable_rds = false
 
-enable_s3 = true
+enable_s3 = false
 
-s3_bucket_name = "cometml-use2"
+s3_bucket_name = ""

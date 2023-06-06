@@ -52,8 +52,26 @@ variable "availability_zones" {
   default     = []
 }
 
-variable "elasticache_rds_allowfrom_sg" {
-  description = "Security group(s) attached to the Comet instance(s); Specified in the ingress allow rules on the Elasticache and RDS security groups"
+variable "rds_allow_ec2_sg" {
+  description = "Security group associated with EC2 compute, if provisioned"
   type        = string
   default     = ""
+}
+
+variable "rds_allow_eks_sg" {
+  description = "Security group associated with EKS compute, if provisioned"
+  type        = string
+  default     = ""
+}
+
+variable "ec2_enabled" {
+  description = "Indicates if EC2 compute has been provisioned for Comet"
+  type        = bool
+  default     = null
+}
+
+variable "eks_enabled" {
+  description = "Indicates if EKS compute has been provisioned for Comet"
+  type        = bool
+  default     = null
 }

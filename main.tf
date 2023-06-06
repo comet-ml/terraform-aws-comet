@@ -51,7 +51,7 @@ module "vpc" {
 
 module "comet_ec2" {
   source = "./modules/comet_ec2"
-  count  = var.enable_comet_ec2 ? 1 : 0
+  count  = var.enable_ec2 ? 1 : 0
   
   vpc_id = module.vpc.vpc_id
   allinone_ami = "ami-05842f1afbf311a43"
@@ -74,25 +74,31 @@ module "comet_elasticache" {
   source = "./modules/comet_elasticache"
   count  = var.enable_elasticache ? 1 : 0
 
+  ec2_enabled = var.enable_ec2
+  eks_enabled = var.enable_eks
+
   vpc_id              = module.vpc.vpc_id
   vpc_private_subnets = module.vpc.private_subnets
 
-  # need to get SGs from comet_ec2 or comet_eks, depending on which is used
-  # index is used on the comet_ec2 becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  elasticache_rds_allowfrom_sg = module.comet_ec2[0].allinone_sg_id
+  # index is used on the module refs becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
+  elasticache_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].allinone_sg_id : null
+  elasticache_allow_eks_sg = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
 }
 
 module "comet_rds" {
   source = "./modules/comet_rds"
   count  = var.enable_rds ? 1 : 0
 
+  ec2_enabled = var.enable_ec2
+  eks_enabled = var.enable_eks
+
   availability_zones = local.azs
   vpc_id              = module.vpc.vpc_id
   vpc_private_subnets = module.vpc.private_subnets
 
-  # need to get SGs from comet_ec2 or comet_eks, depending on which is used
-  # index is used on the comet_ec2 becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  elasticache_rds_allowfrom_sg = module.comet_ec2[0].allinone_sg_id
+  # index is used on the module refs becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
+  rds_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].allinone_sg_id : null
+  rds_allow_eks_sg = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
   
 }
 
