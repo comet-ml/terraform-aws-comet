@@ -24,3 +24,15 @@ variable "vpc_private_subnets" {
   type        = list(string)
   default     = []
 }
+
+variable "s3_enabled" {
+  description = "Indicates if S3 bucket is being provisioned for Comet"
+  type        = bool
+  default     = null
+}
+
+variable "comet_ec2_s3_iam_policy" {
+  description = "Policy with access to S3 to associate with EKS worker nodes"
+  type = string
+  default = null
+}

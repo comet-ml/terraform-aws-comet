@@ -47,6 +47,7 @@ resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_ssh" {
   from_port   = local.ssh_port
   to_port     = local.ssh_port
   ip_protocol    = "tcp"
+  # make more restrictive
   cidr_ipv4 = local.cidr_anywhere
 }
 
@@ -56,8 +57,7 @@ resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_http" {
   from_port   = local.http_port
   to_port     = local.http_port
   ip_protocol    = "tcp"
-  # We recommend restricting that to your company IP or by Using a bastion host
-  #security_groups = [aws_security_group.bastion_inbound_sg.id]
+  # make more restrictive
   cidr_ipv4 = local.cidr_anywhere
 }
 
@@ -100,30 +100,8 @@ resource "aws_iam_instance_profile" "comet-ec2-instance-profile" {
   role  = aws_iam_role.comet-ec2-s3-access-role.name
 }
 
-/*
-resource "aws_iam_policy" "comet-ml-s3-policy" {
-  count       = var.s3_enabled ? 1 : 0
-  name        = "comet-s3-access-policy"
-  description = "comet-s3-access-policy"
-  policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "s3:*",
-            "Resource": [
-              "arn:aws:s3:::${var.comet_ml_s3_bucket}",
-              "arn:aws:s3:::${var.comet_ml_s3_bucket}/*"
-            ]
-        }
-    ]
-  })
-}
-*/
-
 resource "aws_iam_role_policy_attachment" "comet-ml-s3-access-attachment" {
   count      = var.s3_enabled ? 1 : 0
   role       = aws_iam_role.comet-ec2-s3-access-role.name
-  #policy_arn = aws_iam_policy.comet-ml-s3-policy[0].arn
   policy_arn = var.comet_ec2_s3_iam_policy
 }

@@ -52,6 +52,8 @@ module "eks" {
       min_size     = 3
       max_size     = 6
       desired_size = 3
+
+      iam_role_additional_policies = var.s3_enabled ? {comet_s3_access = var.comet_ec2_s3_iam_policy} : null
     }
   }
 

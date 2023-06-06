@@ -1,11 +1,9 @@
 data "aws_availability_zones" "available" {}
 
-
 data "aws_eks_cluster_auth" "this" {
   count = var.enable_eks ? 1 : 0
   name = module.comet_eks[0].cluster_name
 }
-
 
 locals {
   resource_name = "comet-${var.environment}"
@@ -60,7 +58,7 @@ module "comet_ec2" {
 
   s3_enabled = var.enable_s3
   comet_ml_s3_bucket  = var.s3_bucket_name
-  comet_ec2_s3_iam_policy = module.comet_s3[0].comet_s3_iam_policy_arn
+  comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
 }
 
 module "comet_eks" {
@@ -71,6 +69,9 @@ module "comet_eks" {
   vpc_private_subnets = module.vpc.private_subnets
   cluster_name = var.eks_cluster_name
   cluster_version = var.eks_cluster_version
+
+  s3_enabled = var.enable_s3
+  comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
 }
 
 module "comet_elasticache" {
