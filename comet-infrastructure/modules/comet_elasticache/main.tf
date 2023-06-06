@@ -2,7 +2,7 @@ locals {
   redis_port = 6379
 
   tags = {
-    Terraform_Managed = "true"
+    Terraform         = "true"
     Environment       = var.environment
   }
 }

@@ -1,15 +1,9 @@
 locals {
   tags = {
-    Terraform_Managed = "true"
+    Terraform         =  "true"
     Environment       = var.environment
   }
 }
-
-/*
-data "aws_eks_cluster_auth" "this" {
-  name = module.eks.cluster_name
-}
-*/
 
 data "aws_iam_policy" "ebs_csi_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
@@ -22,23 +16,7 @@ module "eks" {
   cluster_name                   = var.cluster_name
   cluster_version                = var.cluster_version
   cluster_endpoint_public_access = true
-  /*
-  cluster_addons = {
-    aws-ebs-csi-driver = {
-      service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
-    }
-    coredns = {
-      most_recent = true
-    }
-    kube-proxy = {
-      most_recent = true
-    }
-    vpc-cni = {
-      most_recent    = true
-      before_compute = true
-    }
-  }
-  */
+  
   vpc_id     = var.vpc_id
   subnet_ids = var.vpc_private_subnets
 

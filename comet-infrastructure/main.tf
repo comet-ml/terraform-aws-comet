@@ -13,7 +13,7 @@ locals {
   #set environment here, and use local.environment for the environment variables in all of the module calls
 
   tags = {
-    Terraform_Managed = "true"
+    Terraform = "true"
     Environment       = var.environment
   }
 }
@@ -51,9 +51,11 @@ module "vpc" {
 module "comet_ec2" {
   source = "./modules/comet_ec2"
   count  = var.enable_ec2 ? 1 : 0
+
+  environment = var.environment
   
   vpc_id = module.vpc.vpc_id
-  comet_ec2_ami = "ami-05842f1afbf311a43"
+  comet_ec2_ami = var.comet_ec2_ami
   comet_ec2_subnet = module.vpc.public_subnets[count.index % length(module.vpc.public_subnets)]
 
   s3_enabled = var.enable_s3
@@ -61,9 +63,23 @@ module "comet_ec2" {
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
 }
 
+module "comet_ec2_alb" {
+  source = "./modules/comet_ec2_alb"
+  count  = var.enable_ec2_alb ? 1 : 0
+
+  environment = var.environment
+
+  vpc_id = module.vpc.vpc_id
+  public_subnets = module.vpc.public_subnets
+
+  ssl_certificate_arn = var.enable_ec2_alb ? var.ssl_certificate_arn : null
+}
+
 module "comet_eks" {
   source = "./modules/comet_eks"
   count  = var.enable_eks ? 1 : 0
+
+  environment = var.environment
 
   vpc_id = module.vpc.vpc_id
   vpc_private_subnets = module.vpc.private_subnets
@@ -77,6 +93,8 @@ module "comet_eks" {
 module "comet_elasticache" {
   source = "./modules/comet_elasticache"
   count  = var.enable_elasticache ? 1 : 0
+
+  environment = var.environment
 
   ec2_enabled = var.enable_ec2
   eks_enabled = var.enable_eks
@@ -93,6 +111,8 @@ module "comet_rds" {
   source = "./modules/comet_rds"
   count  = var.enable_rds ? 1 : 0
 
+  environment = var.environment
+
   ec2_enabled = var.enable_ec2
   eks_enabled = var.enable_eks
 
@@ -103,12 +123,15 @@ module "comet_rds" {
   # index is used on the module refs becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
   rds_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
   rds_allow_eks_sg = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
-  
+
+  rds_root_password = var.rds_root_password
 }
 
 module "comet_s3" {
   source = "./modules/comet_s3"
   count  = var.enable_s3 ? 1 : 0
+
+  environment = var.environment
 
   comet_s3_bucket  = var.s3_bucket_name
 }

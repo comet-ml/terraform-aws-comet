@@ -9,6 +9,11 @@ variable "enable_ec2" {
   type        = bool
 }
 
+variable "enable_ec2_alb" {
+  description = "Toggles the ALB module, to provision an ALB in front of the EC2 instance"
+  type        = bool
+}
+
 variable "enable_eks" {
   description = "Toggles the EKS module, to provision EKS resources for running Comet"
   type        = bool
@@ -32,23 +37,39 @@ variable "enable_s3" {
 variable "region" {
   description = "AWS region to provision resources in"
   type        = string
-  default     = "us-east-2"
+}
+
+variable "comet_ec2_ami" {
+  description = "AMI for Comet EC2 instance"
+  type        = string
+  default     = "ami-05842f1afbf311a43"
 }
 
 variable "s3_bucket_name" {
   description = "Name for S3 bucket"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
+}
+
+variable "rds_root_password" {
+  description = "Root password for RDS database"
+  type        = string
 }
 
 variable "eks_cluster_name" {
   description = "Name for EKS cluster"
-  type = string
-  default = "cometeks"
+  type        = string
+  default     = "cometeks"
 }
 
 variable "eks_cluster_version" {
   description = "Kubernetes version of the EKS cluster"
-  type = string
-  default = "1.26"
+  type        = string
+  default     = "1.26"
+}
+
+variable "ssl_certificate_arn" {
+  description = "ARN of the ACM certificate to use for the ALB"
+  type        = string
+  default     = ""
 }

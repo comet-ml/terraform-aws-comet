@@ -2,7 +2,7 @@ locals {
   mysql_port = 3306
 
   tags = {
-    Terraform_Managed = "true"
+    Terraform         = "true"
     Environment       = var.environment
   }
 }

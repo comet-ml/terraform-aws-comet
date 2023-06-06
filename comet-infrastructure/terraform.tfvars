@@ -1,11 +1,11 @@
-enable_ec2 = true
-
-enable_eks = false
-
-enable_elasticache = false
-
-enable_rds = false
-
-enable_s3 = true
-
-s3_bucket_name = "comet-use2"
+enable_ec2          = true
+enable_ec2_alb      = false
+enable_eks          = false
+enable_elasticache  = false
+enable_rds          = false
+enable_s3           = true
+region              = "us-east-2"
+environment         = "dev"
+s3_bucket_name      = "comet-use2-bucket"
+rds_root_password   = "CHANGE-ME"
+ssl_certificate_arn = ""

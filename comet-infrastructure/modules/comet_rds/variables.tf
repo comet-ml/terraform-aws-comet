@@ -7,7 +7,6 @@ variable "environment" {
 variable "rds_root_password" {
   description = "Root password for RDS database"
   type        = string
-  default     = "rdsVN1y74dbNb47MyiPp3wxXHwAPez"
 }
 
 variable "rds_instance_type" {

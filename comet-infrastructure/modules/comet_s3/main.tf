@@ -1,6 +1,6 @@
 locals {
   tags = {
-    Terraform_Managed = "true"
+    Terraform         = "true"
     Environment       = var.environment
   }
 }
