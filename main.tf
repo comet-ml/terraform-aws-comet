@@ -1,10 +1,11 @@
 data "aws_availability_zones" "available" {}
 
-/*
+
 data "aws_eks_cluster_auth" "this" {
+  count = var.enable_eks ? 1 : 0
   name = module.comet_eks[0].cluster_name
 }
-*/
+
 
 locals {
   resource_name = "comet-${var.environment}"
@@ -52,10 +53,12 @@ module "vpc" {
 module "comet_ec2" {
   source = "./modules/comet_ec2"
   count  = var.enable_ec2 ? 1 : 0
+
+  s3_enabled = var.enable_s3
   
   vpc_id = module.vpc.vpc_id
-  allinone_ami = "ami-05842f1afbf311a43"
-  allinone_subnet = module.vpc.public_subnets[count.index % length(module.vpc.public_subnets)]
+  comet_ec2_ami = "ami-05842f1afbf311a43"
+  comet_ec2_subnet = module.vpc.public_subnets[count.index % length(module.vpc.public_subnets)]
 
   comet_ml_s3_bucket  = var.s3_bucket_name
 }
@@ -81,7 +84,7 @@ module "comet_elasticache" {
   vpc_private_subnets = module.vpc.private_subnets
 
   # index is used on the module refs becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  elasticache_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].allinone_sg_id : null
+  elasticache_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
   elasticache_allow_eks_sg = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
 }
 
@@ -97,7 +100,7 @@ module "comet_rds" {
   vpc_private_subnets = module.vpc.private_subnets
 
   # index is used on the module refs becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  rds_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].allinone_sg_id : null
+  rds_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
   rds_allow_eks_sg = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
   
 }

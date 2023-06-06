@@ -10,22 +10,20 @@ locals {
   }
 }
 
-resource "aws_instance" "allinone" {
-  ami           = var.allinone_ami
-  instance_type = var.allinone_instance_type
+resource "aws_instance" "comet_ec2" {
+  ami           = var.comet_ec2_ami
+  instance_type = var.comet_ec2_instance_type
   key_name      = var.key_name
-  count         = var.allinone_instance_count
-  iam_instance_profile = aws_iam_instance_profile.comet-ml-s3-access-profile.name
-  # Recommended place it in a private subnet along with a bastion host
-  #subnet_id     = module.vpc.private_subnets[count.index % length(module.vpc.private_subnets)]
-  subnet_id     = var.allinone_subnet
+  count         = var.comet_ec2_instance_count
+  iam_instance_profile = aws_iam_instance_profile.comet-ec2-instance-profile.name
+  subnet_id     = var.comet_ec2_subnet
   
   # need enable multiple SGs
-  vpc_security_group_ids = [aws_security_group.allinone_sg.id]
+  vpc_security_group_ids = [aws_security_group.comet_ec2_sg.id]
 
   root_block_device {
-    volume_type = var.allinone_volume_type
-    volume_size = var.allinone_volume_size
+    volume_type = var.comet_ec2_volume_type
+    volume_size = var.comet_ec2_volume_size
   }
   
   tags = merge(local.tags, {
@@ -37,14 +35,14 @@ resource "aws_instance" "allinone" {
   }
 }
 
-resource "aws_security_group" "allinone_sg" {
+resource "aws_security_group" "comet_ec2_sg" {
   name        = "comet_${var.environment}_ec2_sg"
   description = "Comet EC2 instance security group"
   vpc_id      = var.vpc_id
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allinone_ingress_ssh" {
-  security_group_id = aws_security_group.allinone_sg.id
+resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_ssh" {
+  security_group_id = aws_security_group.comet_ec2_sg.id
   
   from_port   = local.ssh_port
   to_port     = local.ssh_port
@@ -52,8 +50,8 @@ resource "aws_vpc_security_group_ingress_rule" "allinone_ingress_ssh" {
   cidr_ipv4 = local.cidr_anywhere
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allinone_ingress_http" {
-  security_group_id = aws_security_group.allinone_sg.id
+resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_http" {
+  security_group_id = aws_security_group.comet_ec2_sg.id
   
   from_port   = local.http_port
   to_port     = local.http_port
@@ -64,8 +62,8 @@ resource "aws_vpc_security_group_ingress_rule" "allinone_ingress_http" {
 }
 
 /* SG rule to allow ingress from LB SG; add later
-resource "aws_vpc_security_group_ingress_rule" "allinone_ingress_http" {
-  security_group_id = aws_security_group.allinone_sg.id
+resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_http" {
+  security_group_id = aws_security_group.comet_ec2_sg.id
   
   from_port   = local.http_port
   to_port     = local.http_port
@@ -74,25 +72,38 @@ resource "aws_vpc_security_group_ingress_rule" "allinone_ingress_http" {
 }
 */
 
-resource "aws_vpc_security_group_egress_rule" "allinone_egress_any" {
-  security_group_id = aws_security_group.allinone_sg.id
+resource "aws_vpc_security_group_egress_rule" "comet_ec2_egress_any" {
+  security_group_id = aws_security_group.comet_ec2_sg.id
   ip_protocol    = "-1"
   cidr_ipv4 = local.cidr_anywhere
 }
 
-resource "aws_iam_role" "comet-ml-allinone-s3-access-role" {
+resource "aws_iam_role" "comet-ec2-s3-access-role" {
   name               = "comet-ml-s3-role"
-  assume_role_policy = file("${path.module}/templates/assume-role.json")
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": "sts:AssumeRole",
+        "Principal": {
+          "Service": "ec2.amazonaws.com"
+        },
+        "Effect": "Allow",
+        "Sid": ""
+      }
+    ]
+  })
 }
 
-resource "aws_iam_instance_profile" "comet-ml-s3-access-profile" {
-  name  = "${var.environment}-comet-ml-s3-access-profile"
-  role  = aws_iam_role.comet-ml-allinone-s3-access-role.name
+resource "aws_iam_instance_profile" "comet-ec2-instance-profile" {
+  name  = "${var.environment}-comet-ec2-instance-profile"
+  role  = aws_iam_role.comet-ec2-s3-access-role.name
 }
 
 resource "aws_iam_policy" "comet-ml-s3-policy" {
-  name        = "comet-ml-s3-access-policy"
-  description = "comet-ml-s3-access-policy"
+  count       = var.s3_enabled ? 1 : 0
+  name        = "comet-s3-access-policy"
+  description = "comet-s3-access-policy"
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
@@ -109,6 +120,7 @@ resource "aws_iam_policy" "comet-ml-s3-policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "comet-ml-s3-access-attachment" {
-    role       = aws_iam_role.comet-ml-allinone-s3-access-role.name
-    policy_arn = aws_iam_policy.comet-ml-s3-policy.arn
+  count      = var.s3_enabled ? 1 : 0
+  role       = aws_iam_role.comet-ec2-s3-access-role.name
+  policy_arn = aws_iam_policy.comet-ml-s3-policy[0].arn
 }

@@ -10,13 +10,13 @@ variable "vpc_id" {
   #default     = ""
 }
 
-variable "allinone_ami" {
+variable "comet_ec2_ami" {
   description = "AMI for the EC2 instance"
   type        = string
   default     = ""
 }
 
-variable "allinone_instance_type" {
+variable "comet_ec2_instance_type" {
   description = "Instance type for the EC2 instance"
   type        = string
   default     = "m5.4xlarge"
@@ -28,28 +28,34 @@ variable "key_name" {
   default     = ""
 }
 
-variable "allinone_instance_count" {
+variable "comet_ec2_instance_count" {
   description = "Number of EC2 instances to provision"
   type        = number
   default     = 1
 }
 
-variable "allinone_volume_type" {
+variable "comet_ec2_volume_type" {
   description = "EBS volume type for the EC2 instance root volume"
   type        = string
   default     = "gp2"
 }
 
-variable "allinone_volume_size" {
+variable "comet_ec2_volume_size" {
   description = "Size, in gibibytes (GiB), for the EC2 instance root volume"
   type        = number
   default     = 1024
 }
 
-variable "allinone_subnet" {
+variable "comet_ec2_subnet" {
   description = "ID of VPC subnet to launch EC2 instance in"
   type        = string
   default     = ""
+}
+
+variable "s3_enabled" {
+  description = "Indicates if S3 bucket is being provisioned for Comet"
+  type        = bool
+  default     = null
 }
 
 variable "comet_ml_s3_bucket" {
