@@ -63,3 +63,7 @@ variable "comet_ml_s3_bucket" {
   type        = string
   default     = null
 }
+
+variable "comet_ec2_s3_iam_policy" {
+  description = "Policy granting access to Comet S3 bucket"
+}

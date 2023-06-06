@@ -100,6 +100,7 @@ resource "aws_iam_instance_profile" "comet-ec2-instance-profile" {
   role  = aws_iam_role.comet-ec2-s3-access-role.name
 }
 
+/*
 resource "aws_iam_policy" "comet-ml-s3-policy" {
   count       = var.s3_enabled ? 1 : 0
   name        = "comet-s3-access-policy"
@@ -118,9 +119,11 @@ resource "aws_iam_policy" "comet-ml-s3-policy" {
     ]
   })
 }
+*/
 
 resource "aws_iam_role_policy_attachment" "comet-ml-s3-access-attachment" {
   count      = var.s3_enabled ? 1 : 0
   role       = aws_iam_role.comet-ec2-s3-access-role.name
-  policy_arn = aws_iam_policy.comet-ml-s3-policy[0].arn
+  #policy_arn = aws_iam_policy.comet-ml-s3-policy[0].arn
+  policy_arn = var.comet_ec2_s3_iam_policy
 }

@@ -4,7 +4,7 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "comet_ml_s3_bucket" {
+variable "comet_s3_bucket" {
   description = "Name of S3 bucket"
   type        = string
 }

@@ -53,14 +53,14 @@ module "vpc" {
 module "comet_ec2" {
   source = "./modules/comet_ec2"
   count  = var.enable_ec2 ? 1 : 0
-
-  s3_enabled = var.enable_s3
   
   vpc_id = module.vpc.vpc_id
   comet_ec2_ami = "ami-05842f1afbf311a43"
   comet_ec2_subnet = module.vpc.public_subnets[count.index % length(module.vpc.public_subnets)]
 
+  s3_enabled = var.enable_s3
   comet_ml_s3_bucket  = var.s3_bucket_name
+  comet_ec2_s3_iam_policy = module.comet_s3[0].comet_s3_iam_policy_arn
 }
 
 module "comet_eks" {
@@ -109,5 +109,5 @@ module "comet_s3" {
   source = "./modules/comet_s3"
   count  = var.enable_s3 ? 1 : 0
 
-  comet_ml_s3_bucket  = var.s3_bucket_name
+  comet_s3_bucket  = var.s3_bucket_name
 }
