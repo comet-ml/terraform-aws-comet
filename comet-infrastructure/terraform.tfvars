@@ -1,9 +1,9 @@
-enable_ec2          = true
+enable_ec2          = false
 enable_ec2_alb      = false
 enable_eks          = false
 enable_elasticache  = false
 enable_rds          = false
-enable_s3           = true
+enable_s3           = false
 region              = "us-east-2"
 environment         = "dev"
 s3_bucket_name      = "comet-use2-bucket"

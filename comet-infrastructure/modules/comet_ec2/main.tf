@@ -1,6 +1,7 @@
 locals {
   ssh_port      = 22
   http_port     = 80
+  https_port    = 443
   any_port      = 0
   cidr_anywhere = "0.0.0.0/0"
 
@@ -18,7 +19,8 @@ resource "aws_instance" "comet_ec2" {
   iam_instance_profile = aws_iam_instance_profile.comet-ec2-instance-profile.name
   subnet_id     = var.comet_ec2_subnet
   vpc_security_group_ids = [aws_security_group.comet_ec2_sg.id]
-  associate_public_ip_address = true
+  
+  #associate_public_ip_address = true
 
   root_block_device {
     volume_type = var.comet_ec2_volume_type
@@ -32,6 +34,13 @@ resource "aws_instance" "comet_ec2" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+# need to make this conditional based on ALB usage
+resource "aws_eip" "comet_ec2_eip" {
+  count = var.alb_enabled ? 0 : 1
+  instance = aws_instance.comet_ec2[0].id
+  domain   = "vpc"
 }
 
 resource "aws_security_group" "comet_ec2_sg" {
@@ -55,6 +64,16 @@ resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_http" {
   
   from_port   = local.http_port
   to_port     = local.http_port
+  ip_protocol    = "tcp"
+  # make more restrictive
+  cidr_ipv4 = local.cidr_anywhere
+}
+
+resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_https" {
+  security_group_id = aws_security_group.comet_ec2_sg.id
+  
+  from_port   = local.https_port
+  to_port     = local.https_port
   ip_protocol    = "tcp"
   # make more restrictive
   cidr_ipv4 = local.cidr_anywhere

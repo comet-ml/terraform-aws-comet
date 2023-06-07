@@ -61,6 +61,8 @@ module "comet_ec2" {
   s3_enabled = var.enable_s3
   comet_ml_s3_bucket  = var.s3_bucket_name
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
+
+  alb_enabled = var.enable_ec2_alb
 }
 
 module "comet_ec2_alb" {

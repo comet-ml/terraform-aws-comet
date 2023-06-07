@@ -58,6 +58,12 @@ variable "s3_enabled" {
   default     = null
 }
 
+variable "alb_enabled" {
+  description = "Indicates if ALB is being provisioned for Comet EC2 instance"
+  type        = bool
+  default     = null
+}
+
 variable "comet_ml_s3_bucket" {
   description = "Name of the S3 bucket provisioned for Comet"
   type        = string
