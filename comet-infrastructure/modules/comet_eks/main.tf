@@ -75,6 +75,7 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller = true
   enable_cert_manager = true
   enable_aws_cloudwatch_metrics = true
+  enable_external_dns = true
 
   tags = local.tags
 }
