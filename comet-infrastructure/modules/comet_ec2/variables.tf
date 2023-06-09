@@ -4,52 +4,10 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "vpc_id" {
-  description = "ID of the VPC that will contain the provisioned resources"
-  type        = string
-  #default     = ""
-}
-
-variable "comet_ec2_ami" {
-  description = "AMI for the EC2 instance"
-  type        = string
-  default     = ""
-}
-
-variable "comet_ec2_instance_type" {
-  description = "Instance type for the EC2 instance"
-  type        = string
-  default     = "m5.4xlarge"
-}
-
-variable "key_name" {
-  description = "Name of the SSH key to configure on the EC2 instance"
-  type        = string
-  default     = ""
-}
-
-variable "comet_ec2_instance_count" {
-  description = "Number of EC2 instances to provision"
-  type        = number
-  default     = 1
-}
-
-variable "comet_ec2_volume_type" {
-  description = "EBS volume type for the EC2 instance root volume"
-  type        = string
-  default     = "gp2"
-}
-
-variable "comet_ec2_volume_size" {
-  description = "Size, in gibibytes (GiB), for the EC2 instance root volume"
-  type        = number
-  default     = 1024
-}
-
-variable "comet_ec2_subnet" {
-  description = "ID of VPC subnet to launch EC2 instance in"
-  type        = string
-  default     = ""
+variable "alb_enabled" {
+  description = "Indicates if ALB is being provisioned for Comet EC2 instance"
+  type        = bool
+  default     = null
 }
 
 variable "s3_enabled" {
@@ -58,10 +16,44 @@ variable "s3_enabled" {
   default     = null
 }
 
-variable "alb_enabled" {
-  description = "Indicates if ALB is being provisioned for Comet EC2 instance"
-  type        = bool
-  default     = null
+variable "vpc_id" {
+  description = "ID of the VPC that will contain the provisioned resources"
+  type        = string
+}
+
+variable "comet_ec2_ami" {
+  description = "AMI for the EC2 instance"
+  type        = string
+}
+
+variable "comet_ec2_instance_type" {
+  description = "Instance type for the EC2 instance"
+  type        = string
+}
+
+variable "comet_ec2_instance_count" {
+  description = "Number of EC2 instances to provision"
+  type        = number
+}
+
+variable "comet_ec2_volume_type" {
+  description = "EBS volume type for the EC2 instance root volume"
+  type        = string
+}
+
+variable "comet_ec2_volume_size" {
+  description = "Size, in gibibytes (GiB), for the EC2 instance root volume"
+  type        = number
+}
+
+variable "comet_ec2_subnet" {
+  description = "ID of VPC subnet to launch EC2 instance in"
+  type        = string
+}
+
+variable "comet_ec2_key" {
+  description = "Name of the SSH key to configure on the EC2 instance"
+  type        = string
 }
 
 variable "comet_ml_s3_bucket" {

@@ -42,27 +42,32 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.resource_name}-default" }
 
   # if EKS deployment, set subnet tags for AWS Load Balancer Controller auto-discovery
-  public_subnet_tags = var.enable_eks ? {"kubernetes.io/role/elb" = 1} : null
+  public_subnet_tags  = var.enable_eks ? {"kubernetes.io/role/elb" = 1} : null
   private_subnet_tags = var.enable_eks ? {"kubernetes.io/role/internal-elb" = 1} : null
 
   tags = local.tags
 }
 
 module "comet_ec2" {
-  source = "./modules/comet_ec2"
-  count  = var.enable_ec2 ? 1 : 0
-
+  source      = "./modules/comet_ec2"
+  count       = var.enable_ec2 ? 1 : 0
   environment = var.environment
   
-  vpc_id = module.vpc.vpc_id
-  comet_ec2_ami = var.comet_ec2_ami
+  vpc_id           = module.vpc.vpc_id
   comet_ec2_subnet = module.vpc.public_subnets[count.index % length(module.vpc.public_subnets)]
 
-  s3_enabled = var.enable_s3
-  comet_ml_s3_bucket  = var.s3_bucket_name
-  comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
+  comet_ec2_ami            = var.comet_ec2_ami
+  comet_ec2_instance_type  = var.comet_ec2_instance_type
+  comet_ec2_instance_count = var.comet_ec2_instance_count
+  comet_ec2_volume_type    = var.comet_ec2_volume_type
+  comet_ec2_volume_size    = var.comet_ec2_volume_size
+  comet_ec2_key            = var.comet_ec2_key
 
   alb_enabled = var.enable_ec2_alb
+
+  s3_enabled              = var.enable_s3
+  comet_ml_s3_bucket      = var.s3_bucket_name
+  comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
 }
 
 module "comet_ec2_alb" {

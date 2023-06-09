@@ -6,18 +6,18 @@ locals {
   cidr_anywhere = "0.0.0.0/0"
 
   tags = {
-    Terraform = "true"
-    Environment       = var.environment
+    Terraform   = "true"
+    Environment = var.environment
   }
 }
 
 resource "aws_instance" "comet_ec2" {
-  ami           = var.comet_ec2_ami
-  instance_type = var.comet_ec2_instance_type
-  key_name      = var.key_name
-  count         = var.comet_ec2_instance_count
-  iam_instance_profile = aws_iam_instance_profile.comet-ec2-instance-profile.name
-  subnet_id     = var.comet_ec2_subnet
+  ami                    = var.comet_ec2_ami
+  instance_type          = var.comet_ec2_instance_type
+  key_name               = var.comet_ec2_key
+  count                  = var.comet_ec2_instance_count
+  iam_instance_profile   = aws_iam_instance_profile.comet-ec2-instance-profile.name
+  subnet_id              = var.comet_ec2_subnet
   vpc_security_group_ids = [aws_security_group.comet_ec2_sg.id]
   
   #associate_public_ip_address = true
@@ -36,9 +36,8 @@ resource "aws_instance" "comet_ec2" {
   }
 }
 
-# need to make this conditional based on ALB usage
 resource "aws_eip" "comet_ec2_eip" {
-  count = var.alb_enabled ? 0 : 1
+  count    = var.alb_enabled ? 0 : 1
   instance = aws_instance.comet_ec2[0].id
   domain   = "vpc"
 }
@@ -52,31 +51,31 @@ resource "aws_security_group" "comet_ec2_sg" {
 resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_ssh" {
   security_group_id = aws_security_group.comet_ec2_sg.id
   
-  from_port   = local.ssh_port
-  to_port     = local.ssh_port
+  from_port      = local.ssh_port
+  to_port        = local.ssh_port
   ip_protocol    = "tcp"
   # make more restrictive
-  cidr_ipv4 = local.cidr_anywhere
+  cidr_ipv4      = local.cidr_anywhere
 }
 
 resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_http" {
   security_group_id = aws_security_group.comet_ec2_sg.id
   
-  from_port   = local.http_port
-  to_port     = local.http_port
+  from_port      = local.http_port
+  to_port        = local.http_port
   ip_protocol    = "tcp"
   # make more restrictive
-  cidr_ipv4 = local.cidr_anywhere
+  cidr_ipv4      = local.cidr_anywhere
 }
 
 resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_https" {
   security_group_id = aws_security_group.comet_ec2_sg.id
   
-  from_port   = local.https_port
-  to_port     = local.https_port
+  from_port      = local.https_port
+  to_port        = local.https_port
   ip_protocol    = "tcp"
   # make more restrictive
-  cidr_ipv4 = local.cidr_anywhere
+  cidr_ipv4      = local.cidr_anywhere
 }
 
 /*
@@ -92,8 +91,8 @@ resource "aws_vpc_security_group_ingress_rule" "comet_ec2_alb_http" {
 
 resource "aws_vpc_security_group_egress_rule" "comet_ec2_egress_any" {
   security_group_id = aws_security_group.comet_ec2_sg.id
-  ip_protocol    = "-1"
-  cidr_ipv4 = local.cidr_anywhere
+  ip_protocol       = "-1"
+  cidr_ipv4         = local.cidr_anywhere
 }
 
 resource "aws_iam_role" "comet-ec2-s3-access-role" {
