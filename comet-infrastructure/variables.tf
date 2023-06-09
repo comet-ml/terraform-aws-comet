@@ -27,7 +27,7 @@ variable "enable_eks" {
 }
 
 variable "enable_elasticache" {
-  description = "Toggles the ElastiCache module for provisioning Comet Redis on ElastiCache"
+  description = "Toggles the elasticache module for provisioning Comet Redis on elasticache"
   type        = bool
 }
 
@@ -162,6 +162,43 @@ variable "eks_external_dns" {
   description = "Enables ExternalDNS in the EKS cluster"
   type        = bool
   default     = true
+}
+
+#comet_elasticache
+variable "elasticache_private_subnets" {
+  description = "IDs of private subnets within the VPC"
+  type        = list(string)
+  default     = null
+}
+
+variable "elasticache_engine" {
+  description = "Engine type for ElastiCache cluster"
+  type        = string
+  default     = "redis"
+}
+
+variable "elasticache_engine_version" {
+  description = "Version number for ElastiCache engine"
+  type        = string
+  default     = "5.0.6"
+}
+
+variable "elasticache_instance_type" {
+  description = "ElastiCache instance type"
+  type        = string
+  default     = "cache.r4.xlarge"
+}
+
+variable "elasticache_param_group_name" {
+  description = "Name for the ElastiCache cluster parameter group"
+  type        = string
+  default     = "default.redis5.0"
+}
+
+variable "elasticache_num_cache_nodes" {
+  description = "Number of nodes in the ElastiCache cluster"
+  type        = number
+  default     = 1
 }
 
 #comet_rds

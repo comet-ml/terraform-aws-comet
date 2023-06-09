@@ -2,27 +2,26 @@ locals {
   redis_port = 6379
 
   tags = {
-    Terraform         = "true"
-    Environment       = var.environment
+    Terraform   = "true"
+    Environment = var.environment
   }
 }
 
 resource "aws_elasticache_cluster" "comet-ml-ec-redis" {
   cluster_id           = "cometml-ec-redis-${var.environment}"
   engine               = var.elasticache_engine
-  node_type            = var.elasticache_redis_instance_type
+  node_type            = var.elasticache_instance_type
   num_cache_nodes      = var.elasticache_num_cache_nodes
   parameter_group_name = var.elasticache_param_group_name
   engine_version       = var.elasticache_engine_version
   port                 = local.redis_port
   subnet_group_name    = aws_elasticache_subnet_group.comet-ml-ec-subnet-group.name
-  # SG resource ref
   security_group_ids = [aws_security_group.redis_inbound_sg.id]
 }
 
 resource "aws_elasticache_subnet_group" "comet-ml-ec-subnet-group" {
   name = "cometml-ec-sng-${var.environment}"
-  subnet_ids = var.vpc_private_subnets
+  subnet_ids = var.elasticache_private_subnets
 }
 
 resource "aws_security_group" "redis_inbound_sg" {

@@ -106,40 +106,38 @@ module "comet_eks" {
 }
 
 module "comet_elasticache" {
-  source = "./modules/comet_elasticache"
-  count  = var.enable_elasticache ? 1 : 0
-
+  source      = "./modules/comet_elasticache"
+  count       = var.enable_elasticache ? 1 : 0
   environment = var.environment
 
   ec2_enabled = var.enable_ec2
   eks_enabled = var.enable_eks
 
-  vpc_id              = module.vpc.vpc_id
-  vpc_private_subnets = module.vpc.private_subnets
-
-  # index is used on the module refs becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  elasticache_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
-  elasticache_allow_eks_sg = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
+  vpc_id                       = module.vpc.vpc_id
+  elasticache_private_subnets  = module.vpc.private_subnets
+  elasticache_allow_ec2_sg     = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
+  elasticache_allow_eks_sg     = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
+  elasticache_engine           = var.elasticache_engine
+  elasticache_engine_version   = var.elasticache_engine_version
+  elasticache_instance_type    = var.elasticache_instance_type
+  elasticache_param_group_name = var.elasticache_param_group_name
+  elasticache_num_cache_nodes  = var.elasticache_num_cache_nodes
 }
 
 module "comet_rds" {
-  source = "./modules/comet_rds"
-  count  = var.enable_rds ? 1 : 0
-
+  source      = "./modules/comet_rds"
+  count       = var.enable_rds ? 1 : 0
   environment = var.environment
 
   ec2_enabled = var.enable_ec2
   eks_enabled = var.enable_eks
 
-  availability_zones = local.azs
+  availability_zones  = local.azs
   vpc_id              = module.vpc.vpc_id
   vpc_private_subnets = module.vpc.private_subnets
-
-  # index is used on the module refs becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  rds_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
-  rds_allow_eks_sg = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
-
-  rds_root_password = var.rds_root_password
+  rds_allow_ec2_sg    = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
+  rds_allow_eks_sg    = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
+  rds_root_password   = var.rds_root_password
 }
 
 module "comet_s3" {
