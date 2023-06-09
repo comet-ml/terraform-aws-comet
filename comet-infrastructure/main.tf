@@ -83,17 +83,25 @@ module "comet_ec2_alb" {
 }
 
 module "comet_eks" {
-  source = "./modules/comet_eks"
-  count  = var.enable_eks ? 1 : 0
-
+  source      = "./modules/comet_eks"
+  count       = var.enable_eks ? 1 : 0
   environment = var.environment
 
-  vpc_id = module.vpc.vpc_id
-  vpc_private_subnets = module.vpc.private_subnets
-  cluster_name = var.eks_cluster_name
-  cluster_version = var.eks_cluster_version
+  vpc_id                           = module.vpc.vpc_id
+  eks_private_subnets              = module.vpc.private_subnets
+  eks_cluster_name                 = var.eks_cluster_name
+  eks_cluster_version              = var.eks_cluster_version
+  eks_mng_name                     = var.eks_mng_name
+  eks_mng_ami_type                 = var.eks_mng_ami_type
+  eks_node_types                   = var.eks_node_types
+  eks_mng_desired_size             = var.eks_mng_desired_size
+  eks_mng_max_size                 = var.eks_mng_max_size
+  eks_aws_load_balancer_controller = var.eks_aws_load_balancer_controller
+  eks_cert_manager                 = var.eks_cert_manager
+  eks_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
+  eks_external_dns                 = var.eks_external_dns
 
-  s3_enabled = var.enable_s3
+  s3_enabled              = var.enable_s3
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
 }
 

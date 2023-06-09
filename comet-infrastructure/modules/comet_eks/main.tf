@@ -1,7 +1,7 @@
 locals {
   tags = {
-    Terraform         =  "true"
-    Environment       = var.environment
+    Terraform   =  "true"
+    Environment = var.environment
   }
 }
 
@@ -13,28 +13,22 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.9"
 
-  cluster_name                   = var.cluster_name
-  cluster_version                = var.cluster_version
+  cluster_name                   = var.eks_cluster_name
+  cluster_version                = var.eks_cluster_version
   cluster_endpoint_public_access = true
   
   vpc_id     = var.vpc_id
-  subnet_ids = var.vpc_private_subnets
+  subnet_ids = var.eks_private_subnets
 
-  #manage_aws_auth_configmap = true
-
-  eks_managed_node_group_defaults = {
-    ami_type = "AL2_x86_64"
-  }
+  eks_managed_node_group_defaults = {ami_type = var.eks_mng_ami_type}
 
   eks_managed_node_groups = {
     one = {
-      name = "mng"
-
-      instance_types = ["m5.4xlarge"]
-
-      min_size     = 3
-      max_size     = 6
-      desired_size = 3
+      name           = var.eks_mng_name
+      instance_types = var.eks_node_types
+      min_size       = var.eks_mng_desired_size
+      max_size       = var.eks_mng_max_size
+      desired_size   = var.eks_mng_desired_size
 
       iam_role_additional_policies = var.s3_enabled ? {comet_s3_access = var.comet_ec2_s3_iam_policy} : {}
     }
@@ -67,15 +61,13 @@ module "eks_blueprints_addons" {
     coredns            = {}
     vpc-cni            = {}
     kube-proxy         = {}
-    aws-ebs-csi-driver = {
-      service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
-    }
+    aws-ebs-csi-driver = {service_account_role_arn = module.irsa-ebs-csi.iam_role_arn}
   }
   
-  enable_aws_load_balancer_controller = true
-  enable_cert_manager = true
-  enable_aws_cloudwatch_metrics = true
-  enable_external_dns = true
+  enable_aws_load_balancer_controller = var.eks_aws_load_balancer_controller
+  enable_cert_manager                 = var.eks_cert_manager
+  enable_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
+  enable_external_dns                 = var.eks_external_dns
 
   tags = local.tags
 }

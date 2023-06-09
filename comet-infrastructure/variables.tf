@@ -92,6 +92,12 @@ variable "ssl_certificate_arn" {
 }
 
 #comet_eks
+variable "eks_private_subnets" {
+  description = "IDs of private subnets within the VPC"
+  type        = list(string)
+  default     = null
+}
+
 variable "eks_cluster_name" {
   description = "Name for EKS cluster"
   type        = string
@@ -104,7 +110,61 @@ variable "eks_cluster_version" {
   default     = "1.26"
 }
 
-# comet_rds
+variable "eks_mng_name" {
+  description = "Name for the EKS managed nodegroup"
+  type        = string
+  default     = "mng"
+}
+
+variable "eks_mng_ami_type" {
+  description = "AMI family to use for the EKS nodes"
+  type        = string
+  default     = "AL2_x86_64"
+}
+
+variable "eks_node_types" {
+  description = "Node instance types for EKS managed node group"
+  type        = list(string)
+  default     = ["m5.4xlarge"]
+}
+
+variable "eks_mng_desired_size" {
+  description = "Desired number of nodes in EKS cluster"
+  type        = number
+  default     = 3
+}
+
+variable "eks_mng_max_size" {
+  description = "Maximum number of nodes in EKS cluster"
+  type        = number
+  default     = 6
+}
+
+variable "eks_aws_load_balancer_controller" {
+  description = "Enables the AWS Load Balancer Controller in the EKS cluster"
+  type        = bool
+  default     = true
+}
+
+variable "eks_cert_manager" {
+  description = "Enables cert-manager in the EKS cluster"
+  type        = bool
+  default     = true
+}
+
+variable "eks_aws_cloudwatch_metrics" {
+  description = "Enables AWS Cloudwatch Metrics in the EKS cluster"
+  type        = bool
+  default     = true
+}
+
+variable "eks_external_dns" {
+  description = "Enables ExternalDNS in the EKS cluster"
+  type        = bool
+  default     = true
+}
+
+#comet_rds
 variable "rds_root_password" {
   description = "Root password for RDS database"
   type        = string
