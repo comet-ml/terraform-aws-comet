@@ -202,11 +202,78 @@ variable "elasticache_num_cache_nodes" {
 }
 
 #comet_rds
+variable "availability_zones" {
+  description = "List of availability zones from VPC"
+  type        = list(string)
+  default     = null
+}
+
+variable "rds_private_subnets" {
+  description = "IDs of private subnets within the VPC"
+  type        = list(string)
+  default     = null
+}
+
+variable "rds_engine" {
+  description = "Engine type for RDS database"
+  type        = string
+  default     = "aurora-mysql"
+}
+
+variable "rds_engine_version" {
+  description = "Engine version number for RDS database"
+  type        = string
+  default     = "5.7.mysql_aurora.2.07.2"
+}
+
+variable "rds_instance_type" {
+  description = "Instance type for RDS database"
+  type        = string
+  default     = "db.r5.xlarge"
+}
+
+variable "rds_instance_count" {
+  description = "Number of RDS instances in the database cluster"
+  type        = number
+  default     = 2
+}
+
+variable "rds_storage_encrypted" {
+  description = "Enables encryption for RDS storage"
+  type        = bool
+  default     = true
+}
+
+variable "rds_iam_db_auth" {
+  description = "Enables IAM auth for the database in RDS"
+  type        = bool
+  default     = true
+}
+
+variable "rds_backup_retention_period" {
+  description = "Days specified for RDS snapshotretention period"
+  type        = number
+  default     = 7
+}
+
+variable "rds_preferred_backup_window" {
+  description = "Backup window for RDS"
+  type        = string
+  default     = "07:00-09:00"
+}
+
+variable "rds_database_name" {
+  description = "Name for the application database in RDS"
+  type        = string
+  default     = "logger"
+}
+
 variable "rds_root_password" {
   description = "Root password for RDS database"
   type        = string
 }
 
+#comet_s3
 variable "s3_bucket_name" {
   description = "Name for S3 bucket"
   type        = string
