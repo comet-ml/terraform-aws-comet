@@ -1,9 +1,16 @@
+#global
 variable "environment" {
   description = "Deployment environment, i.e. dev/stage/prod, etc"
   type        = string
   default     = "dev"
 }
 
+variable "region" {
+  description = "AWS region to provision resources in"
+  type        = string
+}
+
+#child module toggles
 variable "enable_ec2" {
   description = "Toggles the EC2 module, to provision EC2 resources for running Comet"
   type        = bool
@@ -20,7 +27,7 @@ variable "enable_eks" {
 }
 
 variable "enable_elasticache" {
-  description = "Toggles the ElastiCache module for provisioning Comet Redis on ElastiCache"
+  description = "Toggles the elasticache module for provisioning Comet Redis on elasticache"
   type        = bool
 }
 
@@ -34,9 +41,11 @@ variable "enable_s3" {
   type        = bool
 }
 
-variable "region" {
-  description = "AWS region to provision resources in"
+#comet_ec2
+variable "comet_ec2_subnet" {
+  description = "ID of VPC subnet to launch EC2 instance in"
   type        = string
+  default     = null
 }
 
 variable "comet_ec2_ami" {
@@ -45,21 +54,54 @@ variable "comet_ec2_ami" {
   default     = "ami-05842f1afbf311a43"
 }
 
-variable "s3_bucket_name" {
-  description = "Name for S3 bucket"
+variable "comet_ec2_instance_type" {
+  description = "Instance type for the EC2 instance"
+  type        = string
+  default     = "m5.4xlarge"
+}
+
+variable "comet_ec2_instance_count" {
+  description = "Number of EC2 instances to provision"
+  type        = number
+  default     = 1
+}
+
+variable "comet_ec2_volume_type" {
+  description = "EBS volume type for the EC2 instance root volume"
+  type        = string
+  default     = "gp2"
+}
+
+variable "comet_ec2_volume_size" {
+  description = "Size, in gibibytes (GiB), for the EC2 instance root volume"
+  type        = number
+  default     = 1024
+}
+
+variable "comet_ec2_key" {
+  description = "Name of the SSH key to configure on the EC2 instance"
+  type        = string
+  default     = null
+}
+
+#comet_ec2_alb
+variable "ssl_certificate_arn" {
+  description = "ARN of the ACM certificate to use for the ALB"
   type        = string
   default     = ""
 }
 
-variable "rds_root_password" {
-  description = "Root password for RDS database"
-  type        = string
+#comet_eks
+variable "eks_private_subnets" {
+  description = "IDs of private subnets within the VPC"
+  type        = list(string)
+  default     = null
 }
 
 variable "eks_cluster_name" {
   description = "Name for EKS cluster"
   type        = string
-  default     = "cometeks"
+  default     = "comet-eks"
 }
 
 variable "eks_cluster_version" {
@@ -68,8 +110,172 @@ variable "eks_cluster_version" {
   default     = "1.26"
 }
 
-variable "ssl_certificate_arn" {
-  description = "ARN of the ACM certificate to use for the ALB"
+variable "eks_mng_name" {
+  description = "Name for the EKS managed nodegroup"
+  type        = string
+  default     = "mng"
+}
+
+variable "eks_mng_ami_type" {
+  description = "AMI family to use for the EKS nodes"
+  type        = string
+  default     = "AL2_x86_64"
+}
+
+variable "eks_node_types" {
+  description = "Node instance types for EKS managed node group"
+  type        = list(string)
+  default     = ["m5.4xlarge"]
+}
+
+variable "eks_mng_desired_size" {
+  description = "Desired number of nodes in EKS cluster"
+  type        = number
+  default     = 3
+}
+
+variable "eks_mng_max_size" {
+  description = "Maximum number of nodes in EKS cluster"
+  type        = number
+  default     = 6
+}
+
+variable "eks_aws_load_balancer_controller" {
+  description = "Enables the AWS Load Balancer Controller in the EKS cluster"
+  type        = bool
+  default     = true
+}
+
+variable "eks_cert_manager" {
+  description = "Enables cert-manager in the EKS cluster"
+  type        = bool
+  default     = true
+}
+
+variable "eks_aws_cloudwatch_metrics" {
+  description = "Enables AWS Cloudwatch Metrics in the EKS cluster"
+  type        = bool
+  default     = true
+}
+
+variable "eks_external_dns" {
+  description = "Enables ExternalDNS in the EKS cluster"
+  type        = bool
+  default     = true
+}
+
+#comet_elasticache
+variable "elasticache_private_subnets" {
+  description = "IDs of private subnets within the VPC"
+  type        = list(string)
+  default     = null
+}
+
+variable "elasticache_engine" {
+  description = "Engine type for ElastiCache cluster"
+  type        = string
+  default     = "redis"
+}
+
+variable "elasticache_engine_version" {
+  description = "Version number for ElastiCache engine"
+  type        = string
+  default     = "5.0.6"
+}
+
+variable "elasticache_instance_type" {
+  description = "ElastiCache instance type"
+  type        = string
+  default     = "cache.r4.xlarge"
+}
+
+variable "elasticache_param_group_name" {
+  description = "Name for the ElastiCache cluster parameter group"
+  type        = string
+  default     = "default.redis5.0"
+}
+
+variable "elasticache_num_cache_nodes" {
+  description = "Number of nodes in the ElastiCache cluster"
+  type        = number
+  default     = 1
+}
+
+#comet_rds
+variable "availability_zones" {
+  description = "List of availability zones from VPC"
+  type        = list(string)
+  default     = null
+}
+
+variable "rds_private_subnets" {
+  description = "IDs of private subnets within the VPC"
+  type        = list(string)
+  default     = null
+}
+
+variable "rds_engine" {
+  description = "Engine type for RDS database"
+  type        = string
+  default     = "aurora-mysql"
+}
+
+variable "rds_engine_version" {
+  description = "Engine version number for RDS database"
+  type        = string
+  default     = "5.7.mysql_aurora.2.07.2"
+}
+
+variable "rds_instance_type" {
+  description = "Instance type for RDS database"
+  type        = string
+  default     = "db.r5.xlarge"
+}
+
+variable "rds_instance_count" {
+  description = "Number of RDS instances in the database cluster"
+  type        = number
+  default     = 2
+}
+
+variable "rds_storage_encrypted" {
+  description = "Enables encryption for RDS storage"
+  type        = bool
+  default     = true
+}
+
+variable "rds_iam_db_auth" {
+  description = "Enables IAM auth for the database in RDS"
+  type        = bool
+  default     = true
+}
+
+variable "rds_backup_retention_period" {
+  description = "Days specified for RDS snapshotretention period"
+  type        = number
+  default     = 7
+}
+
+variable "rds_preferred_backup_window" {
+  description = "Backup window for RDS"
+  type        = string
+  default     = "07:00-09:00"
+}
+
+variable "rds_database_name" {
+  description = "Name for the application database in RDS"
+  type        = string
+  default     = "logger"
+}
+
+variable "rds_root_password" {
+  description = "Root password for RDS database"
+  type        = string
+}
+
+#comet_s3
+variable "s3_bucket_name" {
+  description = "Name for S3 bucket"
   type        = string
   default     = ""
 }

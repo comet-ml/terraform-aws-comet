@@ -42,97 +42,113 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.resource_name}-default" }
 
   # if EKS deployment, set subnet tags for AWS Load Balancer Controller auto-discovery
-  public_subnet_tags = var.enable_eks ? {"kubernetes.io/role/elb" = 1} : null
+  public_subnet_tags  = var.enable_eks ? {"kubernetes.io/role/elb" = 1} : null
   private_subnet_tags = var.enable_eks ? {"kubernetes.io/role/internal-elb" = 1} : null
 
   tags = local.tags
 }
 
 module "comet_ec2" {
-  source = "./modules/comet_ec2"
-  count  = var.enable_ec2 ? 1 : 0
-
+  source      = "./modules/comet_ec2"
+  count       = var.enable_ec2 ? 1 : 0
   environment = var.environment
   
-  vpc_id = module.vpc.vpc_id
-  comet_ec2_ami = var.comet_ec2_ami
-  comet_ec2_subnet = module.vpc.public_subnets[count.index % length(module.vpc.public_subnets)]
-
-  s3_enabled = var.enable_s3
-  comet_ml_s3_bucket  = var.s3_bucket_name
-  comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
+  vpc_id                   = module.vpc.vpc_id
+  comet_ec2_subnet         = module.vpc.public_subnets[count.index % length(module.vpc.public_subnets)]
+  comet_ec2_ami            = var.comet_ec2_ami
+  comet_ec2_instance_type  = var.comet_ec2_instance_type
+  comet_ec2_instance_count = var.comet_ec2_instance_count
+  comet_ec2_volume_type    = var.comet_ec2_volume_type
+  comet_ec2_volume_size    = var.comet_ec2_volume_size
+  comet_ec2_key            = var.comet_ec2_key
 
   alb_enabled = var.enable_ec2_alb
+
+  s3_enabled              = var.enable_s3
+  comet_ml_s3_bucket      = var.s3_bucket_name
+  comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
 }
 
 module "comet_ec2_alb" {
-  source = "./modules/comet_ec2_alb"
-  count  = var.enable_ec2_alb ? 1 : 0
-
+  source      = "./modules/comet_ec2_alb"
+  count       = var.enable_ec2_alb ? 1 : 0
   environment = var.environment
 
-  vpc_id = module.vpc.vpc_id
-  public_subnets = module.vpc.public_subnets
-
+  vpc_id              = module.vpc.vpc_id
+  public_subnets      = module.vpc.public_subnets
   ssl_certificate_arn = var.enable_ec2_alb ? var.ssl_certificate_arn : null
 }
 
 module "comet_eks" {
-  source = "./modules/comet_eks"
-  count  = var.enable_eks ? 1 : 0
-
+  source      = "./modules/comet_eks"
+  count       = var.enable_eks ? 1 : 0
   environment = var.environment
 
-  vpc_id = module.vpc.vpc_id
-  vpc_private_subnets = module.vpc.private_subnets
-  cluster_name = var.eks_cluster_name
-  cluster_version = var.eks_cluster_version
+  vpc_id                           = module.vpc.vpc_id
+  eks_private_subnets              = module.vpc.private_subnets
+  eks_cluster_name                 = var.eks_cluster_name
+  eks_cluster_version              = var.eks_cluster_version
+  eks_mng_name                     = var.eks_mng_name
+  eks_mng_ami_type                 = var.eks_mng_ami_type
+  eks_node_types                   = var.eks_node_types
+  eks_mng_desired_size             = var.eks_mng_desired_size
+  eks_mng_max_size                 = var.eks_mng_max_size
+  eks_aws_load_balancer_controller = var.eks_aws_load_balancer_controller
+  eks_cert_manager                 = var.eks_cert_manager
+  eks_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
+  eks_external_dns                 = var.eks_external_dns
 
-  s3_enabled = var.enable_s3
+  s3_enabled              = var.enable_s3
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
 }
 
 module "comet_elasticache" {
-  source = "./modules/comet_elasticache"
-  count  = var.enable_elasticache ? 1 : 0
-
+  source      = "./modules/comet_elasticache"
+  count       = var.enable_elasticache ? 1 : 0
   environment = var.environment
 
   ec2_enabled = var.enable_ec2
   eks_enabled = var.enable_eks
 
-  vpc_id              = module.vpc.vpc_id
-  vpc_private_subnets = module.vpc.private_subnets
-
-  # index is used on the module refs becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  elasticache_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
-  elasticache_allow_eks_sg = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
+  vpc_id                       = module.vpc.vpc_id
+  elasticache_private_subnets  = module.vpc.private_subnets
+  elasticache_allow_ec2_sg     = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
+  elasticache_allow_eks_sg     = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
+  elasticache_engine           = var.elasticache_engine
+  elasticache_engine_version   = var.elasticache_engine_version
+  elasticache_instance_type    = var.elasticache_instance_type
+  elasticache_param_group_name = var.elasticache_param_group_name
+  elasticache_num_cache_nodes  = var.elasticache_num_cache_nodes
 }
 
 module "comet_rds" {
-  source = "./modules/comet_rds"
-  count  = var.enable_rds ? 1 : 0
-
+  source      = "./modules/comet_rds"
+  count       = var.enable_rds ? 1 : 0
   environment = var.environment
 
   ec2_enabled = var.enable_ec2
   eks_enabled = var.enable_eks
 
-  availability_zones = local.azs
-  vpc_id              = module.vpc.vpc_id
-  vpc_private_subnets = module.vpc.private_subnets
-
-  # index is used on the module refs becuase of the count usage in the toggle: "After the count apply the resource becomes a group, so later in the reference use 0-index of the group"
-  rds_allow_ec2_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
-  rds_allow_eks_sg = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
-
-  rds_root_password = var.rds_root_password
+  availability_zones          = local.azs
+  vpc_id                      = module.vpc.vpc_id
+  rds_private_subnets         = module.vpc.private_subnets
+  rds_allow_ec2_sg            = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
+  rds_allow_eks_sg            = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
+  rds_engine                  = var.rds_engine
+  rds_engine_version          = var.rds_engine_version
+  rds_instance_type           = var.rds_instance_type
+  rds_instance_count          = var.rds_instance_count
+  rds_storage_encrypted       = var.rds_storage_encrypted
+  rds_iam_db_auth             = var.rds_iam_db_auth
+  rds_backup_retention_period = var.rds_backup_retention_period
+  rds_preferred_backup_window = var.rds_preferred_backup_window
+  rds_database_name           = var.rds_database_name
+  rds_root_password           = var.rds_root_password
 }
 
 module "comet_s3" {
-  source = "./modules/comet_s3"
-  count  = var.enable_s3 ? 1 : 0
-
+  source      = "./modules/comet_s3"
+  count       = var.enable_s3 ? 1 : 0
   environment = var.environment
 
   comet_s3_bucket  = var.s3_bucket_name
