@@ -11,8 +11,127 @@ locals {
   }
 }
 
+data "aws_ami" "al2" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  owners = ["amazon"]
+}
+
+data "aws_ami" "rhel7" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["RHEL-7*_HVM-*"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  owners = ["amazon"]
+}
+
+data "aws_ami" "rhel8" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["RHEL-8*_HVM-*"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  owners = ["amazon"]
+}
+
+data "aws_ami" "rhel9" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["RHEL-9*_HVM-*"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  owners = ["amazon"]
+}
+
+data "aws_ami" "ubuntu18" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-*-18.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  owners = ["amazon"]
+}
+
+data "aws_ami" "ubuntu20" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-*-20.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  owners = ["amazon"]
+}
+
+data "aws_ami" "ubuntu22" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-*-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  owners = ["amazon"]
+}
+
 resource "aws_instance" "comet_ec2" {
-  ami                    = var.comet_ec2_ami
+  ami                    = var.comet_ec2_ami_type == "al2" ? data.aws_ami.al2.id : (
+                           var.comet_ec2_ami_type == "rhel7" ? data.aws_ami.rhel7.id : (
+                           var.comet_ec2_ami_type == "rhel8" ? data.aws_ami.rhel8.id : (
+                           var.comet_ec2_ami_type == "rhel9" ? data.aws_ami.rhel9.id : (
+                           var.comet_ec2_ami_type == "ubuntu18" ? data.aws_ami.ubuntu18.id : (
+                           var.comet_ec2_ami_type == "ubuntu20" ? data.aws_ami.ubuntu20.id : (
+                           var.comet_ec2_ami_type == "ubuntu22" ? data.aws_ami.ubuntu22.id : (
+                           null)))))))
   instance_type          = var.comet_ec2_instance_type
   key_name               = var.comet_ec2_key
   count                  = var.comet_ec2_instance_count

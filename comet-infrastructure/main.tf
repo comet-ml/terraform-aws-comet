@@ -2,7 +2,7 @@ data "aws_availability_zones" "available" {}
 
 data "aws_eks_cluster_auth" "this" {
   count = var.enable_eks ? 1 : 0
-  name = module.comet_eks[0].cluster_name
+  name  = module.comet_eks[0].cluster_name
 }
 
 locals {
@@ -13,8 +13,8 @@ locals {
   #set environment here, and use local.environment for the environment variables in all of the module calls
 
   tags = {
-    Terraform = "true"
-    Environment       = var.environment
+    Terraform   = "true"
+    Environment = var.environment
   }
 }
 
@@ -55,7 +55,7 @@ module "comet_ec2" {
   
   vpc_id                   = module.vpc.vpc_id
   comet_ec2_subnet         = module.vpc.public_subnets[count.index % length(module.vpc.public_subnets)]
-  comet_ec2_ami            = var.comet_ec2_ami
+  comet_ec2_ami_type       = var.comet_ec2_ami_type
   comet_ec2_instance_type  = var.comet_ec2_instance_type
   comet_ec2_instance_count = var.comet_ec2_instance_count
   comet_ec2_volume_type    = var.comet_ec2_volume_type
