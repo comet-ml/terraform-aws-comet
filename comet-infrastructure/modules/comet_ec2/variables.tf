@@ -21,8 +21,8 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "comet_ec2_ami" {
-  description = "AMI for the EC2 instance"
+variable "comet_ec2_ami_type" {
+  description = "Operating system type for the EC2 instance AMI"
   type        = string
 }
 

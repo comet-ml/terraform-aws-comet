@@ -48,10 +48,14 @@ variable "comet_ec2_subnet" {
   default     = null
 }
 
-variable "comet_ec2_ami" {
-  description = "AMI for Comet EC2 instance"
+variable "comet_ec2_ami_type" {
   type        = string
-  default     = "ami-05842f1afbf311a43"
+  description = "Operating system type for the EC2 instance AMI"
+  default     = "ubuntu22"
+  validation {
+    condition     = can(regex("^al2$|^rhel(7|8|9)$|^ubuntu(18|20|22)$", var.comet_ec2_ami_type))
+    error_message = "Invalid OS type. Allowed values are 'al2', 'rhel7', 'rhel8', 'rhel9', 'ubuntu18', 'ubuntu20', 'ubuntu22'."
+  }
 }
 
 variable "comet_ec2_instance_type" {
