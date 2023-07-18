@@ -11,7 +11,7 @@ variable "region" {
 }
 
 variable "availability_zones" {
-  description = "List of availability zones from VPC"
+  description = "List of availability zones from region"
   type        = list(string)
   default     = null
 }
@@ -193,6 +193,12 @@ variable "eks_external_dns" {
 }
 
 #comet_elasticache
+variable "elasticache_allow_from_sg" {
+  description = "Security group from which to allow connections to ElastiCache, for use when provisioning in existing VPC"
+  type        = string
+  default     = null
+}
+
 variable "elasticache_engine" {
   description = "Engine type for ElastiCache cluster"
   type        = string

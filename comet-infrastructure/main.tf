@@ -81,13 +81,11 @@ module "comet_elasticache" {
   count       = var.enable_elasticache ? 1 : 0
   environment = var.environment
 
-  ec2_enabled = var.enable_ec2
-  eks_enabled = var.enable_eks
-
   vpc_id                       = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
   elasticache_private_subnets  = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
-  elasticache_allow_ec2_sg     = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
-  elasticache_allow_eks_sg     = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
+  elasticache_allow_from_sg    = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : (
+                                 var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : (
+                                 var.elasticache_allow_from_sg))
   elasticache_engine           = var.elasticache_engine
   elasticache_engine_version   = var.elasticache_engine_version
   elasticache_instance_type    = var.elasticache_instance_type
