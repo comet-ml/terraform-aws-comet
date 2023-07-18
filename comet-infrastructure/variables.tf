@@ -230,6 +230,12 @@ variable "elasticache_num_cache_nodes" {
 }
 
 #comet_rds
+variable "rds_allow_from_sg" {
+  description = "Security group from which to allow connections to RDS, for use when provisioning in existing VPC"
+  type        = string
+  default     = null
+}
+
 variable "rds_engine" {
   description = "Engine type for RDS database"
   type        = string

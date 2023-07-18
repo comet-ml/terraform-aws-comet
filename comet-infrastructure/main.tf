@@ -98,14 +98,12 @@ module "comet_rds" {
   count       = var.enable_rds ? 1 : 0
   environment = var.environment
 
-  ec2_enabled = var.enable_ec2
-  eks_enabled = var.enable_eks
-
   availability_zones          = var.enable_vpc ? module.comet_vpc[0].azs : var.availability_zones
   vpc_id                      = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
   rds_private_subnets         = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
-  rds_allow_ec2_sg            = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
-  rds_allow_eks_sg            = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
+  rds_allow_from_sg           = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : (
+                                var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : (
+                                var.rds_allow_from_sg))
   rds_engine                  = var.rds_engine
   rds_engine_version          = var.rds_engine_version
   rds_instance_type           = var.rds_instance_type
