@@ -19,7 +19,7 @@ variable "rds_private_subnets" {
 }
 
 variable "rds_allow_from_sg" {
-  description = "Security group from which to allow connections to RDS, for use when provisioning in existing VPC"
+  description = "Security group from which to allow connections to RDS"
   type        = string
 }
 
