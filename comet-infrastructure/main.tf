@@ -1,5 +1,3 @@
-data "aws_availability_zones" "available" {}
-
 data "aws_eks_cluster_auth" "this" {
   count = var.enable_eks ? 1 : 0
   name  = module.comet_eks[0].cluster_name
@@ -7,45 +5,21 @@ data "aws_eks_cluster_auth" "this" {
 
 locals {
   resource_name = "comet-${var.environment}"
-  vpc_cidr      = "10.0.0.0/16"
-  azs           = slice(data.aws_availability_zones.available.names, 0, 3)
 
   #set environment here, and use local.environment for the environment variables in all of the module calls
-
   tags = {
     Terraform   = "true"
     Environment = var.environment
   }
 }
 
-module "vpc" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "~> 5.0.0"
-
-  name = local.resource_name
-  cidr = local.vpc_cidr
-
-  azs             = local.azs
-  public_subnets  = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k)]
-  private_subnets = [for k, v in local.azs : cidrsubnet(local.vpc_cidr, 8, k + 10)]
-
-  enable_nat_gateway   = true
-  single_nat_gateway   = true
-  enable_dns_hostnames = true
-
-  # Manage so we can name
-  manage_default_network_acl    = true
-  default_network_acl_tags      = { Name = "${local.resource_name}-default" }
-  manage_default_route_table    = true
-  default_route_table_tags      = { Name = "${local.resource_name}-default" }
-  manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.resource_name}-default" }
-
-  # if EKS deployment, set subnet tags for AWS Load Balancer Controller auto-discovery
-  public_subnet_tags  = var.enable_eks ? {"kubernetes.io/role/elb" = 1} : null
-  private_subnet_tags = var.enable_eks ? {"kubernetes.io/role/internal-elb" = 1} : null
-
-  tags = local.tags
+module "comet_vpc" {
+  source      = "./modules/comet_vpc"
+  count       = var.enable_vpc ? 1 : 0
+  environment = var.environment
+  
+  eks_enabled        = var.enable_eks
+  single_nat_gateway = var.single_nat_gateway
 }
 
 module "comet_ec2" {
@@ -53,8 +27,8 @@ module "comet_ec2" {
   count       = var.enable_ec2 ? 1 : 0
   environment = var.environment
   
-  vpc_id                   = module.vpc.vpc_id
-  comet_ec2_subnet         = module.vpc.public_subnets[count.index % length(module.vpc.public_subnets)]
+  vpc_id                   = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
+  comet_ec2_subnet         = var.enable_vpc ? module.comet_vpc[0].public_subnets[0] : var.comet_public_subnets[0]
   comet_ec2_ami_type       = var.comet_ec2_ami_type
   comet_ec2_instance_type  = var.comet_ec2_instance_type
   comet_ec2_instance_count = var.comet_ec2_instance_count
@@ -74,8 +48,8 @@ module "comet_ec2_alb" {
   count       = var.enable_ec2_alb ? 1 : 0
   environment = var.environment
 
-  vpc_id              = module.vpc.vpc_id
-  public_subnets      = module.vpc.public_subnets
+  vpc_id              = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
+  public_subnets      = var.enable_vpc ? module.comet_vpc[0].public_subnets : var.comet_public_subnets
   ssl_certificate_arn = var.enable_ec2_alb ? var.ssl_certificate_arn : null
 }
 
@@ -84,8 +58,8 @@ module "comet_eks" {
   count       = var.enable_eks ? 1 : 0
   environment = var.environment
 
-  vpc_id                           = module.vpc.vpc_id
-  eks_private_subnets              = module.vpc.private_subnets
+  vpc_id                           = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
+  eks_private_subnets              = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
   eks_cluster_name                 = var.eks_cluster_name
   eks_cluster_version              = var.eks_cluster_version
   eks_mng_name                     = var.eks_mng_name
@@ -110,8 +84,8 @@ module "comet_elasticache" {
   ec2_enabled = var.enable_ec2
   eks_enabled = var.enable_eks
 
-  vpc_id                       = module.vpc.vpc_id
-  elasticache_private_subnets  = module.vpc.private_subnets
+  vpc_id                       = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
+  elasticache_private_subnets  = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
   elasticache_allow_ec2_sg     = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
   elasticache_allow_eks_sg     = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
   elasticache_engine           = var.elasticache_engine
@@ -129,9 +103,9 @@ module "comet_rds" {
   ec2_enabled = var.enable_ec2
   eks_enabled = var.enable_eks
 
-  availability_zones          = local.azs
-  vpc_id                      = module.vpc.vpc_id
-  rds_private_subnets         = module.vpc.private_subnets
+  availability_zones          = var.enable_vpc ? module.comet_vpc[0].azs : var.availability_zones
+  vpc_id                      = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
+  rds_private_subnets         = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
   rds_allow_ec2_sg            = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : null
   rds_allow_eks_sg            = var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : null
   rds_engine                  = var.rds_engine
