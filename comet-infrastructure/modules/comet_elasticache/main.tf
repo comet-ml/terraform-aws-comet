@@ -30,22 +30,11 @@ resource "aws_security_group" "redis_inbound_sg" {
   vpc_id = var.vpc_id
 }
 
-resource "aws_vpc_security_group_ingress_rule" "redis_port_inbound_ec2" {
-  count = var.ec2_enabled ? 1 : 0
+resource "aws_vpc_security_group_ingress_rule" "redis_port_inbound_rule" {
   security_group_id = aws_security_group.redis_inbound_sg.id
 
   from_port   = local.redis_port
   to_port     = local.redis_port
   ip_protocol    = "tcp"
-  referenced_security_group_id = var.elasticache_allow_ec2_sg
-}
-
-resource "aws_vpc_security_group_ingress_rule" "redis_port_inbound_eks" {
-  count = var.eks_enabled ? 1 : 0
-  security_group_id = aws_security_group.redis_inbound_sg.id
-
-  from_port   = local.redis_port
-  to_port     = local.redis_port
-  ip_protocol    = "tcp"
-  referenced_security_group_id = var.elasticache_allow_eks_sg
+  referenced_security_group_id = var.elasticache_allow_from_sg
 }

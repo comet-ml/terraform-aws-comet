@@ -10,44 +10,74 @@ variable "region" {
   type        = string
 }
 
-#child module toggles
-variable "enable_ec2" {
-  description = "Toggles the EC2 module, to provision EC2 resources for running Comet"
-  type        = bool
+variable "availability_zones" {
+  description = "List of availability zones from region"
+  type        = list(string)
+  default     = null
 }
 
-variable "enable_ec2_alb" {
-  description = "Toggles the ALB module, to provision an ALB in front of the EC2 instance"
-  type        = bool
-}
-
-variable "enable_eks" {
-  description = "Toggles the EKS module, to provision EKS resources for running Comet"
-  type        = bool
-}
-
-variable "enable_elasticache" {
-  description = "Toggles the elasticache module for provisioning Comet Redis on elasticache"
-  type        = bool
-}
-
-variable "enable_rds" {
-  description = "Toggles the RDS module for provisioning Comet RDS database"
-  type        = bool
-}
-
-variable "enable_s3" {
-  description = "Toggles the S3 module for provisioning Comet S3 bucket"
-  type        = bool
-}
-
-#comet_ec2
-variable "comet_ec2_subnet" {
-  description = "ID of VPC subnet to launch EC2 instance in"
+variable "comet_vpc_id" {
+  description = "ID of an existing VPC to provision resources in"
   type        = string
   default     = null
 }
 
+variable "comet_private_subnets" {
+  description = "List of private subnets IDs from existing VPC to provision resources in"
+  type        = list(string)
+  default     = null
+}
+
+variable "comet_public_subnets" {
+  description = "List of public subnets IDs from existing VPC to provision resources in"
+  type        = list(string)
+  default     = null
+}
+
+#child module toggles
+variable "enable_vpc" {
+  description = "Toggles the comet_vpc module, to provision a new VPC for hosting the Comet resources"
+  type        = bool
+}
+
+variable "enable_ec2" {
+  description = "Toggles the comet_ec2 module, to provision EC2 resources for running Comet"
+  type        = bool
+}
+
+variable "enable_ec2_alb" {
+  description = "Toggles the comet_ec2_alb module, to provision an ALB in front of the EC2 instance"
+  type        = bool
+}
+
+variable "enable_eks" {
+  description = "Toggles the comet_eks module, to provision EKS resources for running Comet"
+  type        = bool
+}
+
+variable "enable_elasticache" {
+  description = "Toggles the comet_elasticache module for provisioning Comet Redis on elasticache"
+  type        = bool
+}
+
+variable "enable_rds" {
+  description = "Toggles the comet_rds module for provisioning Comet RDS database"
+  type        = bool
+}
+
+variable "enable_s3" {
+  description = "Toggles the comet_s3 module for provisioning Comet S3 bucket"
+  type        = bool
+}
+
+#comet_vpc
+variable "single_nat_gateway" {
+  description = "Controls whether single NAT gateway used for all public subnets"
+  type        = bool
+  default     = true
+}
+
+#comet_ec2
 variable "comet_ec2_ami_type" {
   type        = string
   description = "Operating system type for the EC2 instance AMI"
@@ -96,12 +126,6 @@ variable "ssl_certificate_arn" {
 }
 
 #comet_eks
-variable "eks_private_subnets" {
-  description = "IDs of private subnets within the VPC"
-  type        = list(string)
-  default     = null
-}
-
 variable "eks_cluster_name" {
   description = "Name for EKS cluster"
   type        = string
@@ -169,9 +193,9 @@ variable "eks_external_dns" {
 }
 
 #comet_elasticache
-variable "elasticache_private_subnets" {
-  description = "IDs of private subnets within the VPC"
-  type        = list(string)
+variable "elasticache_allow_from_sg" {
+  description = "Security group from which to allow connections to ElastiCache, for use when provisioning in existing VPC"
+  type        = string
   default     = null
 }
 
@@ -206,15 +230,9 @@ variable "elasticache_num_cache_nodes" {
 }
 
 #comet_rds
-variable "availability_zones" {
-  description = "List of availability zones from VPC"
-  type        = list(string)
-  default     = null
-}
-
-variable "rds_private_subnets" {
-  description = "IDs of private subnets within the VPC"
-  type        = list(string)
+variable "rds_allow_from_sg" {
+  description = "Security group from which to allow connections to RDS, for use when provisioning in existing VPC"
+  type        = string
   default     = null
 }
 

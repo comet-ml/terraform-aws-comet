@@ -1,7 +1,6 @@
 variable "environment" {
   description = "Deployment environment, i.e. dev/stage/prod, etc"
   type        = string
-  default     = "dev"
 }
 
 variable "availability_zones" {
@@ -19,13 +18,8 @@ variable "rds_private_subnets" {
   type        = list(string)
 }
 
-variable "rds_allow_ec2_sg" {
-  description = "Security group associated with EC2 compute, if provisioned"
-  type        = string
-}
-
-variable "rds_allow_eks_sg" {
-  description = "Security group associated with EKS compute, if provisioned"
+variable "rds_allow_from_sg" {
+  description = "Security group from which to allow connections to RDS"
   type        = string
 }
 
@@ -77,16 +71,4 @@ variable "rds_database_name" {
 variable "rds_root_password" {
   description = "Root password for RDS database"
   type        = string
-}
-
-variable "ec2_enabled" {
-  description = "Indicates if EC2 compute has been provisioned for Comet"
-  type        = bool
-  default     = null
-}
-
-variable "eks_enabled" {
-  description = "Indicates if EKS compute has been provisioned for Comet"
-  type        = bool
-  default     = null
 }

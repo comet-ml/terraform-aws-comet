@@ -14,13 +14,8 @@ variable "elasticache_private_subnets" {
   type        = list(string)
 }
 
-variable "elasticache_allow_ec2_sg" {
-  description = "Security group associated with EC2 compute, if provisioned"
-  type        = string
-}
-
-variable "elasticache_allow_eks_sg" {
-  description = "Security group associated with EKS compute, if provisioned"
+variable "elasticache_allow_from_sg" {
+  description = "Security group from which connections to ElastiCache will be allowed"
   type        = string
 }
 
@@ -47,16 +42,4 @@ variable "elasticache_param_group_name" {
 variable "elasticache_num_cache_nodes" {
   description = "Number of nodes in the Elasticache cluster"
   type        = number
-}
-
-variable "ec2_enabled" {
-  description = "Indicates if EC2 compute has been provisioned for Comet"
-  type        = bool
-  default     = null
-}
-
-variable "eks_enabled" {
-  description = "Indicates if EKS compute has been provisioned for Comet"
-  type        = bool
-  default     = null
 }

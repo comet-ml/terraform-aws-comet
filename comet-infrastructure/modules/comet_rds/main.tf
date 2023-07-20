@@ -107,19 +107,9 @@ resource "aws_security_group" "mysql_sg" {
 }
 
 resource "aws_vpc_security_group_ingress_rule" "mysql_port_inbound_ec2" {
-  count                        = var.ec2_enabled ? 1 : 0
   security_group_id            = aws_security_group.mysql_sg.id
   from_port                    = local.mysql_port
   to_port                      = local.mysql_port
   ip_protocol                  = "tcp"
-  referenced_security_group_id = var.rds_allow_ec2_sg
-}
-
-resource "aws_vpc_security_group_ingress_rule" "mysql_port_inbound_eks" {
-  count                        = var.eks_enabled ? 1 : 0
-  security_group_id            = aws_security_group.mysql_sg.id
-  from_port                    = local.mysql_port
-  to_port                      = local.mysql_port
-  ip_protocol                  = "tcp"
-  referenced_security_group_id = var.rds_allow_eks_sg
+  referenced_security_group_id = var.rds_allow_from_sg
 }
