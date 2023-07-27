@@ -124,28 +124,28 @@ data "aws_ami" "ubuntu22" {
 }
 
 resource "aws_instance" "comet_ec2" {
-  ami                    = var.comet_ec2_ami_type == "al2" ? data.aws_ami.al2.id : (
-                           var.comet_ec2_ami_type == "rhel7" ? data.aws_ami.rhel7.id : (
-                           var.comet_ec2_ami_type == "rhel8" ? data.aws_ami.rhel8.id : (
-                           var.comet_ec2_ami_type == "rhel9" ? data.aws_ami.rhel9.id : (
-                           var.comet_ec2_ami_type == "ubuntu18" ? data.aws_ami.ubuntu18.id : (
-                           var.comet_ec2_ami_type == "ubuntu20" ? data.aws_ami.ubuntu20.id : (
-                           var.comet_ec2_ami_type == "ubuntu22" ? data.aws_ami.ubuntu22.id : (
-                           null)))))))
+  ami = var.comet_ec2_ami_type == "al2" ? data.aws_ami.al2.id : (
+    var.comet_ec2_ami_type == "rhel7" ? data.aws_ami.rhel7.id : (
+      var.comet_ec2_ami_type == "rhel8" ? data.aws_ami.rhel8.id : (
+        var.comet_ec2_ami_type == "rhel9" ? data.aws_ami.rhel9.id : (
+          var.comet_ec2_ami_type == "ubuntu18" ? data.aws_ami.ubuntu18.id : (
+            var.comet_ec2_ami_type == "ubuntu20" ? data.aws_ami.ubuntu20.id : (
+              var.comet_ec2_ami_type == "ubuntu22" ? data.aws_ami.ubuntu22.id : (
+  null)))))))
   instance_type          = var.comet_ec2_instance_type
   key_name               = var.comet_ec2_key
   count                  = var.comet_ec2_instance_count
   iam_instance_profile   = aws_iam_instance_profile.comet-ec2-instance-profile.name
   subnet_id              = var.comet_ec2_subnet
   vpc_security_group_ids = [aws_security_group.comet_ec2_sg.id]
-  
+
   #associate_public_ip_address = true
 
   root_block_device {
     volume_type = var.comet_ec2_volume_type
     volume_size = var.comet_ec2_volume_size
   }
-  
+
   tags = merge(local.tags, {
     Name = "${var.environment}-comet-ml-${count.index}"
   })
@@ -169,32 +169,32 @@ resource "aws_security_group" "comet_ec2_sg" {
 
 resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_ssh" {
   security_group_id = aws_security_group.comet_ec2_sg.id
-  
-  from_port      = local.ssh_port
-  to_port        = local.ssh_port
-  ip_protocol    = "tcp"
+
+  from_port   = local.ssh_port
+  to_port     = local.ssh_port
+  ip_protocol = "tcp"
   # make more restrictive
-  cidr_ipv4      = local.cidr_anywhere
+  cidr_ipv4 = local.cidr_anywhere
 }
 
 resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_http" {
   security_group_id = aws_security_group.comet_ec2_sg.id
-  
-  from_port      = local.http_port
-  to_port        = local.http_port
-  ip_protocol    = "tcp"
+
+  from_port   = local.http_port
+  to_port     = local.http_port
+  ip_protocol = "tcp"
   # make more restrictive
-  cidr_ipv4      = local.cidr_anywhere
+  cidr_ipv4 = local.cidr_anywhere
 }
 
 resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_https" {
   security_group_id = aws_security_group.comet_ec2_sg.id
-  
-  from_port      = local.https_port
-  to_port        = local.https_port
-  ip_protocol    = "tcp"
+
+  from_port   = local.https_port
+  to_port     = local.https_port
+  ip_protocol = "tcp"
   # make more restrictive
-  cidr_ipv4      = local.cidr_anywhere
+  cidr_ipv4 = local.cidr_anywhere
 }
 
 /*
@@ -215,25 +215,25 @@ resource "aws_vpc_security_group_egress_rule" "comet_ec2_egress_any" {
 }
 
 resource "aws_iam_role" "comet-ec2-s3-access-role" {
-  name               = "comet-ml-s3-role"
+  name = "comet-ml-s3-role"
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" : "2012-10-17",
+    "Statement" : [
       {
-        "Action": "sts:AssumeRole",
-        "Principal": {
-          "Service": "ec2.amazonaws.com"
+        "Action" : "sts:AssumeRole",
+        "Principal" : {
+          "Service" : "ec2.amazonaws.com"
         },
-        "Effect": "Allow",
-        "Sid": ""
+        "Effect" : "Allow",
+        "Sid" : ""
       }
     ]
   })
 }
 
 resource "aws_iam_instance_profile" "comet-ec2-instance-profile" {
-  name  = "${var.environment}-comet-ec2-instance-profile"
-  role  = aws_iam_role.comet-ec2-s3-access-role.name
+  name = "${var.environment}-comet-ec2-instance-profile"
+  role = aws_iam_role.comet-ec2-s3-access-role.name
 }
 
 resource "aws_iam_role_policy_attachment" "comet-ml-s3-access-attachment" {

@@ -77,6 +77,6 @@ variable "s3_enabled" {
 
 variable "comet_ec2_s3_iam_policy" {
   description = "Policy with access to S3 to associate with EKS worker nodes"
-  type = string
-  default = null
+  type        = string
+  default     = null
 }

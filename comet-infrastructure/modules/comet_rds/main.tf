@@ -10,7 +10,7 @@ locals {
 resource "aws_db_subnet_group" "comet-ml-rds-subnet" {
   name       = "cometml-rds-sgn-${var.environment}"
   subnet_ids = var.rds_private_subnets
-  tags       = merge(local.tags, {
+  tags = merge(local.tags, {
     Name = "cometml-rds-sng-${var.environment}"
   })
 }
@@ -24,7 +24,6 @@ resource "aws_rds_cluster_instance" "comet-ml-rds-mysql" {
   engine_version     = var.rds_engine_version
 }
 
-
 resource "aws_rds_cluster" "cometml-db-cluster" {
   cluster_identifier                  = "cometml-rds-cluster-${var.environment}"
   db_subnet_group_name                = aws_db_subnet_group.comet-ml-rds-subnet.name
@@ -37,10 +36,12 @@ resource "aws_rds_cluster" "cometml-db-cluster" {
   engine                              = var.rds_engine
   engine_version                      = var.rds_engine_version
   backup_retention_period             = var.rds_backup_retention_period
-  final_snapshot_identifier           = "cometml-rds-backup-${var.environment}"
+  final_snapshot_identifier           = "cometml-rds-backup-${var.environment}-${formatdate("DD-MMM-YYYY-hh-mm-ss", timestamp())}"
   preferred_backup_window             = var.rds_preferred_backup_window
   vpc_security_group_ids              = [aws_security_group.mysql_sg.id]
   db_cluster_parameter_group_name     = aws_rds_cluster_parameter_group.cometml-cluster-pg.name
+  db_instance_parameter_group_name    = aws_rds_cluster_parameter_group.cometml-cluster-pg.name
+  allow_major_version_upgrade         = true
 }
 
 resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {

@@ -1,7 +1,7 @@
 locals {
   tags = {
-    Terraform         = "true"
-    Environment       = var.environment
+    Terraform   = "true"
+    Environment = var.environment
   }
 }
 
@@ -17,16 +17,16 @@ resource "aws_iam_policy" "comet_s3_iam_policy" {
   name        = "comet-s3-access-policy"
   description = "comet-s3-access-policy"
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": "s3:*",
-            "Resource": [
-              "arn:aws:s3:::${var.comet_s3_bucket}",
-              "arn:aws:s3:::${var.comet_s3_bucket}/*"
-            ]
-        }
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : "s3:*",
+        "Resource" : [
+          "arn:aws:s3:::${var.comet_s3_bucket}",
+          "arn:aws:s3:::${var.comet_s3_bucket}/*"
+        ]
+      }
     ]
   })
 }

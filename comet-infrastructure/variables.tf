@@ -194,7 +194,7 @@ variable "eks_external_dns" {
 
 #comet_elasticache
 variable "elasticache_allow_from_sg" {
-  description = "Security group from which to allow connections to ElastiCache, for use when provisioning in existing VPC"
+  description = "Security group from which to allow connections to ElastiCache, to use when provisioning with existing compute"
   type        = string
   default     = null
 }
@@ -231,7 +231,7 @@ variable "elasticache_num_cache_nodes" {
 
 #comet_rds
 variable "rds_allow_from_sg" {
-  description = "Security group from which to allow connections to RDS, for use when provisioning in existing VPC"
+  description = "Security group from which to allow connections to RDS, to use when provisioning with existing compute"
   type        = string
   default     = null
 }
@@ -245,7 +245,7 @@ variable "rds_engine" {
 variable "rds_engine_version" {
   description = "Engine version number for RDS database"
   type        = string
-  default     = "5.7.mysql_aurora.2.07.2"
+  default     = "5.7"
 }
 
 variable "rds_instance_type" {

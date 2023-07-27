@@ -1,14 +1,14 @@
 variable "environment" {
   description = "Deployment environment, i.e. dev/stage/prod, etc"
-  type = string
+  type        = string
 }
 
 variable "eks_enabled" {
   description = "Indicates if EKS module enabled"
-  type = bool
+  type        = bool
 }
 
 variable "single_nat_gateway" {
   description = "Controls whether single NAT gateway used for all public subnets"
-  type = bool
+  type        = bool
 }
