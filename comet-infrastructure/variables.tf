@@ -1,40 +1,6 @@
-#global
-variable "environment" {
-  description = "Deployment environment, i.e. dev/stage/prod, etc"
-  type        = string
-  default     = "dev"
-}
-
-variable "region" {
-  description = "AWS region to provision resources in"
-  type        = string
-}
-
-variable "availability_zones" {
-  description = "List of availability zones from region"
-  type        = list(string)
-  default     = null
-}
-
-variable "comet_vpc_id" {
-  description = "ID of an existing VPC to provision resources in"
-  type        = string
-  default     = null
-}
-
-variable "comet_private_subnets" {
-  description = "List of private subnets IDs from existing VPC to provision resources in"
-  type        = list(string)
-  default     = null
-}
-
-variable "comet_public_subnets" {
-  description = "List of public subnets IDs from existing VPC to provision resources in"
-  type        = list(string)
-  default     = null
-}
-
-#child module toggles
+########################
+#### Module toggles ####
+########################
 variable "enable_vpc" {
   description = "Toggles the comet_vpc module, to provision a new VPC for hosting the Comet resources"
   type        = bool
@@ -70,14 +36,49 @@ variable "enable_s3" {
   type        = bool
 }
 
-#comet_vpc
-variable "single_nat_gateway" {
-  description = "Controls whether single NAT gateway used for all public subnets"
-  type        = bool
-  default     = true
+################
+#### Global ####
+################
+variable "environment" {
+  description = "Deployment environment, i.e. dev/stage/prod, etc"
+  type        = string
+  default     = "dev"
 }
 
-#comet_ec2
+variable "region" {
+  description = "AWS region to provision resources in"
+  type        = string
+}
+
+variable "availability_zones" {
+  description = "List of availability zones from region"
+  type        = list(string)
+  default     = null
+}
+
+variable "comet_vpc_id" {
+  description = "ID of an existing VPC to provision resources in"
+  type        = string
+  default     = null
+}
+
+variable "comet_private_subnets" {
+  description = "List of private subnets IDs from existing VPC to provision resources in"
+  type        = list(string)
+  default     = null
+}
+
+variable "comet_public_subnets" {
+  description = "List of public subnets IDs from existing VPC to provision resources in"
+  type        = list(string)
+  default     = null
+}
+
+#######################
+#### Module inputs ####
+#######################
+
+#### comet_ec2 ####
 variable "comet_ec2_ami_type" {
   type        = string
   description = "Operating system type for the EC2 instance AMI"
@@ -118,14 +119,14 @@ variable "comet_ec2_key" {
   default     = null
 }
 
-#comet_ec2_alb
+#### comet_ec2_alb ####
 variable "ssl_certificate_arn" {
   description = "ARN of the ACM certificate to use for the ALB"
   type        = string
   default     = null
 }
 
-#comet_eks
+#### comet_eks ####
 variable "eks_cluster_name" {
   description = "Name for EKS cluster"
   type        = string
@@ -192,7 +193,7 @@ variable "eks_external_dns" {
   default     = true
 }
 
-#comet_elasticache
+#### comet_elasticache ####
 variable "elasticache_allow_from_sg" {
   description = "Security group from which to allow connections to ElastiCache, to use when provisioning with existing compute"
   type        = string
@@ -229,7 +230,7 @@ variable "elasticache_num_cache_nodes" {
   default     = 1
 }
 
-#comet_rds
+#### comet_rds ####
 variable "rds_allow_from_sg" {
   description = "Security group from which to allow connections to RDS, to use when provisioning with existing compute"
   type        = string
@@ -295,9 +296,15 @@ variable "rds_root_password" {
   type        = string
 }
 
-#comet_s3
+#### comet_s3 ####
 variable "s3_bucket_name" {
   description = "Name for S3 bucket"
   type        = string
-  default     = ""
+}
+
+#### comet_vpc ####
+variable "single_nat_gateway" {
+  description = "Controls whether single NAT gateway used for all public subnets"
+  type        = bool
+  default     = true
 }

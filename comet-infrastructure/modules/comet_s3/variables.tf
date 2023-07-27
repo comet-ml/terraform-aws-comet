@@ -1,7 +1,6 @@
 variable "environment" {
   description = "Deployment environment, i.e. dev/stage/prod, etc"
   type        = string
-  default     = "dev"
 }
 
 variable "comet_s3_bucket" {
