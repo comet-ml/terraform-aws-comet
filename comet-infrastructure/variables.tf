@@ -122,7 +122,7 @@ variable "comet_ec2_key" {
 variable "ssl_certificate_arn" {
   description = "ARN of the ACM certificate to use for the ALB"
   type        = string
-  default     = ""
+  default     = null
 }
 
 #comet_eks

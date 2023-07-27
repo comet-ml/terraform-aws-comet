@@ -15,6 +15,9 @@ availability_zones    = ["us-east-1a", "us-east-1b", "us-east-1c"]
 comet_public_subnets  = ["subnet-012345abcdefghijkl", "subnet-012345abcdefghijkl", "subnet-012345abcdefghijkl"]
 comet_private_subnets = ["subnet-012345abcdefghijkl", "subnet-012345abcdefghijkl", "subnet-012345abcdefghijkl"]
 
+# if provisioning comet_ec2_alb, specify the following for the HTTPS listener
+#ssl_certificate_arn = ""
+
 # if provisioning comet_elasticache for use with existing compute, set the variable below to specify an SG that connections will be allowed from
 elasticache_allow_from_sg = "sg-012345abcdefghijkl"
 
@@ -23,4 +26,3 @@ rds_allow_from_sg = "sg-012345abcdefghijkl"
 
 s3_bucket_name      = "comet-use2-bucket"
 rds_root_password   = "CHANGE-ME"
-ssl_certificate_arn = ""
