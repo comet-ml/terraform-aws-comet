@@ -17,7 +17,7 @@ module "comet_vpc" {
   source      = "./modules/comet_vpc"
   count       = var.enable_vpc ? 1 : 0
   environment = var.environment
-  
+
   eks_enabled        = var.enable_eks
   single_nat_gateway = var.single_nat_gateway
 }
@@ -26,7 +26,7 @@ module "comet_ec2" {
   source      = "./modules/comet_ec2"
   count       = var.enable_ec2 ? 1 : 0
   environment = var.environment
-  
+
   vpc_id                   = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
   comet_ec2_subnet         = var.enable_vpc ? module.comet_vpc[0].public_subnets[0] : var.comet_public_subnets[0]
   comet_ec2_ami_type       = var.comet_ec2_ami_type
@@ -81,11 +81,11 @@ module "comet_elasticache" {
   count       = var.enable_elasticache ? 1 : 0
   environment = var.environment
 
-  vpc_id                       = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
-  elasticache_private_subnets  = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
-  elasticache_allow_from_sg    = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : (
-                                 var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : (
-                                 var.elasticache_allow_from_sg))
+  vpc_id                      = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
+  elasticache_private_subnets = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
+  elasticache_allow_from_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : (
+    var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : (
+  var.elasticache_allow_from_sg))
   elasticache_engine           = var.elasticache_engine
   elasticache_engine_version   = var.elasticache_engine_version
   elasticache_instance_type    = var.elasticache_instance_type
@@ -98,12 +98,12 @@ module "comet_rds" {
   count       = var.enable_rds ? 1 : 0
   environment = var.environment
 
-  availability_zones          = var.enable_vpc ? module.comet_vpc[0].azs : var.availability_zones
-  vpc_id                      = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
-  rds_private_subnets         = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
-  rds_allow_from_sg           = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : (
-                                var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : (
-                                var.rds_allow_from_sg))
+  availability_zones  = var.enable_vpc ? module.comet_vpc[0].azs : var.availability_zones
+  vpc_id              = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
+  rds_private_subnets = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
+  rds_allow_from_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : (
+    var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : (
+  var.rds_allow_from_sg))
   rds_engine                  = var.rds_engine
   rds_engine_version          = var.rds_engine_version
   rds_instance_type           = var.rds_instance_type
@@ -121,5 +121,5 @@ module "comet_s3" {
   count       = var.enable_s3 ? 1 : 0
   environment = var.environment
 
-  comet_s3_bucket  = var.s3_bucket_name
+  comet_s3_bucket = var.s3_bucket_name
 }

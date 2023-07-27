@@ -5,8 +5,8 @@ locals {
   cidr_anywhere = "0.0.0.0/0"
 
   tags = {
-    Terraform = "true"
-    Environment       = var.environment
+    Terraform   = "true"
+    Environment = var.environment
   }
 }
 
@@ -18,26 +18,26 @@ resource "aws_security_group" "comet_alb_sg" {
 
 resource "aws_vpc_security_group_ingress_rule" "comet_ec2_alb_http" {
   security_group_id = aws_security_group.comet_alb_sg.id
-  
+
   from_port   = local.http_port
   to_port     = local.http_port
-  ip_protocol    = "tcp"
-  cidr_ipv4 = local.cidr_anywhere
+  ip_protocol = "tcp"
+  cidr_ipv4   = local.cidr_anywhere
 }
 
 resource "aws_vpc_security_group_ingress_rule" "comet_ec2_alb_https" {
   security_group_id = aws_security_group.comet_alb_sg.id
-  
+
   from_port   = local.https_port
   to_port     = local.https_port
-  ip_protocol    = "tcp"
-  cidr_ipv4 = local.cidr_anywhere
+  ip_protocol = "tcp"
+  cidr_ipv4   = local.cidr_anywhere
 }
 
 resource "aws_vpc_security_group_egress_rule" "comet_ec2_alb_egress" {
   security_group_id = aws_security_group.comet_alb_sg.id
-  ip_protocol    = "-1"
-  cidr_ipv4 = local.cidr_anywhere
+  ip_protocol       = "-1"
+  cidr_ipv4         = local.cidr_anywhere
 }
 
 module "alb" {
@@ -48,9 +48,9 @@ module "alb" {
 
   load_balancer_type = "application"
 
-  vpc_id             = var.vpc_id
-  subnets            = var.public_subnets
-  security_groups    = [aws_security_group.comet_alb_sg.id]
+  vpc_id          = var.vpc_id
+  subnets         = var.public_subnets
+  security_groups = [aws_security_group.comet_alb_sg.id]
 
   target_groups = [
     {
@@ -63,10 +63,10 @@ module "alb" {
 
   https_listeners = [
     {
-      port                 = 443
-      protocol             = "HTTPS"
-      certificate_arn      = var.ssl_certificate_arn
-      target_group_index   = 0
+      port               = 443
+      protocol           = "HTTPS"
+      certificate_arn    = var.ssl_certificate_arn
+      target_group_index = 0
     }
   ]
 

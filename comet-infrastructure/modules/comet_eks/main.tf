@@ -1,6 +1,6 @@
 locals {
   tags = {
-    Terraform   =  "true"
+    Terraform   = "true"
     Environment = var.environment
   }
 }
@@ -16,11 +16,11 @@ module "eks" {
   cluster_name                   = var.eks_cluster_name
   cluster_version                = var.eks_cluster_version
   cluster_endpoint_public_access = true
-  
+
   vpc_id     = var.vpc_id
   subnet_ids = var.eks_private_subnets
 
-  eks_managed_node_group_defaults = {ami_type = var.eks_mng_ami_type}
+  eks_managed_node_group_defaults = { ami_type = var.eks_mng_ami_type }
 
   eks_managed_node_groups = {
     one = {
@@ -30,7 +30,7 @@ module "eks" {
       max_size       = var.eks_mng_max_size
       desired_size   = var.eks_mng_desired_size
 
-      iam_role_additional_policies = var.s3_enabled ? {comet_s3_access = var.comet_ec2_s3_iam_policy} : {}
+      iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
     }
   }
 
@@ -49,7 +49,7 @@ module "irsa-ebs-csi" {
 }
 
 module "eks_blueprints_addons" {
-  source = "aws-ia/eks-blueprints-addons/aws"
+  source  = "aws-ia/eks-blueprints-addons/aws"
   version = "0.2.0"
 
   cluster_name      = module.eks.cluster_name
@@ -61,9 +61,9 @@ module "eks_blueprints_addons" {
     coredns            = {}
     vpc-cni            = {}
     kube-proxy         = {}
-    aws-ebs-csi-driver = {service_account_role_arn = module.irsa-ebs-csi.iam_role_arn}
+    aws-ebs-csi-driver = { service_account_role_arn = module.irsa-ebs-csi.iam_role_arn }
   }
-  
+
   enable_aws_load_balancer_controller = var.eks_aws_load_balancer_controller
   enable_cert_manager                 = var.eks_cert_manager
   enable_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics

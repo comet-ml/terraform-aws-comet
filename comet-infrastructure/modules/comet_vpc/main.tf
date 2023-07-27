@@ -35,8 +35,8 @@ module "vpc" {
   default_security_group_tags   = { Name = "${local.resource_name}-default" }
 
   # if EKS deployment, set subnet tags for AWS Load Balancer Controller auto-discovery
-  public_subnet_tags  = var.eks_enabled ? {"kubernetes.io/role/elb" = 1} : null
-  private_subnet_tags = var.eks_enabled ? {"kubernetes.io/role/internal-elb" = 1} : null
+  public_subnet_tags  = var.eks_enabled ? { "kubernetes.io/role/elb" = 1 } : null
+  private_subnet_tags = var.eks_enabled ? { "kubernetes.io/role/internal-elb" = 1 } : null
 
   tags = local.tags
 }
