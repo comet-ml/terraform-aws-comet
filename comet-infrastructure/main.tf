@@ -5,8 +5,6 @@ data "aws_eks_cluster_auth" "this" {
 
 locals {
   resource_name = "comet-${var.environment}"
-
-  #set environment here, and use local.environment for the environment variables in all of the module calls
   tags = {
     Terraform   = "true"
     Environment = var.environment
@@ -40,7 +38,6 @@ module "comet_ec2" {
   comet_ec2_alb_sg = var.enable_ec2_alb ? module.comet_ec2_alb[0].comet_alb_sg : null
 
   s3_enabled              = var.enable_s3
-  comet_ml_s3_bucket      = var.s3_bucket_name
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
 }
 
