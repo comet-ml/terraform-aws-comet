@@ -36,7 +36,8 @@ module "comet_ec2" {
   comet_ec2_volume_size    = var.comet_ec2_volume_size
   comet_ec2_key            = var.comet_ec2_key
 
-  alb_enabled = var.enable_ec2_alb
+  alb_enabled      = var.enable_ec2_alb
+  comet_ec2_alb_sg = var.enable_ec2_alb ? module.comet_ec2_alb[0].comet_alb_sg : null
 
   s3_enabled              = var.enable_s3
   comet_ml_s3_bucket      = var.s3_bucket_name

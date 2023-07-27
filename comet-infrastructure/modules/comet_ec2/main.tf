@@ -173,7 +173,6 @@ resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_ssh" {
   from_port   = local.ssh_port
   to_port     = local.ssh_port
   ip_protocol = "tcp"
-  # make more restrictive
   cidr_ipv4 = local.cidr_anywhere
 }
 
@@ -183,7 +182,6 @@ resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_http" {
   from_port   = local.http_port
   to_port     = local.http_port
   ip_protocol = "tcp"
-  # make more restrictive
   cidr_ipv4 = local.cidr_anywhere
 }
 
@@ -193,20 +191,18 @@ resource "aws_vpc_security_group_ingress_rule" "comet_ec2_ingress_https" {
   from_port   = local.https_port
   to_port     = local.https_port
   ip_protocol = "tcp"
-  # make more restrictive
   cidr_ipv4 = local.cidr_anywhere
 }
 
-/*
 resource "aws_vpc_security_group_ingress_rule" "comet_ec2_alb_http" {
+  count             = var.alb_enabled ? 1 : 0
   security_group_id = aws_security_group.comet_ec2_sg.id
   
-  from_port   = local.http_port
-  to_port     = local.http_port
-  ip_protocol    = "tcp"
-  security_groups = [var.comet_ec2_alb_sg.id]
+  from_port                    = local.http_port
+  to_port                      = local.http_port
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = var.comet_ec2_alb_sg
 }
-*/
 
 resource "aws_vpc_security_group_egress_rule" "comet_ec2_egress_any" {
   security_group_id = aws_security_group.comet_ec2_sg.id

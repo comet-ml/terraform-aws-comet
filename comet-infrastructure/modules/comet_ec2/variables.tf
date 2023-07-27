@@ -66,3 +66,8 @@ variable "comet_ec2_s3_iam_policy" {
   description = "Policy granting access to Comet S3 bucket"
   type        = string
 }
+
+variable "comet_ec2_alb_sg" {
+  description = "ID of the security group attached to an associated application load balancer, for creating ingress EC2 SG rule"
+  type        = string
+}
