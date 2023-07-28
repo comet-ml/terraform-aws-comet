@@ -10,7 +10,7 @@ variable "vpc_id" {
 
 variable "public_subnets" {
   description = "Subnets specified for ALB"
-  type        = list(any)
+  type        = list(string)
 }
 
 variable "ssl_certificate_arn" {
