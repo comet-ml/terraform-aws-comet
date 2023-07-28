@@ -42,7 +42,7 @@
 | <a name="input_eks_mng_name"></a> [eks\_mng\_name](#input\_eks\_mng\_name) | Name for the EKS managed nodegroup | `string` | n/a | yes |
 | <a name="input_eks_node_types"></a> [eks\_node\_types](#input\_eks\_node\_types) | Node instance types for EKS managed node group | `list(string)` | n/a | yes |
 | <a name="input_eks_private_subnets"></a> [eks\_private\_subnets](#input\_eks\_private\_subnets) | IDs of private subnets within the VPC | `list(string)` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | Deployment environment, i.e. dev/stage/prod, etc | `string` | `"dev"` | no |
+| <a name="input_environment"></a> [environment](#input\_environment) | Deployment environment, i.e. dev/stage/prod, etc | `string` | n/a | yes |
 | <a name="input_s3_enabled"></a> [s3\_enabled](#input\_s3\_enabled) | Indicates if S3 bucket is being provisioned for Comet | `bool` | `null` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC that the EKS cluster will be launched in | `string` | n/a | yes |
 

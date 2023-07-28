@@ -49,7 +49,7 @@ No modules.
 | <a name="input_comet_ec2_subnet"></a> [comet\_ec2\_subnet](#input\_comet\_ec2\_subnet) | ID of VPC subnet to launch EC2 instance in | `string` | n/a | yes |
 | <a name="input_comet_ec2_volume_size"></a> [comet\_ec2\_volume\_size](#input\_comet\_ec2\_volume\_size) | Size, in gibibytes (GiB), for the EC2 instance root volume | `number` | n/a | yes |
 | <a name="input_comet_ec2_volume_type"></a> [comet\_ec2\_volume\_type](#input\_comet\_ec2\_volume\_type) | EBS volume type for the EC2 instance root volume | `string` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | Deployment environment, i.e. dev/stage/prod, etc | `string` | `"dev"` | no |
+| <a name="input_environment"></a> [environment](#input\_environment) | Deployment environment, i.e. dev/stage/prod, etc | `string` | n/a | yes |
 | <a name="input_s3_enabled"></a> [s3\_enabled](#input\_s3\_enabled) | Indicates if S3 bucket is being provisioned for Comet | `bool` | `null` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC that will contain the provisioned resources | `string` | n/a | yes |
 

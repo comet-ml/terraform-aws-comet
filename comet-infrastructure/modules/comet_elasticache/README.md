@@ -32,7 +32,7 @@ No modules.
 | <a name="input_elasticache_num_cache_nodes"></a> [elasticache\_num\_cache\_nodes](#input\_elasticache\_num\_cache\_nodes) | Number of nodes in the Elasticache cluster | `number` | n/a | yes |
 | <a name="input_elasticache_param_group_name"></a> [elasticache\_param\_group\_name](#input\_elasticache\_param\_group\_name) | Name for the Elasticache cluster parameter group | `string` | n/a | yes |
 | <a name="input_elasticache_private_subnets"></a> [elasticache\_private\_subnets](#input\_elasticache\_private\_subnets) | IDs of private subnets within the VPC | `list(string)` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | Deployment environment, i.e. dev/stage/prod, etc | `string` | `"dev"` | no |
+| <a name="input_environment"></a> [environment](#input\_environment) | Deployment environment, i.e. dev/stage/prod, etc | `string` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC that will contain the provisioned resources | `string` | n/a | yes |
 
 ## Outputs
