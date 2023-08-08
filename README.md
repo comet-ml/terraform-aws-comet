@@ -17,6 +17,19 @@ Terraform module for deploying infrastructure components to run CometML.
   - Within terraform.tfvars, set your module toggles to enable the desired infrastructure components and set any related inputs
   - Provision the resources: `terraform apply`
 
+**A note on state management:**
+- This configuration stores the Terraform state locally by default. To store the state file remotely in S3, a `backend` block can be nested within the `terraform` block inside comet-infrastructure/versions.tf. Below is an example of such a configuration:
+```
+terraform {
+  backend "s3" {
+    bucket = "mybucket"
+    key    = "path/to/my/key"
+    region = "us-east-1"
+  }
+}
+```
+- More on state management in S3 can be found [here](https://developer.hashicorp.com/terraform/language/settings/backends/s3)
+
 ## Requirements
 
 | Name | Version |
