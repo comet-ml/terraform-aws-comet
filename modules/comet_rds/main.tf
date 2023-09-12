@@ -99,6 +99,16 @@ resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {
     name         = "thread_stack"
     value        = "2000000"
   }
+  parameter {
+    apply_method = "pending-reboot"
+    name         = "group_concat_max_len"
+    value        = "1000000"
+  }
+  parameter {
+    apply_method = "pending-reboot"
+    name         = "log_bin_trust_function_creators"
+    value        = "1"
+  }
 }
 
 resource "aws_security_group" "mysql_sg" {
