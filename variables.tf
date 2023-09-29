@@ -136,7 +136,7 @@ variable "eks_cluster_name" {
 variable "eks_cluster_version" {
   description = "Kubernetes version of the EKS cluster"
   type        = string
-  default     = "1.26"
+  default     = "1.27"
 }
 
 variable "eks_mng_name" {
@@ -178,7 +178,7 @@ variable "eks_aws_load_balancer_controller" {
 variable "eks_cert_manager" {
   description = "Enables cert-manager in the EKS cluster"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "eks_aws_cloudwatch_metrics" {
