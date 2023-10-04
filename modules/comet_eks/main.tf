@@ -68,6 +68,7 @@ module "eks_blueprints_addons" {
   enable_cert_manager                 = var.eks_cert_manager
   enable_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
   enable_external_dns                 = var.eks_external_dns
+  external_dns_route53_zone_arns      = var.eks_external_dns_r53_zones
 
   tags = local.tags
 }

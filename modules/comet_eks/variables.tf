@@ -68,6 +68,11 @@ variable "eks_external_dns" {
   type        = bool
 }
 
+variable "eks_external_dns_r53_zones" {
+  description = "Route 53 zones for external-dns to have access to"
+  type        = list(string)
+}
+
 variable "s3_enabled" {
   description = "Indicates if S3 bucket is being provisioned for Comet"
   type        = bool
