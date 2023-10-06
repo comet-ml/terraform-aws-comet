@@ -230,6 +230,18 @@ variable "elasticache_num_cache_nodes" {
   default     = 1
 }
 
+variable "elasticache_transit_encryption" {
+  description = "Enable transit encryption for ElastiCache"
+  type        = bool
+  default     = false
+}
+
+variable "elasticache_auth_token" {
+  description = "Auth token for ElastiCache"
+  type        = string
+  default     = null
+}
+
 #### comet_rds ####
 variable "rds_allow_from_sg" {
   description = "Security group from which to allow connections to RDS, to use when provisioning with existing compute"

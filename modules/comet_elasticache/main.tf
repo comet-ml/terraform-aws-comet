@@ -7,16 +7,20 @@ locals {
   }
 }
 
-resource "aws_elasticache_cluster" "comet-ml-ec-redis" {
-  cluster_id           = "cometml-ec-redis-${var.environment}"
-  engine               = var.elasticache_engine
-  node_type            = var.elasticache_instance_type
-  num_cache_nodes      = var.elasticache_num_cache_nodes
-  parameter_group_name = var.elasticache_param_group_name
-  engine_version       = var.elasticache_engine_version
-  port                 = local.redis_port
-  subnet_group_name    = aws_elasticache_subnet_group.comet-ml-ec-subnet-group.name
-  security_group_ids   = [aws_security_group.redis_inbound_sg.id]
+resource "aws_elasticache_replication_group" "comet-ml-ec-redis" {
+  engine                     = var.elasticache_engine
+  engine_version             = var.elasticache_engine_version
+  transit_encryption_enabled = var.elasticache_transit_encryption
+  auth_token                 = var.elasticache_auth_token
+  automatic_failover_enabled = false
+  replication_group_id       = "cometml-ec-redis-${var.environment}"
+  node_type                  = var.elasticache_instance_type
+  num_cache_clusters         = var.elasticache_num_cache_nodes
+  parameter_group_name       = var.elasticache_param_group_name
+  port                       = local.redis_port
+  subnet_group_name          = aws_elasticache_subnet_group.comet-ml-ec-subnet-group.name
+  security_group_ids         = [aws_security_group.redis_inbound_sg.id]
+  description                = "Redis for CometML"
 }
 
 resource "aws_elasticache_subnet_group" "comet-ml-ec-subnet-group" {

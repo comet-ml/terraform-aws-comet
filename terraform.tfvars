@@ -55,6 +55,9 @@ ssl_certificate_arn = null
 #### comet_elasticache ####
 # If setting enable_elasticache with existing compute, set the variable below to specify an SG that connections will be allowed from
 elasticache_allow_from_sg = "sg-012345abcdefghijkl"
+## Set the following to enable the auth token for Redis
+#elasticache_transit_encryption = true
+#elasticache_auth_token = "your-cometml-redis-token"
 
 #### comet_rds ####
 # If setting enable_rds, specify the root password for RDS below, or leave null and enter at the prompt during apply

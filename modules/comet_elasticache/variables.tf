@@ -42,3 +42,14 @@ variable "elasticache_num_cache_nodes" {
   description = "Number of nodes in the Elasticache cluster"
   type        = number
 }
+
+variable "elasticache_transit_encryption" {
+  description = "Enable transit encryption for ElastiCache"
+  type        = bool
+}
+
+variable "elasticache_auth_token" {
+  description = "Auth token for ElastiCache"
+  type        = string
+  default     = null
+}

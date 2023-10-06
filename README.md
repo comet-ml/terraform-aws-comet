@@ -89,11 +89,13 @@ terraform {
 | <a name="input_eks_mng_name"></a> [eks\_mng\_name](#input\_eks\_mng\_name) | Name for the EKS managed nodegroup | `string` | `"mng"` | no |
 | <a name="input_eks_node_types"></a> [eks\_node\_types](#input\_eks\_node\_types) | Node instance types for EKS managed node group | `list(string)` | <pre>[<br>  "m5.4xlarge"<br>]</pre> | no |
 | <a name="input_elasticache_allow_from_sg"></a> [elasticache\_allow\_from\_sg](#input\_elasticache\_allow\_from\_sg) | Security group from which to allow connections to ElastiCache, to use when provisioning with existing compute | `string` | `null` | no |
+| <a name="input_elasticache_auth_token"></a> [elasticache\_auth\_token](#input\_elasticache\_auth\_token) | Auth token for ElastiCache | `string` | `null` | no |
 | <a name="input_elasticache_engine"></a> [elasticache\_engine](#input\_elasticache\_engine) | Engine type for ElastiCache cluster | `string` | `"redis"` | no |
 | <a name="input_elasticache_engine_version"></a> [elasticache\_engine\_version](#input\_elasticache\_engine\_version) | Version number for ElastiCache engine | `string` | `"5.0.6"` | no |
 | <a name="input_elasticache_instance_type"></a> [elasticache\_instance\_type](#input\_elasticache\_instance\_type) | ElastiCache instance type | `string` | `"cache.r4.xlarge"` | no |
 | <a name="input_elasticache_num_cache_nodes"></a> [elasticache\_num\_cache\_nodes](#input\_elasticache\_num\_cache\_nodes) | Number of nodes in the ElastiCache cluster | `number` | `1` | no |
 | <a name="input_elasticache_param_group_name"></a> [elasticache\_param\_group\_name](#input\_elasticache\_param\_group\_name) | Name for the ElastiCache cluster parameter group | `string` | `"default.redis5.0"` | no |
+| <a name="input_elasticache_transit_encryption"></a> [elasticache\_transit\_encryption](#input\_elasticache\_transit\_encryption) | Enable transit encryption for ElastiCache | `bool` | `false` | no |
 | <a name="input_enable_ec2"></a> [enable\_ec2](#input\_enable\_ec2) | Toggles the comet\_ec2 module, to provision EC2 resources for running Comet | `bool` | n/a | yes |
 | <a name="input_enable_ec2_alb"></a> [enable\_ec2\_alb](#input\_enable\_ec2\_alb) | Toggles the comet\_ec2\_alb module, to provision an ALB in front of the EC2 instance | `bool` | n/a | yes |
 | <a name="input_enable_eks"></a> [enable\_eks](#input\_enable\_eks) | Toggles the comet\_eks module, to provision EKS resources for running Comet | `bool` | n/a | yes |
