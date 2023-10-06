@@ -50,7 +50,7 @@ module "irsa-ebs-csi" {
 
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
-  version = "0.2.0"
+  version = "1.9.1"
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -68,6 +68,7 @@ module "eks_blueprints_addons" {
   enable_cert_manager                 = var.eks_cert_manager
   enable_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
   enable_external_dns                 = var.eks_external_dns
+  external_dns_route53_zone_arns      = var.eks_external_dns_r53_zones
 
   tags = local.tags
 }

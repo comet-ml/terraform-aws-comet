@@ -69,6 +69,7 @@ module "comet_eks" {
   eks_cert_manager                 = var.eks_cert_manager
   eks_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
   eks_external_dns                 = var.eks_external_dns
+  eks_external_dns_r53_zones       = var.eks_external_dns_r53_zones
 
   s3_enabled              = var.enable_s3
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
