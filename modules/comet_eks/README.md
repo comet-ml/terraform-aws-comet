@@ -16,7 +16,7 @@
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_eks"></a> [eks](#module\_eks) | terraform-aws-modules/eks/aws | ~> 19.9 |
-| <a name="module_eks_blueprints_addons"></a> [eks\_blueprints\_addons](#module\_eks\_blueprints\_addons) | aws-ia/eks-blueprints-addons/aws | 0.2.0 |
+| <a name="module_eks_blueprints_addons"></a> [eks\_blueprints\_addons](#module\_eks\_blueprints\_addons) | aws-ia/eks-blueprints-addons/aws | 1.9.1 |
 | <a name="module_irsa-ebs-csi"></a> [irsa-ebs-csi](#module\_irsa-ebs-csi) | terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc | 4.7.0 |
 
 ## Resources
@@ -36,8 +36,10 @@
 | <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | Name for the EKS cluster | `string` | n/a | yes |
 | <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | Kubernetes version for the EKS cluster | `string` | n/a | yes |
 | <a name="input_eks_external_dns"></a> [eks\_external\_dns](#input\_eks\_external\_dns) | Enables ExternalDNS in the EKS cluster | `bool` | n/a | yes |
+| <a name="input_eks_external_dns_r53_zones"></a> [eks\_external\_dns\_r53\_zones](#input\_eks\_external\_dns\_r53\_zones) | Route 53 zones for external-dns to have access to | `list(string)` | n/a | yes |
 | <a name="input_eks_mng_ami_type"></a> [eks\_mng\_ami\_type](#input\_eks\_mng\_ami\_type) | AMI family to use for the EKS nodes | `string` | n/a | yes |
 | <a name="input_eks_mng_desired_size"></a> [eks\_mng\_desired\_size](#input\_eks\_mng\_desired\_size) | Desired number of nodes in EKS cluster | `number` | n/a | yes |
+| <a name="input_eks_mng_disk_size"></a> [eks\_mng\_disk\_size](#input\_eks\_mng\_disk\_size) | Size of the storage disks for nodes in EKS cluster | `number` | n/a | yes |
 | <a name="input_eks_mng_max_size"></a> [eks\_mng\_max\_size](#input\_eks\_mng\_max\_size) | Maximum number of nodes in EKS cluster | `number` | n/a | yes |
 | <a name="input_eks_mng_name"></a> [eks\_mng\_name](#input\_eks\_mng\_name) | Name for the EKS managed nodegroup | `string` | n/a | yes |
 | <a name="input_eks_node_types"></a> [eks\_node\_types](#input\_eks\_node\_types) | Node instance types for EKS managed node group | `list(string)` | n/a | yes |

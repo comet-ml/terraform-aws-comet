@@ -65,6 +65,7 @@ module "comet_eks" {
   eks_node_types                   = var.eks_node_types
   eks_mng_desired_size             = var.eks_mng_desired_size
   eks_mng_max_size                 = var.eks_mng_max_size
+  eks_mng_disk_size                = var.eks_mng_disk_size
   eks_aws_load_balancer_controller = var.eks_aws_load_balancer_controller
   eks_cert_manager                 = var.eks_cert_manager
   eks_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics

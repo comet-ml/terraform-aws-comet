@@ -169,6 +169,12 @@ variable "eks_mng_max_size" {
   default     = 6
 }
 
+variable "eks_mng_disk_size" {
+  description = "Size of the storage disks for nodes in EKS cluster"
+  type        = number
+  default     = 500
+}
+
 variable "eks_aws_load_balancer_controller" {
   description = "Enables the AWS Load Balancer Controller in the EKS cluster"
   type        = bool
