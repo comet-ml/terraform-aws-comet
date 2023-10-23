@@ -11,7 +11,7 @@ Terraform module for deploying infrastructure components to run CometML.
 
 **Infrastructure Deployment:**
 - Follow the steps below to deploy directly from the GitHub repository.
-  - Clone the repository to your local machine: `git clone https://github.com/comet-ml/dply-terraform-aws.git`
+  - Clone the repository to your local machine: `git clone https://github.com/comet-ml/terraform_aws_comet.git`
   - Move into the deployment directory: `cd terraform-aws-comet`
   - Initialize the directory: `terraform init`
   - Within terraform.tfvars, set your module toggles to enable the desired infrastructure components and set any related inputs
@@ -36,7 +36,7 @@ terraform {
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.1 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~>2.10 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.10 |
 | <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.21 |
 
 ## Providers
@@ -79,12 +79,14 @@ terraform {
 | <a name="input_comet_vpc_id"></a> [comet\_vpc\_id](#input\_comet\_vpc\_id) | ID of an existing VPC to provision resources in | `string` | `null` | no |
 | <a name="input_eks_aws_cloudwatch_metrics"></a> [eks\_aws\_cloudwatch\_metrics](#input\_eks\_aws\_cloudwatch\_metrics) | Enables AWS Cloudwatch Metrics in the EKS cluster | `bool` | `true` | no |
 | <a name="input_eks_aws_load_balancer_controller"></a> [eks\_aws\_load\_balancer\_controller](#input\_eks\_aws\_load\_balancer\_controller) | Enables the AWS Load Balancer Controller in the EKS cluster | `bool` | `true` | no |
-| <a name="input_eks_cert_manager"></a> [eks\_cert\_manager](#input\_eks\_cert\_manager) | Enables cert-manager in the EKS cluster | `bool` | `true` | no |
+| <a name="input_eks_cert_manager"></a> [eks\_cert\_manager](#input\_eks\_cert\_manager) | Enables cert-manager in the EKS cluster | `bool` | `false` | no |
 | <a name="input_eks_cluster_name"></a> [eks\_cluster\_name](#input\_eks\_cluster\_name) | Name for EKS cluster | `string` | `"comet-eks"` | no |
-| <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | Kubernetes version of the EKS cluster | `string` | `"1.26"` | no |
-| <a name="input_eks_external_dns"></a> [eks\_external\_dns](#input\_eks\_external\_dns) | Enables ExternalDNS in the EKS cluster | `bool` | `true` | no |
+| <a name="input_eks_cluster_version"></a> [eks\_cluster\_version](#input\_eks\_cluster\_version) | Kubernetes version of the EKS cluster | `string` | `"1.27"` | no |
+| <a name="input_eks_external_dns"></a> [eks\_external\_dns](#input\_eks\_external\_dns) | Enables ExternalDNS in the EKS cluster | `bool` | `false` | no |
+| <a name="input_eks_external_dns_r53_zones"></a> [eks\_external\_dns\_r53\_zones](#input\_eks\_external\_dns\_r53\_zones) | Route 53 zones for external-dns to have access to | `list(string)` | <pre>[<br>  "arn:aws:route53:::hostedzone/XYZ"<br>]</pre> | no |
 | <a name="input_eks_mng_ami_type"></a> [eks\_mng\_ami\_type](#input\_eks\_mng\_ami\_type) | AMI family to use for the EKS nodes | `string` | `"AL2_x86_64"` | no |
 | <a name="input_eks_mng_desired_size"></a> [eks\_mng\_desired\_size](#input\_eks\_mng\_desired\_size) | Desired number of nodes in EKS cluster | `number` | `3` | no |
+| <a name="input_eks_mng_disk_size"></a> [eks\_mng\_disk\_size](#input\_eks\_mng\_disk\_size) | Size of the storage disks for nodes in EKS cluster | `number` | `500` | no |
 | <a name="input_eks_mng_max_size"></a> [eks\_mng\_max\_size](#input\_eks\_mng\_max\_size) | Maximum number of nodes in EKS cluster | `number` | `6` | no |
 | <a name="input_eks_mng_name"></a> [eks\_mng\_name](#input\_eks\_mng\_name) | Name for the EKS managed nodegroup | `string` | `"mng"` | no |
 | <a name="input_eks_node_types"></a> [eks\_node\_types](#input\_eks\_node\_types) | Node instance types for EKS managed node group | `list(string)` | <pre>[<br>  "m5.4xlarge"<br>]</pre> | no |

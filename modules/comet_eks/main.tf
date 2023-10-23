@@ -29,6 +29,17 @@ module "eks" {
       min_size       = var.eks_mng_desired_size
       max_size       = var.eks_mng_max_size
       desired_size   = var.eks_mng_desired_size
+      block_device_mappings = {
+        xvda = {
+          device_name = "/dev/xvda"
+          ebs = {
+            volume_size           = var.eks_mng_disk_size
+            volume_type           = "gp3"
+            encrypted             = false
+            delete_on_termination = true
+          }
+        }
+      }
 
       iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
     }
