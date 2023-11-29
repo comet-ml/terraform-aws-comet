@@ -30,6 +30,11 @@ variable "comet_ec2_instance_type" {
   type        = string
 }
 
+variable "comet_ec2_ami_id" {
+  description = "AMI ID for the EC2 instance"
+  type        = string
+}
+
 variable "comet_ec2_instance_count" {
   description = "Number of EC2 instances to provision"
   type        = number

@@ -89,6 +89,12 @@ variable "comet_ec2_ami_type" {
   }
 }
 
+variable "comet_ec2_ami_id" {
+  description = "AMI ID for the EC2 instance"
+  type        = string
+  default     = ""
+}
+
 variable "comet_ec2_instance_type" {
   description = "Instance type for the EC2 instance"
   type        = string
@@ -202,7 +208,7 @@ variable "eks_external_dns" {
 variable "eks_external_dns_r53_zones" {
   description = "Route 53 zones for external-dns to have access to"
   type        = list(string)
-  default     = [
+  default = [
     "arn:aws:route53:::hostedzone/XYZ"
   ]
 }

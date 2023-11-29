@@ -28,6 +28,7 @@ module "comet_ec2" {
   vpc_id                   = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
   comet_ec2_subnet         = var.enable_vpc ? module.comet_vpc[0].public_subnets[0] : var.comet_public_subnets[0]
   comet_ec2_ami_type       = var.comet_ec2_ami_type
+  comet_ec2_ami_id         = var.comet_ec2_ami_id
   comet_ec2_instance_type  = var.comet_ec2_instance_type
   comet_ec2_instance_count = var.comet_ec2_instance_count
   comet_ec2_volume_type    = var.comet_ec2_volume_type
