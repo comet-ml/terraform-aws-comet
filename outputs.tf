@@ -27,3 +27,21 @@ output "configure_kubectl" {
   description = "Configure kubectl: run the following command to update your kubeconfig with the newly provisioned cluster."
   value       = var.enable_eks ? "aws eks update-kubeconfig --region ${var.region} --name ${module.comet_eks[0].cluster_name}" : null
 }
+
+output "comet_eks_cert" {
+  description = "EKS cluster cert"
+  value       = var.enable_eks ? base64decode(module.comet_eks[0].cluster_certificate_authority_data) : null
+  sensitive   = true
+}
+
+output "comet_eks_endpoint" {
+  description = "EKS cluster endpoint"
+  value       = var.enable_eks ? module.comet_eks[0].cluster_endpoint : null
+  sensitive   = true
+}
+
+output "comet_eks_token" {
+  description = "EKS cluster endpoint"
+  value       = var.enable_eks ? data.aws_eks_cluster_auth.this[0].token : null
+  sensitive   = true
+}
