@@ -8,6 +8,8 @@ locals {
 resource "aws_s3_bucket" "comet_s3_bucket" {
   bucket = var.comet_s3_bucket
 
+  force_destroy = var.s3_force_destroy
+
   tags = merge(local.tags, {
     Name = var.comet_s3_bucket
   })

@@ -334,6 +334,12 @@ variable "s3_bucket_name" {
   type        = string
 }
 
+variable "s3_force_destroy" {
+  description = "Option to enable force delete of S3 bucket"
+  type        = bool
+  default     = false
+}
+
 #### comet_vpc ####
 variable "single_nat_gateway" {
   description = "Controls whether single NAT gateway used for all public subnets"

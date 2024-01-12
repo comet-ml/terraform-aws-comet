@@ -125,4 +125,5 @@ module "comet_s3" {
   environment = var.environment
 
   comet_s3_bucket = var.s3_bucket_name
+  s3_force_destroy = var.s3_force_destroy
 }
