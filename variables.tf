@@ -160,7 +160,7 @@ variable "eks_mng_ami_type" {
 variable "eks_node_types" {
   description = "Node instance types for EKS managed node group"
   type        = list(string)
-  default     = ["m5.4xlarge"]
+  default     = ["m6i.4xlarge"]
 }
 
 variable "eks_mng_desired_size" {
