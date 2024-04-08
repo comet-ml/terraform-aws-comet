@@ -46,7 +46,7 @@ resource "aws_rds_cluster" "cometml-db-cluster" {
 
 resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {
   name        = "cometml-rds-cluster-pg-${var.environment}"
-  family      = "aurora-mysql5.7"
+  family      = "aurora-mysql${var.rds_engine_version}"
   description = "CometML RDS cluster parameter group"
 
   parameter {
@@ -108,6 +108,11 @@ resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {
     apply_method = "pending-reboot"
     name         = "log_bin_trust_function_creators"
     value        = "1"
+  }
+  parameter {
+    apply_method = "pending-reboot"
+    name         = "thread_stack"
+    value        = "6291456"
   }
 }
 
