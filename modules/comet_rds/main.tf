@@ -109,6 +109,11 @@ resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {
     name         = "log_bin_trust_function_creators"
     value        = "1"
   }
+  parameter {
+    apply_method = "pending-reboot"
+    name         = "thread_stack"
+    value        = "6291456"
+  }
 }
 
 resource "aws_security_group" "mysql_sg" {
