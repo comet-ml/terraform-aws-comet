@@ -22,6 +22,9 @@ enable_rds = false
 # Create S3 resources for storing Comet objects
 enable_s3 = false
 
+# Create EKS nodegroups for MPM compute
+enable_mpm_infra = false
+
 ################
 #### Global ####
 ################

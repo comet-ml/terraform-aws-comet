@@ -75,6 +75,15 @@ module "comet_eks" {
 
   s3_enabled              = var.enable_s3
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
+
+  enable_mpm_infra = var.enable_mpm_infra
+
+  eks_druid_instance_type = var.eks_druid_instance_type
+  eks_druid_node_count = var.eks_druid_node_count
+  eks_zookeeper_instance_type = var.eks_zookeeper_instance_type
+  eks_zookeeper_node_count = var.eks_zookeeper_node_count
+  eks_airflow_instance_type = var.eks_airflow_instance_type
+  eks_airflow_node_count = var.eks_airflow_node_count
 }
 
 module "comet_elasticache" {
@@ -124,6 +133,8 @@ module "comet_s3" {
   count       = var.enable_s3 ? 1 : 0
   environment = var.environment
 
-  comet_s3_bucket = var.s3_bucket_name
+  comet_s3_bucket  = var.s3_bucket_name
   s3_force_destroy = var.s3_force_destroy
+
+  enable_mpm_infra = var.enable_mpm_infra
 }
