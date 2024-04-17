@@ -36,6 +36,11 @@ variable "enable_s3" {
   type        = bool
 }
 
+variable "enable_mpm_infra" {
+  description = "Sets MNGs to be created for MPM compute"
+  type        = bool
+}
+
 ################
 #### Global ####
 ################
@@ -211,6 +216,42 @@ variable "eks_external_dns_r53_zones" {
   default = [
     "arn:aws:route53:::hostedzone/XYZ"
   ]
+}
+
+variable "eks_druid_instance_type" {
+  description = "Instance type for EKS Druid nodes"
+  type        = string
+  default     = "m6i.4xlarge"
+}
+
+variable "eks_zookeeper_instance_type" {
+  description = "Instance type for EKS Zookeeper nodes"
+  type        = string
+  default     = "m6i.4xlarge"
+}
+
+variable "eks_airflow_instance_type" {
+  description = "Instance type for EKS Airflow nodes"
+  type        = string
+  default     = "m6i.4xlarge"
+}
+
+variable "eks_druid_node_count" {
+  description = "Instance count for EKS Druid nodes"
+  type        = number
+  default     = 6
+}
+
+variable "eks_zookeeper_node_count" {
+  description = "Instance count for EKS Zookeeper nodes"
+  type        = number
+  default     = 3
+}
+
+variable "eks_airflow_node_count" {
+  description = "Instance count for EKS Airflow nodes"
+  type        = number
+  default     = 3
 }
 
 #### comet_elasticache ####

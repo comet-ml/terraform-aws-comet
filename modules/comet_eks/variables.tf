@@ -89,3 +89,38 @@ variable "comet_ec2_s3_iam_policy" {
   type        = string
   default     = null
 }
+
+variable "enable_mpm_infra" {
+  description = "Sets MNGs to be created for MPM compute"
+  type        = bool
+}
+
+variable "eks_druid_instance_type" {
+  description = "Instance type for EKS Druid nodes"
+  type        = string
+}
+
+variable "eks_zookeeper_instance_type" {
+  description = "Instance type for EKS Zookeeper nodes"
+  type        = string
+}
+
+variable "eks_airflow_instance_type" {
+  description = "Instance type for EKS Airflow nodes"
+  type        = string
+}
+
+variable "eks_druid_node_count" {
+  description = "Instance count for EKS Druid nodes"
+  type        = number
+}
+
+variable "eks_zookeeper_node_count" {
+  description = "Instance count for EKS Zookeeper nodes"
+  type        = number
+}
+
+variable "eks_airflow_node_count" {
+  description = "Instance count for EKS Airflow nodes"
+  type        = number
+}

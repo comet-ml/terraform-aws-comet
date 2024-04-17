@@ -12,3 +12,8 @@ variable "s3_force_destroy" {
   description = "Option to enable force delete of S3 bucket"
   type        = bool
 }
+
+variable "enable_mpm_infra" {
+  description = "Sets buckets to be created for MPM Druid/Airflow"
+  type        = bool
+}
