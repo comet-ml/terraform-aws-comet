@@ -97,7 +97,7 @@ resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {
   parameter {
     apply_method = "pending-reboot"
     name         = "thread_stack"
-    value        = "2000000"
+    value        = "6291456"
   }
   parameter {
     apply_method = "pending-reboot"
@@ -108,11 +108,6 @@ resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {
     apply_method = "pending-reboot"
     name         = "log_bin_trust_function_creators"
     value        = "1"
-  }
-  parameter {
-    apply_method = "pending-reboot"
-    name         = "thread_stack"
-    value        = "6291456"
   }
 }
 
