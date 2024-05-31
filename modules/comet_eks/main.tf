@@ -72,50 +72,6 @@ module "eks" {
           nodegroup_name = "druid"
         }
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
-      },
-      zookeeper = {
-        name           = "zookeeper"
-        instance_types = [var.eks_zookeeper_instance_type]
-        min_size       = var.eks_zookeeper_node_count
-        max_size       = var.eks_zookeeper_node_count
-        desired_size   = var.eks_zookeeper_node_count
-        block_device_mappings = {
-          xvda = {
-            device_name = "/dev/xvda"
-            ebs = {
-              volume_size           = var.eks_mng_disk_size
-              volume_type           = local.volume_type
-              encrypted             = local.volume_encrypted
-              delete_on_termination = local.volume_delete_on_termination
-            }
-          }
-        }
-        labels = {
-          nodegroup_name = "zookeeper"
-        }
-        iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
-      },
-      airflow = {
-        name           = "airflow"
-        instance_types = [var.eks_airflow_instance_type]
-        min_size       = var.eks_airflow_node_count
-        max_size       = var.eks_airflow_node_count
-        desired_size   = var.eks_airflow_node_count
-        block_device_mappings = {
-          xvda = {
-            device_name = "/dev/xvda"
-            ebs = {
-              volume_size           = var.eks_mng_disk_size
-              volume_type           = local.volume_type
-              encrypted             = local.volume_encrypted
-              delete_on_termination = local.volume_delete_on_termination
-            }
-          }
-        }
-        labels = {
-          nodegroup_name = "airflow"
-        }
-        iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
     } : {}
   )

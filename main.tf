@@ -80,10 +80,6 @@ module "comet_eks" {
 
   eks_druid_instance_type     = var.eks_druid_instance_type
   eks_druid_node_count        = var.eks_druid_node_count
-  eks_zookeeper_instance_type = var.eks_zookeeper_instance_type
-  eks_zookeeper_node_count    = var.eks_zookeeper_node_count
-  eks_airflow_instance_type   = var.eks_airflow_instance_type
-  eks_airflow_node_count      = var.eks_airflow_node_count
 }
 
 module "comet_elasticache" {
