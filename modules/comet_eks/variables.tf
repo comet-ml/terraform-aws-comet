@@ -100,27 +100,7 @@ variable "eks_druid_instance_type" {
   type        = string
 }
 
-variable "eks_zookeeper_instance_type" {
-  description = "Instance type for EKS Zookeeper nodes"
-  type        = string
-}
-
-variable "eks_airflow_instance_type" {
-  description = "Instance type for EKS Airflow nodes"
-  type        = string
-}
-
 variable "eks_druid_node_count" {
   description = "Instance count for EKS Druid nodes"
-  type        = number
-}
-
-variable "eks_zookeeper_node_count" {
-  description = "Instance count for EKS Zookeeper nodes"
-  type        = number
-}
-
-variable "eks_airflow_node_count" {
-  description = "Instance count for EKS Airflow nodes"
   type        = number
 }
