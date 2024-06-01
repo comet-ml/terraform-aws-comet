@@ -230,6 +230,18 @@ variable "eks_druid_node_count" {
   default     = 4
 }
 
+variable "eks_airflow_instance_type" {
+  description = "Instance type for EKS Airflow nodes"
+  type        = string
+  default     = "t3.medium"
+}
+
+variable "eks_airflow_node_count" {
+  description = "Instance count for EKS Airflow nodes"
+  type        = number
+  default     = 2
+}
+
 #### comet_elasticache ####
 variable "elasticache_allow_from_sg" {
   description = "Security group from which to allow connections to ElastiCache, to use when provisioning with existing compute"
