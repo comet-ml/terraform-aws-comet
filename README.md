@@ -93,7 +93,7 @@ terraform {
 | <a name="input_elasticache_allow_from_sg"></a> [elasticache\_allow\_from\_sg](#input\_elasticache\_allow\_from\_sg) | Security group from which to allow connections to ElastiCache, to use when provisioning with existing compute | `string` | `null` | no |
 | <a name="input_elasticache_auth_token"></a> [elasticache\_auth\_token](#input\_elasticache\_auth\_token) | Auth token for ElastiCache | `string` | `null` | no |
 | <a name="input_elasticache_engine"></a> [elasticache\_engine](#input\_elasticache\_engine) | Engine type for ElastiCache cluster | `string` | `"redis"` | no |
-| <a name="input_elasticache_engine_version"></a> [elasticache\_engine\_version](#input\_elasticache\_engine\_version) | Version number for ElastiCache engine | `string` | `"5.0.6"` | no |
+| <a name="input_elasticache_engine_version"></a> [elasticache\_engine\_version](#input\_elasticache\_engine\_version) | Version number for ElastiCache engine | `string` | `"7.1.0"` | no |
 | <a name="input_elasticache_instance_type"></a> [elasticache\_instance\_type](#input\_elasticache\_instance\_type) | ElastiCache instance type | `string` | `"cache.r4.xlarge"` | no |
 | <a name="input_elasticache_num_cache_nodes"></a> [elasticache\_num\_cache\_nodes](#input\_elasticache\_num\_cache\_nodes) | Number of nodes in the ElastiCache cluster | `number` | `1` | no |
 | <a name="input_elasticache_param_group_name"></a> [elasticache\_param\_group\_name](#input\_elasticache\_param\_group\_name) | Name for the ElastiCache cluster parameter group | `string` | `"default.redis5.0"` | no |
