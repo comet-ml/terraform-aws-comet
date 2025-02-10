@@ -258,7 +258,7 @@ variable "elasticache_engine" {
 variable "elasticache_engine_version" {
   description = "Version number for ElastiCache engine"
   type        = string
-  default     = "7.1.0"
+  default     = "7.1"
 }
 
 variable "elasticache_instance_type" {
@@ -270,7 +270,7 @@ variable "elasticache_instance_type" {
 variable "elasticache_param_group_name" {
   description = "Name for the ElastiCache cluster parameter group"
   type        = string
-  default     = "default.redis5.0"
+  default     = "default.redis7"
 }
 
 variable "elasticache_num_cache_nodes" {
@@ -374,4 +374,34 @@ variable "single_nat_gateway" {
   description = "Controls whether single NAT gateway used for all public subnets"
   type        = bool
   default     = true
+}
+
+variable "common_tags" {
+  description = "A map of tags to apply to resources"
+  type        = map(string)
+
+  default = {
+    Environment    = ""
+    Owner          = ""
+    DeployedBy     = ""
+    Terraform      = "true"
+    Customer       = ""
+    TTL            = ""
+    Product        = ""
+  }
+
+  validation {
+    condition = alltrue([
+      contains(["development", "production", "ci", "deployment-production", "deployment-development", "poc", "playground"], lookup(var.common_tags, "Environment", "")),
+      lookup(var.common_tags, "Owner", "") == "" || contains(["devops", "deployment-team", "research", "customer-success", "engineering", "mlops"], lookup(var.common_tags, "Owner", "")) || length(lookup(var.common_tags, "Owner", "")) > 0,
+      can(regex("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$", lookup(var.common_tags, "TTL", "")))
+    ])
+
+    error_message = <<EOT
+The common_tags variable must adhere to the following constraints:
+- Environment must be one of: development, production, ci, deployment-production, deployment-development, poc, playground.
+- Owner must be one of: devops, deployment-team, research, customer-success, engineering, mlops, or any valid custom string.
+- TTL must match the format: <date> (YYYY-MM-DD HH:MM:SS).
+EOT
+  }
 }
