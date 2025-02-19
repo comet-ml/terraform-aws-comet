@@ -8,7 +8,6 @@ locals {
   merged_tags = merge(
     var.common_tags,
     {
-      Terraform   = "true"
       Environment = var.environment
     }
   )

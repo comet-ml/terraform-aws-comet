@@ -2,9 +2,11 @@
 #### AWS Resource Tags ####
 ###########################
 # common_tags = {
-#   purpose                = ""
-#   deployment-engineer    = ""
-#   deployment-environment = ""
+# # Place your dictionary of customized AWS resource tags here. eg.
+#   Owner = "firstName-lastName"
+#   DeployedBy = "Devops"
+#   TTL = "2025-01-01 12:00:00"
+#   Customer = "Model-Ops"
 # }
 
 ########################

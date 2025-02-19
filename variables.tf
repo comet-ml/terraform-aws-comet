@@ -381,27 +381,7 @@ variable "common_tags" {
   type        = map(string)
 
   default = {
-    Environment    = ""
-    Owner          = ""
-    DeployedBy     = ""
+    Environment    = var.environment
     Terraform      = "true"
-    Customer       = ""
-    TTL            = ""
-    Product        = ""
-  }
-
-  validation {
-    condition = alltrue([
-      contains(["development", "production", "ci", "deployment-production", "deployment-development", "poc", "playground"], lookup(var.common_tags, "Environment", "")),
-      lookup(var.common_tags, "Owner", "") == "" || contains(["devops", "deployment-team", "research", "customer-success", "engineering", "mlops"], lookup(var.common_tags, "Owner", "")) || length(lookup(var.common_tags, "Owner", "")) > 0,
-      can(regex("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$", lookup(var.common_tags, "TTL", "")))
-    ])
-
-    error_message = <<EOT
-The common_tags variable must adhere to the following constraints:
-- Environment must be one of: development, production, ci, deployment-production, deployment-development, poc, playground.
-- Owner must be one of: devops, deployment-team, research, customer-success, engineering, mlops, or any valid custom string.
-- TTL must match the format: <date> (YYYY-MM-DD HH:MM:SS).
-EOT
   }
 }
