@@ -5,10 +5,13 @@ data "aws_eks_cluster_auth" "this" {
 
 locals {
   resource_name = "comet-${var.environment}"
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
+  merged_tags = merge(
+    var.common_tags,
+    {
+      Terraform   = "true"
+      Environment = var.environment
+    }
+  )
 }
 
 module "comet_vpc" {
@@ -18,6 +21,8 @@ module "comet_vpc" {
 
   eks_enabled        = var.enable_eks
   single_nat_gateway = var.single_nat_gateway
+
+  common_tags = local.merged_tags
 }
 
 module "comet_ec2" {
@@ -40,6 +45,8 @@ module "comet_ec2" {
 
   s3_enabled              = var.enable_s3
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
+
+  common_tags = local.merged_tags
 }
 
 module "comet_ec2_alb" {
@@ -50,6 +57,8 @@ module "comet_ec2_alb" {
   vpc_id              = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
   public_subnets      = var.enable_vpc ? module.comet_vpc[0].public_subnets : var.comet_public_subnets
   ssl_certificate_arn = var.enable_ec2_alb ? var.ssl_certificate_arn : null
+
+  common_tags = local.merged_tags
 }
 
 module "comet_eks" {
@@ -82,6 +91,8 @@ module "comet_eks" {
   eks_druid_node_count        = var.eks_druid_node_count
   eks_airflow_instance_type   = var.eks_airflow_instance_type
   eks_airflow_node_count      = var.eks_airflow_node_count
+
+  common_tags = local.merged_tags
 }
 
 module "comet_elasticache" {
@@ -101,6 +112,8 @@ module "comet_elasticache" {
   elasticache_num_cache_nodes    = var.elasticache_num_cache_nodes
   elasticache_transit_encryption = var.elasticache_transit_encryption
   elasticache_auth_token         = var.elasticache_auth_token
+
+  common_tags = local.merged_tags
 }
 
 module "comet_rds" {
@@ -124,6 +137,8 @@ module "comet_rds" {
   rds_preferred_backup_window = var.rds_preferred_backup_window
   rds_database_name           = var.rds_database_name
   rds_root_password           = var.rds_root_password
+
+  common_tags = local.merged_tags
 }
 
 module "comet_s3" {
@@ -135,4 +150,6 @@ module "comet_s3" {
   s3_force_destroy = var.s3_force_destroy
 
   enable_mpm_infra = var.enable_mpm_infra
+
+  common_tags = local.merged_tags
 }

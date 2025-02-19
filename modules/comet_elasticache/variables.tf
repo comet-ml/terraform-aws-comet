@@ -53,3 +53,8 @@ variable "elasticache_auth_token" {
   type        = string
   default     = null
 }
+
+variable "common_tags" {
+  type        = map(string)
+  description = "A map of common tags"
+}

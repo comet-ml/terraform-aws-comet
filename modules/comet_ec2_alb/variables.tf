@@ -17,3 +17,8 @@ variable "ssl_certificate_arn" {
   description = "ARN of the ACM certificate to use for the ALB"
   type        = string
 }
+
+variable "common_tags" {
+  type        = map(string)
+  description = "A map of common tags"
+}

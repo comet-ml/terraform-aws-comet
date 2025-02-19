@@ -69,3 +69,8 @@ variable "comet_ec2_alb_sg" {
   description = "ID of the security group attached to an associated application load balancer, for creating ingress EC2 SG rule"
   type        = string
 }
+
+variable "common_tags" {
+  type        = map(string)
+  description = "A map of common tags"
+}

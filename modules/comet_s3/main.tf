@@ -1,8 +1,6 @@
 locals {
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
+  tags = var.common_tags
+  
   suffix = substr(sha1("${var.environment}"), 0, 8)
 }
 

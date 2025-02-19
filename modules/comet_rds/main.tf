@@ -1,10 +1,7 @@
 locals {
   mysql_port = 3306
 
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
+  tags = var.common_tags
 }
 
 resource "aws_db_subnet_group" "comet-ml-rds-subnet" {

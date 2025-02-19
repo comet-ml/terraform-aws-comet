@@ -5,10 +5,7 @@ locals {
   any_port      = 0
   cidr_anywhere = "0.0.0.0/0"
 
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
+  tags = var.common_tags
 }
 
 data "aws_ami" "al2" {

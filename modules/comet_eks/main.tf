@@ -1,12 +1,10 @@
 locals {
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
+  tags = var.common_tags
+
   volume_type = "gp3"
   volume_encrypted = false
   volume_delete_on_termination = true
-}
+  }
 
 data "aws_iam_policy" "ebs_csi_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"

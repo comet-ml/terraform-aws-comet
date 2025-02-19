@@ -17,3 +17,8 @@ variable "enable_mpm_infra" {
   description = "Sets buckets to be created for MPM Druid/Airflow"
   type        = bool
 }
+
+variable "common_tags" {
+  type        = map(string)
+  description = "A map of common tags"
+}
