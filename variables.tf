@@ -381,7 +381,6 @@ variable "common_tags" {
   type        = map(string)
 
   default = {
-    Environment    = var.environment
     Terraform      = "true"
   }
 }
