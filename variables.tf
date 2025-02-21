@@ -379,8 +379,4 @@ variable "single_nat_gateway" {
 variable "common_tags" {
   description = "A map of tags to apply to resources"
   type        = map(string)
-
-  default = {
-    Terraform      = "true"
-  }
 }

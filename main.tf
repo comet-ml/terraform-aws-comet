@@ -9,6 +9,7 @@ locals {
     var.common_tags,
     {
       Environment = var.environment
+      Terraform   = "true"
     }
   )
 }
