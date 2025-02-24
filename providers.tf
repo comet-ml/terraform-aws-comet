@@ -2,7 +2,13 @@ provider "aws" {
   region = var.region
 
   default_tags {
-    tags = var.common_tags
+    tags = merge(
+      {
+        Terraform   = "true"
+        Environment = var.environment
+      },
+      var.common_tags
+    )
   }
 }
 
