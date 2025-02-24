@@ -114,9 +114,3 @@ variable "eks_airflow_node_count" {
   description = "Instance count for EKS Airflow nodes"
   type        = number
 }
-
-variable "common_tags" {
-  type        = map(string)
-  description = "A map of common tags"
-  default     = {}
-}

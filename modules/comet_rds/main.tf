@@ -1,15 +1,16 @@
 locals {
   mysql_port = 3306
-
-  tags = var.common_tags
 }
 
 resource "aws_db_subnet_group" "comet-ml-rds-subnet" {
   name       = "cometml-rds-sgn-${var.environment}"
   subnet_ids = var.rds_private_subnets
-  tags = merge(local.tags, {
-    Name = "cometml-rds-sng-${var.environment}"
-  })
+  tags = merge(
+    var.common_tags,
+    {
+      Name = "cometml-rds-sng-${var.environment}"
+    }
+  )
 }
 
 resource "aws_rds_cluster_instance" "comet-ml-rds-mysql" {

@@ -380,3 +380,8 @@ variable "common_tags" {
   description = "A map of tags to apply to resources"
   type        = map(string)
 }
+
+variable "environment_tag" {
+  description = "Deployment identifier"
+  type = string
+}

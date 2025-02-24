@@ -1,10 +1,8 @@
 locals {
-  tags = var.common_tags
-
   volume_type = "gp3"
   volume_encrypted = false
   volume_delete_on_termination = true
-  }
+}
 
 data "aws_iam_policy" "ebs_csi_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
@@ -95,7 +93,6 @@ module "eks" {
       }
     } : {}
   )
-  tags = local.tags
 }
 
 
@@ -131,6 +128,4 @@ module "eks_blueprints_addons" {
   enable_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
   enable_external_dns                 = var.eks_external_dns
   external_dns_route53_zone_arns      = var.eks_external_dns_r53_zones
-
-  tags = local.tags
 }

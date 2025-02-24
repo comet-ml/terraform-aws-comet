@@ -3,8 +3,6 @@ locals {
   https_port    = 443
   any_port      = 0
   cidr_anywhere = "0.0.0.0/0"
-
-  tags = var.common_tags
 }
 
 resource "aws_security_group" "comet_alb_sg" {
@@ -79,6 +77,4 @@ module "alb" {
       }
     }
   ]
-
-  tags = local.tags
 }

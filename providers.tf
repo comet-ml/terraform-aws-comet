@@ -5,7 +5,7 @@ provider "aws" {
     tags = merge(
       {
         Terraform   = "true"
-        Environment = var.environment
+        Environment = var.environment_tag
       },
       var.common_tags
     )
