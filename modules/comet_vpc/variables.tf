@@ -16,4 +16,5 @@ variable "single_nat_gateway" {
 variable "common_tags" {
   type        = map(string)
   description = "A map of common tags"
+  default     = {}
 }

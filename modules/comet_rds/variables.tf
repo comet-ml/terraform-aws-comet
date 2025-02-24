@@ -76,4 +76,5 @@ variable "rds_root_password" {
 variable "common_tags" {
   type        = map(string)
   description = "A map of common tags"
+  default     = {}
 }

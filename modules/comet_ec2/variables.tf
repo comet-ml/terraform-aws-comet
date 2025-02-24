@@ -73,4 +73,5 @@ variable "comet_ec2_alb_sg" {
 variable "common_tags" {
   type        = map(string)
   description = "A map of common tags"
+  default     = {}
 }

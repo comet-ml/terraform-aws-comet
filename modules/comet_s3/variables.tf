@@ -21,4 +21,5 @@ variable "enable_mpm_infra" {
 variable "common_tags" {
   type        = map(string)
   description = "A map of common tags"
+  default     = {}
 }
