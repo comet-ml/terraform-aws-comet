@@ -7,7 +7,6 @@
 #   DeployedBy     = "Devops"
 #   TTL            = "2025-01-01 12:00:00"
 #   Customer       = "Model-Ops"
-#   EnvironmentTag = "test"
 # }
 
 ########################
@@ -45,6 +44,9 @@ region = "us-east-1"
 
 # Name for Comet environment, for use in resource naming
 environment = "prod"
+
+# Deployment identifier
+environment_tag = "test"
 
 ## If not setting enable_vpc to provision a VPC for the Comet resources, set the variables below to specify the existing VPC in which resources will be launched
 # comet_vpc_id          = "vpc-012345abcdefghijkl"
