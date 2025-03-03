@@ -19,7 +19,10 @@ module "eks" {
   vpc_id     = var.vpc_id
   subnet_ids = var.eks_private_subnets
 
-  eks_managed_node_group_defaults = { ami_type = var.eks_mng_ami_type }
+  eks_managed_node_group_defaults = {
+    ami_type = var.eks_mng_ami_type
+    tags     = var.common_tags
+    }
 
   eks_managed_node_groups = merge(
     {
@@ -43,6 +46,7 @@ module "eks" {
         labels = {
           nodegroup_name = "comet"
         }
+        tags     = var.common_tags
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
     },
@@ -67,6 +71,7 @@ module "eks" {
         labels = {
           nodegroup_name = "druid"
         }
+        tags     = var.common_tags
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       },
       airflow = {
@@ -89,6 +94,7 @@ module "eks" {
         labels = {
           nodegroup_name = "airflow"
         }
+        tags     = var.common_tags
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
     } : {}
