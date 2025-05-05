@@ -140,6 +140,7 @@ resource "aws_instance" "comet_ec2" {
   root_block_device {
     volume_type = var.comet_ec2_volume_type
     volume_size = var.comet_ec2_volume_size
+    tags        = var.common_tags
   }
 
   tags = merge(
@@ -159,7 +160,6 @@ resource "aws_eip" "comet_ec2_eip" {
   instance = aws_instance.comet_ec2[0].id
   domain   = "vpc"
 }
-
 resource "aws_security_group" "comet_ec2_sg" {
   name        = "comet_${var.environment}_ec2_sg"
   description = "Comet EC2 instance security group"

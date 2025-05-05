@@ -23,11 +23,11 @@ module "vpc" {
 
   # Manage so we can name
   manage_default_network_acl    = true
-  default_network_acl_tags      = { Name = "${local.resource_name}-default" }
+  default_network_acl_tags      = merge(var.common_tags, { Name = "${local.resource_name}-default" })
   manage_default_route_table    = true
-  default_route_table_tags      = { Name = "${local.resource_name}-default" }
+  default_route_table_tags      = merge(var.common_tags, { Name = "${local.resource_name}-default" })
   manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.resource_name}-default" }
+  default_security_group_tags   = merge(var.common_tags, { Name = "${local.resource_name}-default" })
 
   # if EKS deployment, set subnet tags for AWS Load Balancer Controller auto-discovery
   public_subnet_tags  = var.eks_enabled ? { "kubernetes.io/role/elb" = 1 } : null

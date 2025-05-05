@@ -38,6 +38,7 @@ resource "aws_vpc_security_group_egress_rule" "comet_ec2_alb_egress" {
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 8.0"
+  tags    = var.common_tags
 
   name = "comet-${var.environment}-alb"
 

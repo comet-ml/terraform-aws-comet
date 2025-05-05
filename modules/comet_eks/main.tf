@@ -46,7 +46,15 @@ module "eks" {
         labels = {
           nodegroup_name = "comet"
         }
-        tags     = var.common_tags
+        tags = var.common_tags  # ✅ Tags applied at the node group level
+
+        # ✅ Ensure tags propagate to EC2 instances inside the ASG
+        additional_tags = {
+          for k, v in var.common_tags : k => v
+        }
+
+        # ✅ Ensures tags propagate to EC2 instances launched by ASG
+        tags_propogate_at_launch = true
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
     },

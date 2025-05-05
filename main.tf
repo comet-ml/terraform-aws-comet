@@ -5,12 +5,20 @@ data "aws_eks_cluster_auth" "this" {
 
 locals {
   resource_name = "comet-${var.environment}"
+  all_tags = merge(
+    {
+      Terraform   = "true"
+      Environment = var.environment_tag
+    },
+    var.common_tags
+  )
 }
 
 module "comet_vpc" {
   source      = "./modules/comet_vpc"
   count       = var.enable_vpc ? 1 : 0
   environment = var.environment
+  common_tags = local.all_tags
 
   eks_enabled        = var.enable_eks
   single_nat_gateway = var.single_nat_gateway
@@ -20,6 +28,7 @@ module "comet_ec2" {
   source      = "./modules/comet_ec2"
   count       = var.enable_ec2 ? 1 : 0
   environment = var.environment
+  common_tags = local.all_tags
 
   vpc_id                   = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
   comet_ec2_subnet         = var.enable_vpc ? module.comet_vpc[0].public_subnets[0] : var.comet_public_subnets[0]
@@ -42,6 +51,7 @@ module "comet_ec2_alb" {
   source      = "./modules/comet_ec2_alb"
   count       = var.enable_ec2_alb ? 1 : 0
   environment = var.environment
+  common_tags = local.all_tags
 
   vpc_id              = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
   public_subnets      = var.enable_vpc ? module.comet_vpc[0].public_subnets : var.comet_public_subnets
@@ -52,6 +62,7 @@ module "comet_eks" {
   source      = "./modules/comet_eks"
   count       = var.enable_eks ? 1 : 0
   environment = var.environment
+  common_tags = local.all_tags
 
   vpc_id                           = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
   eks_private_subnets              = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
@@ -84,6 +95,7 @@ module "comet_elasticache" {
   source      = "./modules/comet_elasticache"
   count       = var.enable_elasticache ? 1 : 0
   environment = var.environment
+  common_tags = local.all_tags
 
   vpc_id                      = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
   elasticache_private_subnets = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
@@ -103,6 +115,7 @@ module "comet_rds" {
   source      = "./modules/comet_rds"
   count       = var.enable_rds ? 1 : 0
   environment = var.environment
+  common_tags = local.all_tags
 
   availability_zones  = var.enable_vpc ? module.comet_vpc[0].azs : var.availability_zones
   vpc_id              = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
@@ -126,6 +139,7 @@ module "comet_s3" {
   source      = "./modules/comet_s3"
   count       = var.enable_s3 ? 1 : 0
   environment = var.environment
+  common_tags = local.all_tags
 
   comet_s3_bucket  = var.s3_bucket_name
   s3_force_destroy = var.s3_force_destroy
