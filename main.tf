@@ -64,6 +64,11 @@ module "comet_eks" {
   environment = var.environment
   common_tags = local.all_tags
 
+  providers = {
+    kubernetes = kubernetes.eks
+    helm       = helm.eks
+  }
+
   vpc_id                           = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
   eks_private_subnets              = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
   eks_cluster_name                 = var.eks_cluster_name

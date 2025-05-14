@@ -105,7 +105,6 @@ module "eks" {
   )
 }
 
-
 module "irsa-ebs-csi" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version = "4.7.0"
@@ -122,18 +121,11 @@ resource "time_sleep" "wait_for_eks" {
   create_duration = "120s"
 }
 
-resource "null_resource" "update_kubeconfig" {
-  provisioner "local-exec" {
-    command = "aws eks update-kubeconfig --region ${var.region} --name ${module.comet_eks[0].cluster_name}"
-  }
-  depends_on = [module.comet_eks]
-}
-
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.9.1"
 
-  depends_on = [ time_sleep.wait_for_eks, null_resource.update_kubeconfig ]
+  depends_on = [ time_sleep.wait_for_eks ]
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
