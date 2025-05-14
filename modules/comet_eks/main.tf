@@ -29,6 +29,7 @@ module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
+  authentication_mode       = "API_AND_CONFIG_MAP"
   cluster_name                   = var.eks_cluster_name
   cluster_version                = var.eks_cluster_version
   cluster_endpoint_public_access = true
@@ -133,17 +134,17 @@ module "irsa-ebs-csi" {
   oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
 }
 
+resource "time_sleep" "wait_for_eks" {
+  depends_on = [module.eks]
+  create_duration = "60s"
+}
+
 module "eks_aws-auth" {
   source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
 
   manage_aws_auth_configmap = true
   aws_auth_roles            = local.aws_auth_roles
   aws_auth_users            = local.aws_auth_users
-}
-
-resource "time_sleep" "wait_for_eks" {
-  depends_on = [module.eks]
-  create_duration = "60s"
 }
 
 module "eks_blueprints_addons" {
