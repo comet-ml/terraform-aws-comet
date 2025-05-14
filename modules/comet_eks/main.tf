@@ -1,21 +1,32 @@
-locals {
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
-  volume_type = "gp3"
-  volume_encrypted = false
-  volume_delete_on_termination = true
-}
+data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy" "ebs_csi_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
+locals {
+  volume_type = "gp3"
+  volume_encrypted = false
+  volume_delete_on_termination = true
+
+  aws_auth_roles = startswith(data.aws_caller_identity.current.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/") ? [{
+        rolearn  = data.aws_caller_identity.current.arn
+        username = "admin"
+        groups   = ["system:masters"]
+      }]: []
+
+  aws_auth_users = startswith(data.aws_caller_identity.current.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/") ? [{
+        userarn  = data.aws_caller_identity.current.arn
+        username = "admin"
+        groups   = ["system:masters"]
+      }]: []
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.9"
+  version = "~> 20.0"
 
+  authentication_mode       = "API_AND_CONFIG_MAP"
   cluster_name                   = var.eks_cluster_name
   cluster_version                = var.eks_cluster_version
   cluster_endpoint_public_access = true
@@ -23,7 +34,12 @@ module "eks" {
   vpc_id     = var.vpc_id
   subnet_ids = var.eks_private_subnets
 
-  eks_managed_node_group_defaults = { ami_type = var.eks_mng_ami_type }
+  eks_managed_node_group_defaults = {
+    ami_type = var.eks_mng_ami_type
+    tags     = var.common_tags
+    tags_launch_template = var.common_tags
+    tags_propagate_at_launch = true
+    }
 
   eks_managed_node_groups = merge(
     {
@@ -47,6 +63,9 @@ module "eks" {
         labels = {
           nodegroup_name = "comet"
         }
+        tags = var.common_tags  # Tags applied at the node group level
+        tags_launch_template = var.common_tags # Tags applied at the launch template level
+        tags_propagate_at_launch = true
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
     },
@@ -71,6 +90,7 @@ module "eks" {
         labels = {
           nodegroup_name = "druid"
         }
+        tags     = var.common_tags
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       },
       airflow = {
@@ -93,13 +113,12 @@ module "eks" {
         labels = {
           nodegroup_name = "airflow"
         }
+        tags     = var.common_tags
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
     } : {}
   )
-  tags = local.tags
 }
-
 
 module "irsa-ebs-csi" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
@@ -112,9 +131,26 @@ module "irsa-ebs-csi" {
   oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
 }
 
+resource "time_sleep" "wait_for_eks" {
+  depends_on = [module.eks]
+  create_duration = "60s"
+}
+
+module "eks_aws-auth" {
+  source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
+
+  manage_aws_auth_configmap = true
+  aws_auth_roles            = local.aws_auth_roles
+  aws_auth_users            = local.aws_auth_users
+
+  depends_on = [ time_sleep.wait_for_eks ]
+}
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.9.1"
+
+  depends_on = [ time_sleep.wait_for_eks ]
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
@@ -133,6 +169,4 @@ module "eks_blueprints_addons" {
   enable_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
   enable_external_dns                 = var.eks_external_dns
   external_dns_route53_zone_arns      = var.eks_external_dns_r53_zones
-
-  tags = local.tags
 }

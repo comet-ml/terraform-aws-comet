@@ -3,11 +3,6 @@ locals {
   https_port    = 443
   any_port      = 0
   cidr_anywhere = "0.0.0.0/0"
-
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
 }
 
 resource "aws_security_group" "comet_alb_sg" {
@@ -43,6 +38,7 @@ resource "aws_vpc_security_group_egress_rule" "comet_ec2_alb_egress" {
 module "alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 8.0"
+  tags    = var.common_tags
 
   name = "comet-${var.environment}-alb"
 
@@ -82,6 +78,4 @@ module "alb" {
       }
     }
   ]
-
-  tags = local.tags
 }

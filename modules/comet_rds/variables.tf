@@ -72,3 +72,9 @@ variable "rds_root_password" {
   description = "Root password for RDS database"
   type        = string
 }
+
+variable "common_tags" {
+  type        = map(string)
+  description = "A map of common tags"
+  default     = {}
+}

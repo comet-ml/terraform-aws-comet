@@ -258,7 +258,7 @@ variable "elasticache_engine" {
 variable "elasticache_engine_version" {
   description = "Version number for ElastiCache engine"
   type        = string
-  default     = "7.1.0"
+  default     = "7.1"
 }
 
 variable "elasticache_instance_type" {
@@ -270,7 +270,7 @@ variable "elasticache_instance_type" {
 variable "elasticache_param_group_name" {
   description = "Name for the ElastiCache cluster parameter group"
   type        = string
-  default     = "default.redis5.0"
+  default     = "default.redis7"
 }
 
 variable "elasticache_num_cache_nodes" {
@@ -374,4 +374,14 @@ variable "single_nat_gateway" {
   description = "Controls whether single NAT gateway used for all public subnets"
   type        = bool
   default     = true
+}
+
+variable "common_tags" {
+  description = "A map of tags to apply to resources"
+  type        = map(string)
+}
+
+variable "environment_tag" {
+  description = "Deployment identifier"
+  type = string
 }

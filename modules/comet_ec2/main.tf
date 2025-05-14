@@ -4,11 +4,6 @@ locals {
   https_port    = 443
   any_port      = 0
   cidr_anywhere = "0.0.0.0/0"
-
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
 }
 
 data "aws_ami" "al2" {
@@ -145,12 +140,16 @@ resource "aws_instance" "comet_ec2" {
   root_block_device {
     volume_type = var.comet_ec2_volume_type
     volume_size = var.comet_ec2_volume_size
+    tags        = var.common_tags
   }
 
-  tags = merge(local.tags, {
-    Name = "${var.environment}-comet-ml-${count.index}"
-  })
-
+  tags = merge(
+    var.common_tags,
+    {
+      Name = "${var.environment}-comet-ml-${count.index}"
+    }
+  )
+  
   lifecycle {
     create_before_destroy = true
   }
@@ -161,7 +160,6 @@ resource "aws_eip" "comet_ec2_eip" {
   instance = aws_instance.comet_ec2[0].id
   domain   = "vpc"
 }
-
 resource "aws_security_group" "comet_ec2_sg" {
   name        = "comet_${var.environment}_ec2_sg"
   description = "Comet EC2 instance security group"
