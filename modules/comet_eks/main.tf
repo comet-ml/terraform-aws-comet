@@ -1,7 +1,24 @@
+data "aws_caller_identity" "current" {}
+
 locals {
   volume_type = "gp3"
   volume_encrypted = false
   volume_delete_on_termination = true
+
+  aws_auth_roles = [
+    {
+      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${replace(data.aws_caller_identity.current.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/", "")}"
+      username = "admin"
+      groups   = ["system:masters"]
+    }
+  ]
+  aws_auth_users = [
+    {
+      userarn  = data.aws_caller_identity.current.arn
+      username = "admin"
+      groups   = ["system:masters"]
+    }
+  ]
 }
 
 data "aws_iam_policy" "ebs_csi_policy" {
@@ -116,9 +133,17 @@ module "irsa-ebs-csi" {
   oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
 }
 
+module "eks_aws-auth" {
+  source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
+
+  manage_aws_auth_configmap = true
+  aws_auth_roles            = local.aws_auth_roles
+  aws_auth_users            = local.aws_auth_users
+}
+
 resource "time_sleep" "wait_for_eks" {
   depends_on = [module.eks]
-  create_duration = "120s"
+  create_duration = "60s"
 }
 
 module "eks_blueprints_addons" {
