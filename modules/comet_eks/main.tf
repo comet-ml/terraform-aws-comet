@@ -1,28 +1,25 @@
 data "aws_caller_identity" "current" {}
 
+data "aws_iam_policy" "ebs_csi_policy" {
+  arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+}
+
 locals {
   volume_type = "gp3"
   volume_encrypted = false
   volume_delete_on_termination = true
 
-  aws_auth_roles = [
-    {
-      rolearn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${replace(data.aws_caller_identity.current.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/", "")}"
-      username = "admin"
-      groups   = ["system:masters"]
-    }
-  ]
-  aws_auth_users = [
-    {
-      userarn  = data.aws_caller_identity.current.arn
-      username = "admin"
-      groups   = ["system:masters"]
-    }
-  ]
-}
+  aws_auth_roles = startswith(data.aws_caller_identity.current.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/") ? [{
+        rolearn  = data.aws_caller_identity.current.arn
+        username = "admin"
+        groups   = ["system:masters"]
+      }]: []
 
-data "aws_iam_policy" "ebs_csi_policy" {
-  arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
+  aws_auth_users = startswith(data.aws_caller_identity.current.arn, "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/") ? [{
+        userarn  = data.aws_caller_identity.current.arn
+        username = "admin"
+        groups   = ["system:masters"]
+      }]: []
 }
 
 module "eks" {
@@ -145,6 +142,8 @@ module "eks_aws-auth" {
   manage_aws_auth_configmap = true
   aws_auth_roles            = local.aws_auth_roles
   aws_auth_users            = local.aws_auth_users
+
+  depends_on = [ time_sleep.wait_for_eks ]
 }
 
 module "eks_blueprints_addons" {

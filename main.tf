@@ -1,8 +1,3 @@
-data "aws_eks_cluster_auth" "this" {
-  count = var.enable_eks ? 1 : 0
-  name  = module.comet_eks[0].cluster_name
-}
-
 locals {
   resource_name = "comet-${var.environment}"
   all_tags = merge(
