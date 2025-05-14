@@ -10,7 +10,7 @@ data "aws_iam_policy" "ebs_csi_policy" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.9"
+  version = "~> 20.0"
 
   cluster_name                   = var.eks_cluster_name
   cluster_version                = var.eks_cluster_version
@@ -22,6 +22,8 @@ module "eks" {
   eks_managed_node_group_defaults = {
     ami_type = var.eks_mng_ami_type
     tags     = var.common_tags
+    tags_launch_template = var.common_tags
+    tags_propagate_at_launch = true
     }
 
   eks_managed_node_groups = merge(
@@ -46,15 +48,9 @@ module "eks" {
         labels = {
           nodegroup_name = "comet"
         }
-        tags = var.common_tags  # ✅ Tags applied at the node group level
-
-        # ✅ Ensure tags propagate to EC2 instances inside the ASG
-        additional_tags = {
-          for k, v in var.common_tags : k => v
-        }
-
-        # ✅ Ensures tags propagate to EC2 instances launched by ASG
-        tags_propogate_at_launch = true
+        tags = var.common_tags  # Tags applied at the node group level
+        tags_launch_template = var.common_tags # Tags applied at the launch template level
+        tags_propagate_at_launch = true
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
     },
@@ -121,9 +117,23 @@ module "irsa-ebs-csi" {
   oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
 }
 
+resource "time_sleep" "wait_for_eks" {
+  depends_on = [module.eks]
+  create_duration = "120s"
+}
+
+resource "null_resource" "update_kubeconfig" {
+  provisioner "local-exec" {
+    command = "aws eks update-kubeconfig --region ${var.region} --name ${module.comet_eks[0].cluster_name}"
+  }
+  depends_on = [module.comet_eks]
+}
+
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "1.9.1"
+
+  depends_on = [ time_sleep.wait_for_eks, null_resource.update_kubeconfig ]
 
   cluster_name      = module.eks.cluster_name
   cluster_endpoint  = module.eks.cluster_endpoint
