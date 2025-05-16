@@ -12,3 +12,8 @@ variable "single_nat_gateway" {
   description = "Controls whether single NAT gateway used for all public subnets"
   type        = bool
 }
+
+variable "region" {
+  description = "AWS region to provision resources in"
+  type        = string
+}
