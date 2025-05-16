@@ -46,5 +46,8 @@ resource "aws_vpc_endpoint" "s3" {
   service_name = "com.amazonaws.${var.region}.s3"
   vpc_endpoint_type = "Gateway"
   route_table_ids   = concat(module.vpc.private_route_table_ids, module.vpc.public_route_table_ids)
-  tags = local.tags
+  tags = merge(
+    local.tags,
+    { Name = "${local.resource_name}-s3-endpoint" }
+  )
 }
