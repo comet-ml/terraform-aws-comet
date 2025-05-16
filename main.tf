@@ -15,6 +15,7 @@ module "comet_vpc" {
   source      = "./modules/comet_vpc"
   count       = var.enable_vpc ? 1 : 0
   environment = var.environment
+  region      = var.region
 
   eks_enabled        = var.enable_eks
   single_nat_gateway = var.single_nat_gateway
