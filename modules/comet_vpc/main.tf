@@ -33,3 +33,14 @@ module "vpc" {
   public_subnet_tags  = var.eks_enabled ? { "kubernetes.io/role/elb" = 1 } : null
   private_subnet_tags = var.eks_enabled ? { "kubernetes.io/role/internal-elb" = 1 } : null
 }
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id = module.vpc.vpc_id
+  service_name = "com.amazonaws.${var.region}.s3"
+  vpc_endpoint_type = "Gateway"
+  route_table_ids   = concat(module.vpc.private_route_table_ids, module.vpc.public_route_table_ids)
+  tags = merge(
+    local.tags,
+    { Name = "${local.resource_name}-s3-endpoint" }
+  )
+}

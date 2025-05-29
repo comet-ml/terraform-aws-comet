@@ -19,6 +19,7 @@ module "comet_vpc" {
   count       = var.enable_vpc ? 1 : 0
   environment = var.environment
   common_tags = local.all_tags
+  region      = var.region
 
   eks_enabled        = var.enable_eks
   single_nat_gateway = var.single_nat_gateway

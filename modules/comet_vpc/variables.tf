@@ -18,3 +18,8 @@ variable "common_tags" {
   description = "A map of common tags"
   default     = {}
 }
+
+variable "region" {
+  description = "AWS region to provision resources in"
+  type        = string
+}
