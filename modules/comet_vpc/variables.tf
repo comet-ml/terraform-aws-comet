@@ -13,6 +13,12 @@ variable "single_nat_gateway" {
   type        = bool
 }
 
+variable "common_tags" {
+  type        = map(string)
+  description = "A map of common tags"
+  default     = {}
+}
+
 variable "region" {
   description = "AWS region to provision resources in"
   type        = string

@@ -1,3 +1,17 @@
+###########################
+#### AWS Resource Tags ####
+###########################
+# common_tags = {
+#   # Place your dictionary of customized AWS resource tags here. eg.
+#   Owner          = "firstName-lastName"
+#   DeployedBy     = "Devops"
+#   TTL            = "2025-01-01 12:00:00"
+#   Customer       = "Model-Ops"
+# }
+
+# Deployment identifier
+environment_tag = "production"
+
 ########################
 #### Module toggles ####
 ########################
@@ -53,23 +67,25 @@ comet_private_subnets = ["subnet-012345abcdefghijkl", "subnet-012345abcdefghijkl
 ssl_certificate_arn = null
 
 #### comet_eks ####
-#
+eks_aws_cloudwatch_metrics = false
 
 #### comet_elasticache ####
-# If setting enable_elasticache with existing compute, set the variable below to specify an SG that connections will be allowed from
+## If setting enable_elasticache with existing compute, set the variable below to specify an SG that connections will be allowed from
 elasticache_allow_from_sg = "sg-012345abcdefghijkl"
+
 ## Set the following to enable the auth token for Redis
 #elasticache_transit_encryption = true
 #elasticache_auth_token = "your-cometml-redis-token"
 
 #### comet_rds ####
-# If setting enable_rds, specify the root password for RDS below, or leave null and enter at the prompt during apply
+## If setting enable_rds, specify the root password for RDS below, or leave null and enter at the prompt during apply
 rds_root_password = null
-# If setting enable_rds with existing compute, set the variable below to specify an SG that connections will be allowed from
+
+## If setting enable_rds with existing compute, set the variable below to specify an SG that connections will be allowed from
 rds_allow_from_sg = "sg-012345abcdefghijkl"
 
 #### comet_s3 ####
-# If setting enable_s3, specify the bucket name below
+## If setting enable_s3, specify the bucket name below
 s3_bucket_name = null
 
 #### comet_vpc ####

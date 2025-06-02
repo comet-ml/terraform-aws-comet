@@ -1,8 +1,4 @@
 locals {
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
   suffix = substr(sha1("${var.environment}"), 0, 8)
 }
 
@@ -11,9 +7,12 @@ resource "aws_s3_bucket" "comet_s3_bucket" {
 
   force_destroy = var.s3_force_destroy
 
-  tags = merge(local.tags, {
-    Name = var.comet_s3_bucket
-  })
+  tags = merge(
+    var.common_tags,
+    {
+      Name = var.comet_s3_bucket
+    }
+  )
 }
 
 resource "aws_s3_bucket" "comet_druid_bucket" {
@@ -23,9 +22,12 @@ resource "aws_s3_bucket" "comet_druid_bucket" {
 
   force_destroy = var.s3_force_destroy
 
-  tags = merge(local.tags, {
-    Name = "comet-druid-${local.suffix}"
-  })
+  tags = merge(
+    var.common_tags,
+    {
+      Name = "comet-druid-${local.suffix}"
+    }
+  )
 }
 
 resource "aws_s3_bucket" "comet_airflow_bucket" {
@@ -35,9 +37,12 @@ resource "aws_s3_bucket" "comet_airflow_bucket" {
 
   force_destroy = var.s3_force_destroy
 
-  tags = merge(local.tags, {
-    Name = "comet-airflow-${local.suffix}"
-  })
+  tags = merge(
+    var.common_tags,
+    {
+      Name = "comet-airflow-${local.suffix}"
+    }
+  )
 }
 
 resource "aws_iam_policy" "comet_s3_iam_policy" {

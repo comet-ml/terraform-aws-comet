@@ -1,5 +1,15 @@
 provider "aws" {
   region = var.region
+
+  default_tags {
+    tags = merge(
+      {
+        Terraform   = "true"
+        Environment = var.environment_tag
+      },
+      var.common_tags
+    )
+  }
 }
 
 provider "kubernetes" {
