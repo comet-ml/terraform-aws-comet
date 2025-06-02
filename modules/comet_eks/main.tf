@@ -47,7 +47,7 @@ module "eks" {
           nodegroup_name = "comet"
         }
         tags = var.common_tags
-        tags_propogate_at_launch = true
+        tags_propagate_at_launch = true
         launch_template_version = "$Latest"
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
