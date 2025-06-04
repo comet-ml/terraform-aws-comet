@@ -10,7 +10,8 @@
 # }
 
 # Deployment identifier
-environment_tag = "production"
+## Places an Environment tag on all resources created by this module
+environment_tag = "deployment-development"
 
 ########################
 #### Module toggles ####

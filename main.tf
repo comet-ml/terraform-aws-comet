@@ -8,8 +8,8 @@ locals {
   all_tags = merge(
     {
       Terraform   = "true"
-      Environment = var.environment_tag
     },
+    var.environment_tag != "" ? { Environment = var.environment_tag } : {},
     var.common_tags
   )
 }

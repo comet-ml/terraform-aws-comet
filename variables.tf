@@ -384,4 +384,5 @@ variable "common_tags" {
 variable "environment_tag" {
   description = "Deployment identifier"
   type = string
+  default = ""
 }
