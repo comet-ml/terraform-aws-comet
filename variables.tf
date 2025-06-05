@@ -87,7 +87,7 @@ variable "comet_public_subnets" {
 variable "vpc_cidr" {
   description = "CIDR block for the VPC to provision"
   type        = string
-  default     = "10.0.0/16"
+  default     = "10.0.0.0/16"
 }
 
 #### comet_ec2 ####
@@ -154,7 +154,7 @@ variable "eks_cluster_name" {
 variable "eks_cluster_version" {
   description = "Kubernetes version of the EKS cluster"
   type        = string
-  default     = "1.33"
+  default     = "1.32"
 }
 
 variable "eks_mng_name" {
