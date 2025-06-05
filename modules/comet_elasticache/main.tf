@@ -1,10 +1,5 @@
 locals {
   redis_port = 6379
-
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
 }
 
 resource "aws_elasticache_replication_group" "comet-ml-ec-redis" {

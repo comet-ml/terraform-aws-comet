@@ -1,8 +1,4 @@
 locals {
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
   volume_type = "gp3"
   volume_encrypted = false
   volume_delete_on_termination = true
@@ -23,7 +19,10 @@ module "eks" {
   vpc_id     = var.vpc_id
   subnet_ids = var.eks_private_subnets
 
-  eks_managed_node_group_defaults = { ami_type = var.eks_mng_ami_type }
+  eks_managed_node_group_defaults = {
+    ami_type = var.eks_mng_ami_type
+    tags     = var.common_tags
+    }
 
   eks_managed_node_groups = merge(
     {
@@ -47,6 +46,9 @@ module "eks" {
         labels = {
           nodegroup_name = "comet"
         }
+        tags = var.common_tags
+        tags_propagate_at_launch = true
+        launch_template_version = "$Latest"
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
     },
@@ -71,6 +73,9 @@ module "eks" {
         labels = {
           nodegroup_name = "druid"
         }
+        tags     = var.common_tags
+        tags_propogate_at_launch = true
+        launch_template_version = "$Latest"
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       },
       airflow = {
@@ -93,11 +98,13 @@ module "eks" {
         labels = {
           nodegroup_name = "airflow"
         }
+        tags     = var.common_tags
+        tags_propogate_at_launch = true
+        launch_template_version = "$Latest"
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
     } : {}
   )
-  tags = local.tags
 }
 
 
@@ -133,6 +140,4 @@ module "eks_blueprints_addons" {
   enable_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
   enable_external_dns                 = var.eks_external_dns
   external_dns_route53_zone_arns      = var.eks_external_dns_r53_zones
-
-  tags = local.tags
 }

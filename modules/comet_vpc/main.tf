@@ -4,11 +4,6 @@ locals {
   resource_name = "comet-${var.environment}"
   vpc_cidr      = "10.0.0.0/16"
   azs           = slice(data.aws_availability_zones.available.names, 0, 3)
-
-  tags = {
-    Terraform   = "true"
-    Environment = var.environment
-  }
 }
 
 module "vpc" {
@@ -28,17 +23,15 @@ module "vpc" {
 
   # Manage so we can name
   manage_default_network_acl    = true
-  default_network_acl_tags      = { Name = "${local.resource_name}-default" }
+  default_network_acl_tags      = merge(var.common_tags, { Name = "${local.resource_name}-default" })
   manage_default_route_table    = true
-  default_route_table_tags      = { Name = "${local.resource_name}-default" }
+  default_route_table_tags      = merge(var.common_tags, { Name = "${local.resource_name}-default" })
   manage_default_security_group = true
-  default_security_group_tags   = { Name = "${local.resource_name}-default" }
+  default_security_group_tags   = merge(var.common_tags, { Name = "${local.resource_name}-default" })
 
   # if EKS deployment, set subnet tags for AWS Load Balancer Controller auto-discovery
   public_subnet_tags  = var.eks_enabled ? { "kubernetes.io/role/elb" = 1 } : null
   private_subnet_tags = var.eks_enabled ? { "kubernetes.io/role/internal-elb" = 1 } : null
-
-  tags = local.tags
 }
 
 resource "aws_vpc_endpoint" "s3" {
@@ -47,7 +40,7 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_endpoint_type = "Gateway"
   route_table_ids   = concat(module.vpc.private_route_table_ids, module.vpc.public_route_table_ids)
   tags = merge(
-    local.tags,
+    var.common_tags,
     { Name = "${local.resource_name}-s3-endpoint" }
   )
 }
