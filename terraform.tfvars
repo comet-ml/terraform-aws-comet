@@ -11,7 +11,7 @@
 
 # Deployment identifier
 ## Places an Environment tag on all resources created by this module
-environment_tag = "deployment-development"
+# environment_tag = "deployment-development"
 
 ########################
 #### Module toggles ####
@@ -59,6 +59,10 @@ comet_private_subnets = ["subnet-012345abcdefghijkl", "subnet-012345abcdefghijkl
 #### Module inputs ####
 #######################
 ## Required module inputs listed below. Any desired overrides from the defaults in variables.tf can also be added here
+
+#### comet_vpc ####
+# # If setting enable_vpc, you may specify the CIDR block for the VPC below
+# vpc_cidr = "your.cidr.block/16"
 
 #### comet_ec2 ####
 #

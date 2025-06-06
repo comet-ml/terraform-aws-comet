@@ -20,6 +20,7 @@ module "comet_vpc" {
   environment = var.environment
   common_tags = local.all_tags
   region      = var.region
+  vpc_cidr    = var.vpc_cidr
 
   eks_enabled        = var.enable_eks
   single_nat_gateway = var.single_nat_gateway
