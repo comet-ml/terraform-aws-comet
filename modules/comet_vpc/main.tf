@@ -4,6 +4,9 @@ locals {
   resource_name = "comet-${var.environment}"
   vpc_cidr      = var.vpc_cidr
   azs           = slice(data.aws_availability_zones.available.names, 0, 3)
+  # if EKS deployment, set subnet tags for AWS Load Balancer Controller auto-discovery
+  public_subnet_tags  = var.eks_enabled ? { "kubernetes.io/role/elb" = 1 } : null
+  private_subnet_tags = var.eks_enabled ? { "kubernetes.io/role/internal-elb" = 1 } : null
 }
 
 module "vpc" {
@@ -29,9 +32,14 @@ module "vpc" {
   manage_default_security_group = true
   default_security_group_tags   = merge(var.common_tags, { Name = "${local.resource_name}-default" })
 
-  # if EKS deployment, set subnet tags for AWS Load Balancer Controller auto-discovery
-  public_subnet_tags  = var.eks_enabled ? { "kubernetes.io/role/elb" = 1 } : null
-  private_subnet_tags = var.eks_enabled ? { "kubernetes.io/role/internal-elb" = 1 } : null
+  public_subnet_tags = merge(
+    local.public_subnet_tags,
+    var.public_subnet_tags,
+  )
+  private_subnet_tags = merge(
+    local.private_subnet_tags,
+    var.private_subnet_tags,
+  )
 }
 
 resource "aws_vpc_endpoint" "s3" {

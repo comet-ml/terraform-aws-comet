@@ -29,3 +29,13 @@ variable "vpc_cidr" {
   type        = string
   default     = "10.0.0.0/16"
 }
+variable "private_subnet_tags" {
+  type        = map(string)
+  description = "A map of tags for private subnets"
+  default     = {}
+}
+variable "public_subnet_tags" {
+  type        = map(string)
+  description = "A map of tags for public subnets"
+  default     = {}
+}
