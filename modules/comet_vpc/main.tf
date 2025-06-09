@@ -5,8 +5,8 @@ locals {
   vpc_cidr      = var.vpc_cidr
   azs           = slice(data.aws_availability_zones.available.names, 0, 3)
   # if EKS deployment, set subnet tags for AWS Load Balancer Controller auto-discovery
-  public_subnet_tags  = var.eks_enabled ? { "kubernetes.io/role/elb" = 1 } : null
-  private_subnet_tags = var.eks_enabled ? { "kubernetes.io/role/internal-elb" = 1 } : null
+  public_subnet_tags  = var.eks_enabled ? { "kubernetes.io/role/elb" = "1" } : {}
+  private_subnet_tags = var.eks_enabled ? { "kubernetes.io/role/internal-elb" = "1" } : {}
 }
 
 module "vpc" {
