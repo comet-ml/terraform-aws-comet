@@ -93,6 +93,28 @@ module "comet_eks" {
   eks_airflow_node_count      = var.eks_airflow_node_count
 }
 
+resource "kubernetes_storage_class" "gp3" {
+  metadata {
+    name = "gp3"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
+  }
+
+  storage_provisioner = "ebs.csi.aws.com"
+
+  parameters = {
+    type = "gp3"
+    # Optionally, set iops and throughput:
+    # iops       = "3000"
+    # throughput = "125"
+  }
+
+  reclaim_policy         = "Delete"
+  volume_binding_mode    = "WaitForFirstConsumer"
+  allow_volume_expansion = true
+}
+
 module "comet_elasticache" {
   source      = "./modules/comet_elasticache"
   count       = var.enable_elasticache ? 1 : 0
