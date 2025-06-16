@@ -96,8 +96,8 @@ variable "comet_ec2_ami_type" {
   description = "Operating system type for the EC2 instance AMI"
   default     = "ubuntu22"
   validation {
-    condition     = can(regex("^al2$|^rhel(7|8|9)$|^ubuntu(18|20|22)$", var.comet_ec2_ami_type))
-    error_message = "Invalid OS type. Allowed values are 'al2', 'rhel7', 'rhel8', 'rhel9', 'ubuntu18', 'ubuntu20', 'ubuntu22'."
+    condition     = can(regex("^al2$|^al2023$|^rhel(7|8|9)$|^ubuntu(18|20|22)$", var.comet_ec2_ami_type))
+    error_message = "Invalid OS type. Allowed values are 'al2', 'al2023', 'rhel7', 'rhel8', 'rhel9', 'ubuntu18', 'ubuntu20', 'ubuntu22'."
   }
 }
 
@@ -110,7 +110,7 @@ variable "comet_ec2_ami_id" {
 variable "comet_ec2_instance_type" {
   description = "Instance type for the EC2 instance"
   type        = string
-  default     = "m5.4xlarge"
+  default     = "m7i.4xlarge"
 }
 
 variable "comet_ec2_instance_count" {
@@ -122,7 +122,7 @@ variable "comet_ec2_instance_count" {
 variable "comet_ec2_volume_type" {
   description = "EBS volume type for the EC2 instance root volume"
   type        = string
-  default     = "gp2"
+  default     = "gp3"
 }
 
 variable "comet_ec2_volume_size" {
@@ -166,13 +166,13 @@ variable "eks_mng_name" {
 variable "eks_mng_ami_type" {
   description = "AMI family to use for the EKS nodes"
   type        = string
-  default     = "AL2_x86_64"
+  default     = "AL2023_x86_64_STANDARD"
 }
 
 variable "eks_node_types" {
   description = "Node instance types for EKS managed node group"
   type        = list(string)
-  default     = ["m6i.4xlarge"]
+  default     = ["m7i.4xlarge"]
 }
 
 variable "eks_mng_desired_size" {
