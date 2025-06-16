@@ -6,6 +6,27 @@ locals {
   cidr_anywhere = "0.0.0.0/0"
 }
 
+data "aws_ami" "al2023" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["al2023-ami-*-x86_64"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  owners = ["137112412989"] # Amazon official
+}
+
 data "aws_ami" "al2" {
   most_recent = true
 
@@ -70,22 +91,6 @@ data "aws_ami" "rhel9" {
   owners = ["amazon"]
 }
 
-data "aws_ami" "ubuntu18" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-*-18.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "root-device-type"
-    values = ["ebs"]
-  }
-
-  owners = ["amazon"]
-}
-
 data "aws_ami" "ubuntu20" {
   most_recent = true
 
@@ -120,11 +125,11 @@ data "aws_ami" "ubuntu22" {
 
 resource "aws_instance" "comet_ec2" {
   ami = var.comet_ec2_ami_id != "" ? var.comet_ec2_ami_id : (
-    var.comet_ec2_ami_type == "al2" ? data.aws_ami.al2.id : (
-      var.comet_ec2_ami_type == "rhel7" ? data.aws_ami.rhel7.id : (
-        var.comet_ec2_ami_type == "rhel8" ? data.aws_ami.rhel8.id : (
-          var.comet_ec2_ami_type == "rhel9" ? data.aws_ami.rhel9.id : (
-            var.comet_ec2_ami_type == "ubuntu18" ? data.aws_ami.ubuntu18.id : (
+    var.comet_ec2_ami_type == "al2023" ? data.aws_ami.al2023.id : (
+      var.comet_ec2_ami_type == "al2" ? data.aws_ami.al2.id : (
+        var.comet_ec2_ami_type == "rhel7" ? data.aws_ami.rhel7.id : (
+          var.comet_ec2_ami_type == "rhel8" ? data.aws_ami.rhel8.id : (
+            var.comet_ec2_ami_type == "rhel9" ? data.aws_ami.rhel9.id : (              
               var.comet_ec2_ami_type == "ubuntu20" ? data.aws_ami.ubuntu20.id : (
                 var.comet_ec2_ami_type == "ubuntu22" ? data.aws_ami.ubuntu22.id : (
                   null))))))))
