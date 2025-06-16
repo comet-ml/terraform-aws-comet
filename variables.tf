@@ -97,7 +97,7 @@ variable "comet_ec2_ami_type" {
   default     = "ubuntu22"
   validation {
     condition     = can(regex("^al2$|^al2023$|^rhel(7|8|9)$|^ubuntu(18|20|22)$", var.comet_ec2_ami_type))
-    error_message = "Invalid OS type. Allowed values are 'al2', 'al2023', 'rhel7', 'rhel8', 'rhel9', 'ubuntu18', 'ubuntu20', 'ubuntu22'."
+    error_message = "Invalid OS type. Allowed values are 'al2', 'al2023', 'rhel7', 'rhel8', 'rhel9', 'ubuntu20', 'ubuntu22'."
   }
 }
 

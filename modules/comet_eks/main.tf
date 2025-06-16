@@ -141,3 +141,25 @@ module "eks_blueprints_addons" {
   enable_external_dns                 = var.eks_external_dns
   external_dns_route53_zone_arns      = var.eks_external_dns_r53_zones
 }
+
+resource "kubernetes_storage_class" "gp3" {
+  metadata {
+    name = "gp3"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
+  }
+
+  storage_provisioner = "ebs.csi.aws.com"
+
+  parameters = {
+    type = "gp3"
+    # Optionally, set iops and throughput:
+    # iops       = "3000"
+    # throughput = "125"
+  }
+
+  reclaim_policy         = "Delete"
+  volume_binding_mode    = "WaitForFirstConsumer"
+  allow_volume_expansion = true
+}
