@@ -45,3 +45,13 @@ output "comet_eks_token" {
   value       = var.enable_eks ? data.aws_eks_cluster_auth.this[0].token : null
   sensitive   = true
 }
+
+output "comet_eks_ng_sg_id" {
+  description = "ID of the node shared security group"
+  value       = module.comet_eks.nodegroup_sg_id
+}
+
+output "comet_eks_cluster_name" {
+  description = "Name of the EKS cluster"
+  value       = module.comet_eks.cluster_name
+}
