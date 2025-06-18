@@ -4,7 +4,7 @@ output "region" {
 }
 
 output "comet_ec2_instance" {
-  description = "ID of the Comet EC2 instance"
+  description = "ID of  the Comet EC2 instance"
   value       = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_instance_id : null
 }
 
