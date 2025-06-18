@@ -1,0 +1,1 @@
+This repo is the testing and publishing repo for terraform-aws-comet. See .github/workflows.
