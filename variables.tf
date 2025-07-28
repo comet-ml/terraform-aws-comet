@@ -208,7 +208,7 @@ variable "eks_cert_manager" {
 variable "eks_aws_cloudwatch_metrics" {
   description = "Enables AWS Cloudwatch Metrics in the EKS cluster"
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "eks_external_dns" {
