@@ -29,8 +29,8 @@ resource "aws_rds_cluster" "cometml-db-cluster" {
   database_name                       = var.rds_database_name
   storage_encrypted                   = var.rds_storage_encrypted
   iam_database_authentication_enabled = var.rds_iam_db_auth
-  master_username                     = "root"
-  master_password                     = var.rds_root_password
+  master_username                     = var.rds_master_username
+  master_password                     = var.rds_master_password
   engine                              = var.rds_engine
   engine_version                      = var.rds_engine_version
   backup_retention_period             = var.rds_backup_retention_period

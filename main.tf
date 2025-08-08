@@ -134,7 +134,8 @@ module "comet_rds" {
   rds_backup_retention_period = var.rds_backup_retention_period
   rds_preferred_backup_window = var.rds_preferred_backup_window
   rds_database_name           = var.rds_database_name
-  rds_root_password           = var.rds_root_password
+  rds_master_username         = var.rds_master_username
+  rds_master_password         = var.rds_master_password
 }
 
 module "comet_s3" {

@@ -39,7 +39,8 @@ No modules.
 | <a name="input_rds_instance_type"></a> [rds\_instance\_type](#input\_rds\_instance\_type) | Instance type for RDS database | `string` | n/a | yes |
 | <a name="input_rds_preferred_backup_window"></a> [rds\_preferred\_backup\_window](#input\_rds\_preferred\_backup\_window) | Backup window for RDS | `string` | n/a | yes |
 | <a name="input_rds_private_subnets"></a> [rds\_private\_subnets](#input\_rds\_private\_subnets) | IDs of private subnets within the VPC | `list(string)` | n/a | yes |
-| <a name="input_rds_root_password"></a> [rds\_root\_password](#input\_rds\_root\_password) | Root password for RDS database | `string` | n/a | yes |
+| <a name="input_rds_master_username"></a> [rds\_root\_username](#input\_rds\_root\_username) | Root username for RDS database | `string` | n/a | yes |
+| <a name="input_rds_master_password"></a> [rds\_root\_password](#input\_rds\_root\_password) | Root password for RDS database | `string` | n/a | yes |
 | <a name="input_rds_storage_encrypted"></a> [rds\_storage\_encrypted](#input\_rds\_storage\_encrypted) | Enables encryption for RDS storage | `bool` | n/a | yes |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | ID of the VPC that will contain the provisioned resources | `string` | n/a | yes |
 

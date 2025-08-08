@@ -115,7 +115,8 @@ terraform {
 | <a name="input_rds_instance_count"></a> [rds\_instance\_count](#input\_rds\_instance\_count) | Number of RDS instances in the database cluster | `number` | `2` | no |
 | <a name="input_rds_instance_type"></a> [rds\_instance\_type](#input\_rds\_instance\_type) | Instance type for RDS database | `string` | `"db.r5.xlarge"` | no |
 | <a name="input_rds_preferred_backup_window"></a> [rds\_preferred\_backup\_window](#input\_rds\_preferred\_backup\_window) | Backup window for RDS | `string` | `"07:00-09:00"` | no |
-| <a name="input_rds_root_password"></a> [rds\_root\_password](#input\_rds\_root\_password) | Root password for RDS database | `string` | n/a | yes |
+| <a name="input_rds_master_username"></a> [rds\_root\_username](#input\_rds\_root\_username) | Root username for RDS database | `string` | n/a | yes |
+| <a name="input_rds_master_password"></a> [rds\_root\_password](#input\_rds\_root\_password) | Root password for RDS database | `string` | n/a | yes |
 | <a name="input_rds_storage_encrypted"></a> [rds\_storage\_encrypted](#input\_rds\_storage\_encrypted) | Enables encryption for RDS storage | `bool` | `true` | no |
 | <a name="input_region"></a> [region](#input\_region) | AWS region to provision resources in | `string` | n/a | yes |
 | <a name="input_s3_bucket_name"></a> [s3\_bucket\_name](#input\_s3\_bucket\_name) | Name for S3 bucket | `string` | n/a | yes |

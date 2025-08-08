@@ -68,8 +68,14 @@ variable "rds_database_name" {
   type        = string
 }
 
-variable "rds_root_password" {
-  description = "Root password for RDS database"
+variable "rds_master_username" {
+  description = "Master username for RDS database"
+  type        = string
+	default     = "admin"
+}
+
+variable "rds_master_password" {
+  description = "Master password for RDS database"
   type        = string
 }
 
