@@ -25,13 +25,42 @@ module "eks" {
     }
 
   eks_managed_node_groups = merge(
-    {
+    # Admin Node Group
+    var.enable_admin_node_group ? {
+      admin = {
+        name           = var.eks_admin_name
+        instance_types = var.eks_admin_instance_types
+        min_size       = var.eks_admin_min_size
+        max_size       = var.eks_admin_max_size
+        desired_size   = var.eks_admin_desired_size
+        block_device_mappings = {
+          xvda = {
+            device_name = "/dev/xvda"
+            ebs = {
+              volume_size           = var.eks_mng_disk_size
+              volume_type           = local.volume_type
+              encrypted             = local.volume_encrypted
+              delete_on_termination = local.volume_delete_on_termination
+            }
+          }
+        }
+        labels = {
+          nodegroup_name = "admin"
+        }
+        tags = var.common_tags
+        tags_propagate_at_launch = true
+        launch_template_version = "$Latest"
+        iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
+      }
+    } : {},
+    # Comet Node Group
+    var.enable_comet_node_group ? {
       comet = {
-        name           = var.eks_mng_name
-        instance_types = var.eks_node_types
-        min_size       = var.eks_mng_desired_size
-        max_size       = var.eks_mng_max_size
-        desired_size   = var.eks_mng_desired_size
+        name           = var.eks_comet_name
+        instance_types = var.eks_comet_instance_types
+        min_size       = var.eks_comet_min_size
+        max_size       = var.eks_comet_max_size
+        desired_size   = var.eks_comet_desired_size
         block_device_mappings = {
           xvda = {
             device_name = "/dev/xvda"
@@ -51,14 +80,15 @@ module "eks" {
         launch_template_version = "$Latest"
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
-    },
-    var.enable_mpm_infra ? {
+    } : {},
+    # Druid Node Group
+    (var.enable_druid_node_group && var.enable_mpm_infra) ? {
       druid = {
-        name           = "druid"
-        instance_types = [var.eks_druid_instance_type]
-        min_size       = var.eks_druid_node_count
-        max_size       = var.eks_druid_node_count
-        desired_size   = var.eks_druid_node_count
+        name           = var.eks_druid_name
+        instance_types = var.eks_druid_instance_types
+        min_size       = var.eks_druid_min_size
+        max_size       = var.eks_druid_max_size
+        desired_size   = var.eks_druid_desired_size
         block_device_mappings = {
           xvda = {
             device_name = "/dev/xvda"
@@ -74,16 +104,19 @@ module "eks" {
           nodegroup_name = "druid"
         }
         tags     = var.common_tags
-        tags_propogate_at_launch = true
+        tags_propagate_at_launch = true
         launch_template_version = "$Latest"
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
-      },
+      }
+    } : {},
+    # Airflow Node Group
+    (var.enable_airflow_node_group && var.enable_mpm_infra) ? {
       airflow = {
-        name           = "airflow"
-        instance_types = [var.eks_airflow_instance_type]
-        min_size       = var.eks_airflow_node_count
-        max_size       = var.eks_airflow_node_count
-        desired_size   = var.eks_airflow_node_count
+        name           = var.eks_airflow_name
+        instance_types = var.eks_airflow_instance_types
+        min_size       = var.eks_airflow_min_size
+        max_size       = var.eks_airflow_max_size
+        desired_size   = var.eks_airflow_desired_size
         block_device_mappings = {
           xvda = {
             device_name = "/dev/xvda"
@@ -99,11 +132,13 @@ module "eks" {
           nodegroup_name = "airflow"
         }
         tags     = var.common_tags
-        tags_propogate_at_launch = true
+        tags_propagate_at_launch = true
         launch_template_version = "$Latest"
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
-    } : {}
+    } : {},
+    # Additional custom node groups
+    var.additional_node_groups
   )
 }
 
