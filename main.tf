@@ -70,11 +70,7 @@ module "comet_eks" {
   eks_private_subnets              = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
   eks_cluster_name                 = var.eks_cluster_name
   eks_cluster_version              = var.eks_cluster_version
-  eks_mng_name                     = var.eks_mng_name
   eks_mng_ami_type                 = var.eks_mng_ami_type
-  eks_node_types                   = var.eks_node_types
-  eks_mng_desired_size             = var.eks_mng_desired_size
-  eks_mng_max_size                 = var.eks_mng_max_size
   eks_mng_disk_size                = var.eks_mng_disk_size
   eks_aws_load_balancer_controller = var.eks_aws_load_balancer_controller
   eks_cert_manager                 = var.eks_cert_manager
@@ -85,12 +81,39 @@ module "comet_eks" {
   s3_enabled              = var.enable_s3
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
 
-  enable_mpm_infra = var.enable_mpm_infra
+  # Node Group Toggles
+  enable_admin_node_group   = var.eks_enable_admin_node_group
+  enable_comet_node_group   = var.eks_enable_comet_node_group
+  enable_druid_node_group   = var.eks_enable_druid_node_group
+  enable_airflow_node_group = var.eks_enable_airflow_node_group
 
-  eks_druid_instance_type     = var.eks_druid_instance_type
-  eks_druid_node_count        = var.eks_druid_node_count
-  eks_airflow_instance_type   = var.eks_airflow_instance_type
-  eks_airflow_node_count      = var.eks_airflow_node_count
+  # Admin Node Group
+  eks_admin_name           = var.eks_admin_name
+  eks_admin_instance_types = var.eks_admin_instance_types
+  eks_admin_min_size       = var.eks_admin_min_size
+  eks_admin_max_size       = var.eks_admin_max_size
+  eks_admin_desired_size   = var.eks_admin_desired_size
+
+  # Comet Node Group
+  eks_comet_name           = var.eks_comet_name
+  eks_comet_instance_types = var.eks_comet_instance_types
+  eks_comet_min_size       = var.eks_comet_min_size
+  eks_comet_max_size       = var.eks_comet_max_size
+  eks_comet_desired_size   = var.eks_comet_desired_size
+
+  # Druid Node Group
+  eks_druid_name           = var.eks_druid_name
+  eks_druid_instance_types = var.eks_druid_instance_types
+  eks_druid_min_size       = var.eks_druid_min_size
+  eks_druid_max_size       = var.eks_druid_max_size
+  eks_druid_desired_size   = var.eks_druid_desired_size
+
+  # Airflow Node Group
+  eks_airflow_name           = var.eks_airflow_name
+  eks_airflow_instance_types = var.eks_airflow_instance_types
+  eks_airflow_min_size       = var.eks_airflow_min_size
+  eks_airflow_max_size       = var.eks_airflow_max_size
+  eks_airflow_desired_size   = var.eks_airflow_desired_size
 }
 
 module "comet_elasticache" {

@@ -37,8 +37,9 @@ variable "enable_s3" {
 }
 
 variable "enable_mpm_infra" {
-  description = "Sets MNGs to be created for MPM compute"
+  description = "Creates S3 buckets for MPM Druid/Airflow workloads (used by comet_s3 module)"
   type        = bool
+  default     = false
 }
 
 ################
@@ -157,34 +158,97 @@ variable "eks_cluster_version" {
   default     = "1.32"
 }
 
-variable "eks_mng_name" {
-  description = "Name for the EKS managed nodegroup"
-  type        = string
-  default     = "mng"
-}
-
 variable "eks_mng_ami_type" {
   description = "AMI family to use for the EKS nodes"
   type        = string
   default     = "AL2023_x86_64_STANDARD"
 }
 
-variable "eks_node_types" {
-  description = "Node instance types for EKS managed node group"
-  type        = list(string)
-  default     = ["m7i.4xlarge"]
+# Node Group Toggles
+variable "eks_enable_admin_node_group" {
+  description = "Enable admin node group for EKS cluster management tasks"
+  type        = bool
+  default     = true
 }
 
-variable "eks_mng_desired_size" {
-  description = "Desired number of nodes in EKS cluster"
+variable "eks_enable_comet_node_group" {
+  description = "Enable comet node group for main Comet application workloads"
+  type        = bool
+  default     = true
+}
+
+variable "eks_enable_druid_node_group" {
+  description = "Enable druid node group for Apache Druid workloads"
+  type        = bool
+  default     = false
+}
+
+variable "eks_enable_airflow_node_group" {
+  description = "Enable airflow node group for Apache Airflow workloads"
+  type        = bool
+  default     = false
+}
+
+# Admin Node Group Variables
+variable "eks_admin_name" {
+  description = "Name for the admin node group"
+  type        = string
+  default     = "admin"
+}
+
+variable "eks_admin_instance_types" {
+  description = "Instance types for admin node group"
+  type        = list(string)
+  default     = ["t3.large"]
+}
+
+variable "eks_admin_min_size" {
+  description = "Minimum number of nodes in admin node group"
+  type        = number
+  default     = 1
+}
+
+variable "eks_admin_max_size" {
+  description = "Maximum number of nodes in admin node group"
   type        = number
   default     = 3
 }
 
-variable "eks_mng_max_size" {
-  description = "Maximum number of nodes in EKS cluster"
+variable "eks_admin_desired_size" {
+  description = "Desired number of nodes in admin node group"
   type        = number
-  default     = 6
+  default     = 2
+}
+
+# Comet Node Group Variables
+variable "eks_comet_name" {
+  description = "Name for the comet node group"
+  type        = string
+  default     = "comet"
+}
+
+variable "eks_comet_instance_types" {
+  description = "Instance types for comet node group"
+  type        = list(string)
+  default     = ["m7i.4xlarge"]
+}
+
+variable "eks_comet_min_size" {
+  description = "Minimum number of nodes in comet node group"
+  type        = number
+  default     = 2
+}
+
+variable "eks_comet_max_size" {
+  description = "Maximum number of nodes in comet node group"
+  type        = number
+  default     = 10
+}
+
+variable "eks_comet_desired_size" {
+  description = "Desired number of nodes in comet node group"
+  type        = number
+  default     = 3
 }
 
 variable "eks_mng_disk_size" {
@@ -225,26 +289,64 @@ variable "eks_external_dns_r53_zones" {
   ]
 }
 
-variable "eks_druid_instance_type" {
-  description = "Instance type for EKS Druid nodes"
+# Druid Node Group Variables
+variable "eks_druid_name" {
+  description = "Name for the druid node group"
   type        = string
-  default     = "m7i.2xlarge"
+  default     = "druid"
 }
 
-variable "eks_druid_node_count" {
-  description = "Instance count for EKS Druid nodes"
+variable "eks_druid_instance_types" {
+  description = "Instance types for druid node group"
+  type        = list(string)
+  default     = ["m7i.2xlarge"]
+}
+
+variable "eks_druid_min_size" {
+  description = "Minimum number of nodes in druid node group"
+  type        = number
+  default     = 2
+}
+
+variable "eks_druid_max_size" {
+  description = "Maximum number of nodes in druid node group"
+  type        = number
+  default     = 8
+}
+
+variable "eks_druid_desired_size" {
+  description = "Desired number of nodes in druid node group"
   type        = number
   default     = 4
 }
 
-variable "eks_airflow_instance_type" {
-  description = "Instance type for EKS Airflow nodes"
+# Airflow Node Group Variables
+variable "eks_airflow_name" {
+  description = "Name for the airflow node group"
   type        = string
-  default     = "t3.medium"
+  default     = "airflow"
 }
 
-variable "eks_airflow_node_count" {
-  description = "Instance count for EKS Airflow nodes"
+variable "eks_airflow_instance_types" {
+  description = "Instance types for airflow node group"
+  type        = list(string)
+  default     = ["t3.medium"]
+}
+
+variable "eks_airflow_min_size" {
+  description = "Minimum number of nodes in airflow node group"
+  type        = number
+  default     = 1
+}
+
+variable "eks_airflow_max_size" {
+  description = "Maximum number of nodes in airflow node group"
+  type        = number
+  default     = 4
+}
+
+variable "eks_airflow_desired_size" {
+  description = "Desired number of nodes in airflow node group"
   type        = number
   default     = 2
 }
