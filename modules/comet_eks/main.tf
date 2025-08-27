@@ -82,7 +82,7 @@ module "eks" {
       }
     } : {},
     # Druid Node Group
-    var.enable_druid_node_group ? {
+    (var.enable_druid_node_group && var.enable_mpm_infra) ? {
       druid = {
         name           = var.eks_druid_name
         instance_types = var.eks_druid_instance_types
@@ -110,7 +110,7 @@ module "eks" {
       }
     } : {},
     # Airflow Node Group
-    var.enable_airflow_node_group ? {
+    (var.enable_airflow_node_group && var.enable_mpm_infra) ? {
       airflow = {
         name           = var.eks_airflow_name
         instance_types = var.eks_airflow_instance_types
@@ -136,7 +136,9 @@ module "eks" {
         launch_template_version = "$Latest"
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
-    } : {}
+    } : {},
+    # Additional custom node groups
+    var.additional_node_groups
   )
 }
 

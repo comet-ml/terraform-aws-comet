@@ -178,15 +178,15 @@ variable "eks_enable_comet_node_group" {
 }
 
 variable "eks_enable_druid_node_group" {
-  description = "Enable druid node group for Apache Druid workloads"
+  description = "Enable druid node group for Apache Druid workloads (requires enable_mpm_infra to be true)"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "eks_enable_airflow_node_group" {
-  description = "Enable airflow node group for Apache Airflow workloads"
+  description = "Enable airflow node group for Apache Airflow workloads (requires enable_mpm_infra to be true)"
   type        = bool
-  default     = false
+  default     = true
 }
 
 # Admin Node Group Variables
@@ -349,6 +349,12 @@ variable "eks_airflow_desired_size" {
   description = "Desired number of nodes in airflow node group"
   type        = number
   default     = 2
+}
+
+variable "eks_additional_node_groups" {
+  description = "Additional EKS managed node groups to create beyond the predefined ones (admin, comet, druid, airflow)"
+  type        = any
+  default     = {}
 }
 
 #### comet_elasticache ####

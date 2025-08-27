@@ -146,13 +146,19 @@ variable "enable_comet_node_group" {
 }
 
 variable "enable_druid_node_group" {
-  description = "Enable druid node group for Apache Druid workloads"
+  description = "Enable druid node group for Apache Druid workloads (requires enable_mpm_infra to be true)"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "enable_airflow_node_group" {
-  description = "Enable airflow node group for Apache Airflow workloads"
+  description = "Enable airflow node group for Apache Airflow workloads (requires enable_mpm_infra to be true)"
+  type        = bool
+  default     = true
+}
+
+variable "enable_mpm_infra" {
+  description = "Master toggle for MPM infrastructure (Druid/Airflow node groups will only be created if this is true)"
   type        = bool
   default     = false
 }
@@ -222,5 +228,11 @@ variable "eks_airflow_desired_size" {
 variable "common_tags" {
   type        = map(string)
   description = "A map of common tags"
+  default     = {}
+}
+
+variable "additional_node_groups" {
+  description = "Additional EKS managed node groups to create beyond the predefined ones (admin, comet, druid, airflow)"
+  type        = any
   default     = {}
 }

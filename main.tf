@@ -81,6 +81,9 @@ module "comet_eks" {
   s3_enabled              = var.enable_s3
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
 
+  # MPM Infrastructure toggle
+  enable_mpm_infra = var.enable_mpm_infra
+
   # Node Group Toggles
   enable_admin_node_group   = var.eks_enable_admin_node_group
   enable_comet_node_group   = var.eks_enable_comet_node_group
@@ -114,6 +117,9 @@ module "comet_eks" {
   eks_airflow_min_size       = var.eks_airflow_min_size
   eks_airflow_max_size       = var.eks_airflow_max_size
   eks_airflow_desired_size   = var.eks_airflow_desired_size
+
+  # Additional custom node groups
+  additional_node_groups = var.eks_additional_node_groups
 }
 
 module "comet_elasticache" {
