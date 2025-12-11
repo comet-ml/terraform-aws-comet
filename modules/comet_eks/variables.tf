@@ -231,8 +231,70 @@ variable "common_tags" {
   default     = {}
 }
 
+# ClickHouse Node Group Toggle
+variable "enable_clickhouse_node_group" {
+  description = "Enable dedicated ClickHouse node group"
+  type        = bool
+  default     = false
+}
+
+# ClickHouse Node Group Variables
+variable "eks_clickhouse_name" {
+  description = "Name for the ClickHouse node group"
+  type        = string
+  default     = "clickhouse"
+}
+
+variable "eks_clickhouse_instance_types" {
+  description = "Instance types for the ClickHouse node group"
+  type        = list(string)
+  default     = ["r5.2xlarge"]
+}
+
+variable "eks_clickhouse_min_size" {
+  description = "Minimum number of ClickHouse nodes"
+  type        = number
+  default     = 2
+}
+
+variable "eks_clickhouse_max_size" {
+  description = "Maximum number of ClickHouse nodes"
+  type        = number
+  default     = 3
+}
+
+variable "eks_clickhouse_desired_size" {
+  description = "Desired number of ClickHouse nodes"
+  type        = number
+  default     = 2
+}
+
+variable "eks_clickhouse_volume_size" {
+  description = "EBS volume size in GB for ClickHouse nodes"
+  type        = number
+  default     = 500
+}
+
+variable "eks_clickhouse_volume_type" {
+  description = "EBS volume type for ClickHouse nodes"
+  type        = string
+  default     = "gp3"
+}
+
+variable "eks_clickhouse_volume_encrypted" {
+  description = "Enable EBS encryption for ClickHouse volumes"
+  type        = bool
+  default     = true
+}
+
+variable "eks_clickhouse_delete_on_termination" {
+  description = "Delete EBS volumes on instance termination"
+  type        = bool
+  default     = true
+}
+
 variable "additional_node_groups" {
-  description = "Additional EKS managed node groups to create beyond the predefined ones (admin, comet, druid, airflow)"
+  description = "Additional EKS managed node groups to create beyond the predefined ones (admin, comet, druid, airflow, clickhouse)"
   type        = any
   default     = {}
 }
