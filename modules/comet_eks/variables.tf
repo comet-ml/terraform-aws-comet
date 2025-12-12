@@ -248,7 +248,7 @@ variable "eks_clickhouse_name" {
 variable "eks_clickhouse_instance_types" {
   description = "Instance types for the ClickHouse node group"
   type        = list(string)
-  default     = ["r5.2xlarge"]
+  default     = ["m7i.2xlarge"]
 }
 
 variable "eks_clickhouse_min_size" {
