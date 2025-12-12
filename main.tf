@@ -85,10 +85,11 @@ module "comet_eks" {
   enable_mpm_infra = var.enable_mpm_infra
 
   # Node Group Toggles
-  enable_admin_node_group   = var.eks_enable_admin_node_group
-  enable_comet_node_group   = var.eks_enable_comet_node_group
-  enable_druid_node_group   = var.eks_enable_druid_node_group
-  enable_airflow_node_group = var.eks_enable_airflow_node_group
+  enable_admin_node_group      = var.eks_enable_admin_node_group
+  enable_comet_node_group      = var.eks_enable_comet_node_group
+  enable_druid_node_group      = var.eks_enable_druid_node_group
+  enable_airflow_node_group    = var.eks_enable_airflow_node_group
+  enable_clickhouse_node_group = var.eks_enable_clickhouse_node_group
 
   # Admin Node Group
   eks_admin_name           = var.eks_admin_name
@@ -117,6 +118,17 @@ module "comet_eks" {
   eks_airflow_min_size       = var.eks_airflow_min_size
   eks_airflow_max_size       = var.eks_airflow_max_size
   eks_airflow_desired_size   = var.eks_airflow_desired_size
+
+  # ClickHouse Node Group
+  eks_clickhouse_name                  = var.eks_clickhouse_name
+  eks_clickhouse_instance_types        = var.eks_clickhouse_instance_types
+  eks_clickhouse_min_size              = var.eks_clickhouse_min_size
+  eks_clickhouse_max_size              = var.eks_clickhouse_max_size
+  eks_clickhouse_desired_size          = var.eks_clickhouse_desired_size
+  eks_clickhouse_volume_size           = var.eks_clickhouse_volume_size
+  eks_clickhouse_volume_type           = var.eks_clickhouse_volume_type
+  eks_clickhouse_volume_encrypted      = var.eks_clickhouse_volume_encrypted
+  eks_clickhouse_delete_on_termination = var.eks_clickhouse_delete_on_termination
 
   # Additional custom node groups
   additional_node_groups = var.eks_additional_node_groups

@@ -137,6 +137,34 @@ module "eks" {
         iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
       }
     } : {},
+    # ClickHouse Node Group
+    var.enable_clickhouse_node_group ? {
+      clickhouse = {
+        name           = var.eks_clickhouse_name
+        instance_types = var.eks_clickhouse_instance_types
+        min_size       = var.eks_clickhouse_min_size
+        max_size       = var.eks_clickhouse_max_size
+        desired_size   = var.eks_clickhouse_desired_size
+        block_device_mappings = {
+          xvda = {
+            device_name = "/dev/xvda"
+            ebs = {
+              volume_size           = var.eks_clickhouse_volume_size
+              volume_type           = var.eks_clickhouse_volume_type
+              encrypted             = var.eks_clickhouse_volume_encrypted
+              delete_on_termination = var.eks_clickhouse_delete_on_termination
+            }
+          }
+        }
+        labels = {
+          nodegroup_name = "clickhouse"
+        }
+        tags                         = var.common_tags
+        tags_propagate_at_launch     = true
+        launch_template_version      = "$Latest"
+        iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
+      }
+    } : {},
     # Additional custom node groups
     var.additional_node_groups
   )
