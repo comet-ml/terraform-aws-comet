@@ -1,20 +1,66 @@
 locals {
-  volume_type = "gp3"
-  volume_encrypted = false
+  volume_type                  = "gp3"
+  volume_encrypted             = false
   volume_delete_on_termination = true
+
+  # Check if additional S3 bucket ARNs are provided
+  has_additional_s3_buckets = var.additional_s3_bucket_arns != null && length(var.additional_s3_bucket_arns) > 0
+
+  # Build the IAM policies map for node groups
+  # Combines the comet S3 policy (if enabled) with additional S3 policy (if buckets provided)
+  node_group_iam_policies = merge(
+    var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {},
+    local.has_additional_s3_buckets ? { additional_s3_access = aws_iam_policy.additional_s3_bucket_policy[0].arn } : {}
+  )
 }
 
 data "aws_iam_policy" "ebs_csi_policy" {
   arn = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
 }
 
+# IAM policy for additional S3 bucket access (only created if additional_s3_bucket_arns is provided)
+resource "aws_iam_policy" "additional_s3_bucket_policy" {
+  count = local.has_additional_s3_buckets ? 1 : 0
+
+  name        = "additional-s3-access-policy-${var.eks_cluster_name}"
+  description = "Policy for access to additional S3 buckets from EKS cluster ${var.eks_cluster_name}"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:ListBucket",
+          "s3:ListBucket*",
+          "s3:PutBucket*",
+          "s3:GetBucket*",
+          "s3:AbortMultipartUpload",
+          "s3:ListMultipartUploadParts",
+          "s3:ListBucketMultipartUploads"
+        ],
+        Resource = flatten([
+          for arn in var.additional_s3_bucket_arns : [
+            arn,
+            "${arn}/*"
+          ]
+        ])
+      }
+    ]
+  })
+}
+
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 19.9"
 
-  cluster_name                   = var.eks_cluster_name
-  cluster_version                = var.eks_cluster_version
-  cluster_endpoint_public_access = true
+  cluster_name                    = var.eks_cluster_name
+  cluster_version                 = var.eks_cluster_version
+  cluster_endpoint_public_access  = var.eks_cluster_endpoint_public_access
+  cluster_endpoint_private_access = var.eks_cluster_endpoint_private_access
 
   vpc_id     = var.vpc_id
   subnet_ids = var.eks_private_subnets
@@ -47,10 +93,10 @@ module "eks" {
         labels = {
           nodegroup_name = "admin"
         }
-        tags = var.common_tags
-        tags_propagate_at_launch = true
-        launch_template_version = "$Latest"
-        iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
+        tags                         = var.common_tags
+        tags_propagate_at_launch     = true
+        launch_template_version      = "$Latest"
+        iam_role_additional_policies = local.node_group_iam_policies
       }
     } : {},
     # Comet Node Group
@@ -75,10 +121,10 @@ module "eks" {
         labels = {
           nodegroup_name = "comet"
         }
-        tags = var.common_tags
-        tags_propagate_at_launch = true
-        launch_template_version = "$Latest"
-        iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
+        tags                         = var.common_tags
+        tags_propagate_at_launch     = true
+        launch_template_version      = "$Latest"
+        iam_role_additional_policies = local.node_group_iam_policies
       }
     } : {},
     # Druid Node Group
@@ -103,10 +149,10 @@ module "eks" {
         labels = {
           nodegroup_name = "druid"
         }
-        tags     = var.common_tags
-        tags_propagate_at_launch = true
-        launch_template_version = "$Latest"
-        iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
+        tags                         = var.common_tags
+        tags_propagate_at_launch     = true
+        launch_template_version      = "$Latest"
+        iam_role_additional_policies = local.node_group_iam_policies
       }
     } : {},
     # Airflow Node Group
@@ -131,10 +177,10 @@ module "eks" {
         labels = {
           nodegroup_name = "airflow"
         }
-        tags     = var.common_tags
-        tags_propagate_at_launch = true
-        launch_template_version = "$Latest"
-        iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
+        tags                         = var.common_tags
+        tags_propagate_at_launch     = true
+        launch_template_version      = "$Latest"
+        iam_role_additional_policies = local.node_group_iam_policies
       }
     } : {},
     # ClickHouse Node Group
@@ -162,7 +208,7 @@ module "eks" {
         tags                         = var.common_tags
         tags_propagate_at_launch     = true
         launch_template_version      = "$Latest"
-        iam_role_additional_policies = var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {}
+        iam_role_additional_policies = local.node_group_iam_policies
       }
     } : {},
     # Additional custom node groups
