@@ -452,7 +452,7 @@ variable "elasticache_engine" {
 variable "elasticache_engine_version" {
   description = "Version number for ElastiCache engine"
   type        = string
-  default     = "7.2"
+  default     = "7.1"
 }
 
 variable "elasticache_instance_type" {
