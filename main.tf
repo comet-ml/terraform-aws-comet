@@ -7,7 +7,7 @@ locals {
   resource_name = "comet-${var.environment}"
   all_tags = merge(
     {
-      Terraform   = "true"
+      Terraform = "true"
     },
     var.environment_tag != "" ? { Environment = var.environment_tag } : {},
     var.common_tags
@@ -66,17 +66,19 @@ module "comet_eks" {
   environment = var.environment
   common_tags = local.all_tags
 
-  vpc_id                           = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
-  eks_private_subnets              = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
-  eks_cluster_name                 = var.eks_cluster_name
-  eks_cluster_version              = var.eks_cluster_version
-  eks_mng_ami_type                 = var.eks_mng_ami_type
-  eks_mng_disk_size                = var.eks_mng_disk_size
-  eks_aws_load_balancer_controller = var.eks_aws_load_balancer_controller
-  eks_cert_manager                 = var.eks_cert_manager
-  eks_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
-  eks_external_dns                 = var.eks_external_dns
-  eks_external_dns_r53_zones       = var.eks_external_dns_r53_zones
+  vpc_id                              = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
+  eks_private_subnets                 = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
+  eks_cluster_name                    = var.eks_cluster_name
+  eks_cluster_version                 = var.eks_cluster_version
+  eks_cluster_endpoint_public_access  = var.eks_cluster_endpoint_public_access
+  eks_cluster_endpoint_private_access = var.eks_cluster_endpoint_private_access
+  eks_mng_ami_type                    = var.eks_mng_ami_type
+  eks_mng_disk_size                   = var.eks_mng_disk_size
+  eks_aws_load_balancer_controller    = var.eks_aws_load_balancer_controller
+  eks_cert_manager                    = var.eks_cert_manager
+  eks_aws_cloudwatch_metrics          = var.eks_aws_cloudwatch_metrics
+  eks_external_dns                    = var.eks_external_dns
+  eks_external_dns_r53_zones          = var.eks_external_dns_r53_zones
 
   s3_enabled              = var.enable_s3
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null
@@ -132,6 +134,9 @@ module "comet_eks" {
 
   # Additional custom node groups
   additional_node_groups = var.eks_additional_node_groups
+
+  # Additional S3 bucket access
+  additional_s3_bucket_arns = var.eks_additional_s3_bucket_arns
 }
 
 module "comet_elasticache" {

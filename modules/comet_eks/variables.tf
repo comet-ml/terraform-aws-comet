@@ -23,6 +23,18 @@ variable "eks_cluster_version" {
   type        = string
 }
 
+variable "eks_cluster_endpoint_public_access" {
+  description = "Enable public access to the EKS cluster API endpoint"
+  type        = bool
+  default     = true
+}
+
+variable "eks_cluster_endpoint_private_access" {
+  description = "Enable private access to the EKS cluster API endpoint"
+  type        = bool
+  default     = false
+}
+
 # Admin Node Group Variables
 variable "eks_admin_name" {
   description = "Name for the admin node group"
@@ -297,4 +309,10 @@ variable "additional_node_groups" {
   description = "Additional EKS managed node groups to create beyond the predefined ones (admin, comet, druid, airflow, clickhouse)"
   type        = any
   default     = {}
+}
+
+variable "additional_s3_bucket_arns" {
+  description = "Additional S3 bucket ARNs to grant access to (for buckets created outside this module)"
+  type        = list(string)
+  default     = []
 }

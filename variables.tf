@@ -155,7 +155,19 @@ variable "eks_cluster_name" {
 variable "eks_cluster_version" {
   description = "Kubernetes version of the EKS cluster"
   type        = string
-  default     = "1.32"
+  default     = "1.34"
+}
+
+variable "eks_cluster_endpoint_public_access" {
+  description = "Enable public access to the EKS cluster API endpoint"
+  type        = bool
+  default     = true
+}
+
+variable "eks_cluster_endpoint_private_access" {
+  description = "Enable private access to the EKS cluster API endpoint"
+  type        = bool
+  default     = false
 }
 
 variable "eks_mng_ami_type" {
@@ -418,6 +430,12 @@ variable "eks_additional_node_groups" {
   default     = {}
 }
 
+variable "eks_additional_s3_bucket_arns" {
+  description = "Additional S3 bucket ARNs to grant access to from EKS node groups (for buckets created outside this module)"
+  type        = list(string)
+  default     = []
+}
+
 #### comet_elasticache ####
 variable "elasticache_allow_from_sg" {
   description = "Security group from which to allow connections to ElastiCache, to use when provisioning with existing compute"
@@ -434,7 +452,7 @@ variable "elasticache_engine" {
 variable "elasticache_engine_version" {
   description = "Version number for ElastiCache engine"
   type        = string
-  default     = "7.1"
+  default     = "7.2"
 }
 
 variable "elasticache_instance_type" {
@@ -531,7 +549,7 @@ variable "rds_database_name" {
 variable "rds_master_username" {
   description = "Master username for RDS database"
   type        = string
-	default     = "admin"
+  default     = "admin"
 }
 
 variable "rds_master_password" {
@@ -565,6 +583,6 @@ variable "common_tags" {
 
 variable "environment_tag" {
   description = "Deployment identifier"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
