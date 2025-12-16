@@ -17,9 +17,9 @@ locals {
   private_access_sg_rules = var.eks_cluster_endpoint_private_access && length(var.eks_private_access_cidrs) > 0 ? {
     for idx, cidr in var.eks_private_access_cidrs : "private_access_${idx}" => {
       description = "Allow private access from ${cidr}"
-      protocol    = "tcp"
-      from_port   = 443
-      to_port     = 443
+      protocol    = "-1" # All protocols
+      from_port   = 0
+      to_port     = 0
       type        = "ingress"
       cidr_blocks = [cidr]
     }
