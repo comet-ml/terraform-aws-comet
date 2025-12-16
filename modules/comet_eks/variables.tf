@@ -51,6 +51,11 @@ variable "eks_authentication_mode" {
   description = "Authentication mode for the EKS cluster. Valid values: CONFIG_MAP, API, API_AND_CONFIG_MAP"
   type        = string
   default     = "API_AND_CONFIG_MAP"
+  
+  validation {
+    condition     = contains(["CONFIG_MAP", "API", "API_AND_CONFIG_MAP"], var.eks_authentication_mode)
+    error_message = "Authentication mode must be CONFIG_MAP, API, API_AND_CONFIG_MAP."
+  }
 }
 
 variable "eks_enable_cluster_creator_admin_permissions" {
