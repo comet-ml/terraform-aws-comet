@@ -70,9 +70,13 @@ module "comet_eks" {
   eks_private_subnets                 = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
   eks_cluster_name                    = var.eks_cluster_name
   eks_cluster_version                 = var.eks_cluster_version
-  eks_cluster_endpoint_public_access  = var.eks_cluster_endpoint_public_access
-  eks_cluster_endpoint_private_access = var.eks_cluster_endpoint_private_access
-  eks_mng_ami_type                    = var.eks_mng_ami_type
+  eks_cluster_endpoint_public_access           = var.eks_cluster_endpoint_public_access
+  eks_cluster_endpoint_private_access          = var.eks_cluster_endpoint_private_access
+  eks_cluster_security_group_additional_rules  = var.eks_cluster_security_group_additional_rules
+  eks_private_access_cidrs                     = var.eks_private_access_cidrs
+  eks_authentication_mode                      = var.eks_authentication_mode
+  eks_enable_cluster_creator_admin_permissions = var.eks_enable_cluster_creator_admin_permissions
+  eks_mng_ami_type                             = var.eks_mng_ami_type
   eks_mng_disk_size                   = var.eks_mng_disk_size
   eks_aws_load_balancer_controller    = var.eks_aws_load_balancer_controller
   eks_cert_manager                    = var.eks_cert_manager

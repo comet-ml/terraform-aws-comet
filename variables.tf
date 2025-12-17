@@ -170,6 +170,35 @@ variable "eks_cluster_endpoint_private_access" {
   default     = false
 }
 
+variable "eks_cluster_security_group_additional_rules" {
+  description = "Additional security group rules for the EKS cluster security group (e.g., for VPN access)"
+  type        = any
+  default     = {}
+}
+
+variable "eks_private_access_cidrs" {
+  description = "List of CIDR blocks that can access the EKS API via private endpoint (e.g., VPN subnets). Only applied when private endpoint access is enabled."
+  type        = list(string)
+  default     = []
+}
+
+variable "eks_authentication_mode" {
+  description = "Authentication mode for the EKS cluster. Valid values: CONFIG_MAP, API, API_AND_CONFIG_MAP"
+  type        = string
+  default     = "API_AND_CONFIG_MAP"
+  
+  validation {
+    condition     = contains(["CONFIG_MAP", "API", "API_AND_CONFIG_MAP"], var.eks_authentication_mode)
+    error_message = "Authentication mode must be CONFIG_MAP, API, API_AND_CONFIG_MAP."
+  }
+}
+
+variable "eks_enable_cluster_creator_admin_permissions" {
+  description = "Grant the cluster creator admin permissions via EKS access entry"
+  type        = bool
+  default     = true
+}
+
 variable "eks_mng_ami_type" {
   description = "AMI family to use for the EKS nodes"
   type        = string

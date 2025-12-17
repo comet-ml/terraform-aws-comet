@@ -12,6 +12,24 @@ locals {
     var.s3_enabled ? { comet_s3_access = var.comet_ec2_s3_iam_policy } : {},
     local.has_additional_s3_buckets ? { additional_s3_access = aws_iam_policy.additional_s3_bucket_policy[0].arn } : {}
   )
+
+  # Auto-generate security group rules for private access CIDRs
+  private_access_sg_rules = var.eks_cluster_endpoint_private_access && length(var.eks_private_access_cidrs) > 0 ? {
+    for idx, cidr in var.eks_private_access_cidrs : "private_access_${idx}" => {
+      description = "Allow private access from ${cidr}"
+      protocol    = "-1" # All protocols
+      from_port   = 0
+      to_port     = 0
+      type        = "ingress"
+      cidr_blocks = [cidr]
+    }
+  } : {}
+
+  # Merge auto-generated rules with any additional custom rules
+  cluster_security_group_rules = merge(
+    local.private_access_sg_rules,
+    var.eks_cluster_security_group_additional_rules
+  )
 }
 
 data "aws_iam_policy" "ebs_csi_policy" {
@@ -61,6 +79,11 @@ module "eks" {
   cluster_version                 = var.eks_cluster_version
   cluster_endpoint_public_access  = var.eks_cluster_endpoint_public_access
   cluster_endpoint_private_access = var.eks_cluster_endpoint_private_access
+
+  cluster_security_group_additional_rules = local.cluster_security_group_rules
+
+  authentication_mode                         = var.eks_authentication_mode
+  enable_cluster_creator_admin_permissions    = var.eks_enable_cluster_creator_admin_permissions
 
   vpc_id     = var.vpc_id
   subnet_ids = var.eks_private_subnets
