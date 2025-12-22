@@ -73,7 +73,7 @@ resource "aws_iam_policy" "additional_s3_bucket_policy" {
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.9"
+  version = "~> 20.31.6"
 
   cluster_name                    = var.eks_cluster_name
   cluster_version                 = var.eks_cluster_version
