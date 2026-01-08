@@ -26,11 +26,12 @@ resource "aws_rds_cluster" "cometml-db-cluster" {
   cluster_identifier                  = "cometml-rds-cluster-${var.environment}"
   db_subnet_group_name                = aws_db_subnet_group.comet-ml-rds-subnet.name
   availability_zones                  = var.availability_zones
-  database_name                       = var.rds_database_name
+  database_name                       = var.rds_snapshot_identifier == null ? var.rds_database_name : null
   storage_encrypted                   = var.rds_storage_encrypted
   iam_database_authentication_enabled = var.rds_iam_db_auth
-  master_username                     = var.rds_master_username
-  master_password                     = var.rds_master_password
+  master_username                     = var.rds_snapshot_identifier == null ? var.rds_master_username : null
+  master_password                     = var.rds_snapshot_identifier == null ? var.rds_master_password : null
+  snapshot_identifier                 = var.rds_snapshot_identifier
   engine                              = var.rds_engine
   engine_version                      = var.rds_engine_version
   backup_retention_period             = var.rds_backup_retention_period
