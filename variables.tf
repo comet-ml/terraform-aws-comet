@@ -586,6 +586,12 @@ variable "rds_master_password" {
   type        = string
 }
 
+variable "rds_snapshot_identifier" {
+  description = "Snapshot identifier to restore the RDS cluster from. If provided, the cluster will be restored from this snapshot instead of being created fresh."
+  type        = string
+  default     = null
+}
+
 #### comet_s3 ####
 variable "s3_bucket_name" {
   description = "Name for S3 bucket"

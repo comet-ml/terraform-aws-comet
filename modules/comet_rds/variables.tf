@@ -84,3 +84,9 @@ variable "common_tags" {
   description = "A map of common tags"
   default     = {}
 }
+
+variable "rds_snapshot_identifier" {
+  description = "Snapshot identifier to restore the RDS cluster from. If provided, the cluster will be restored from this snapshot instead of being created fresh."
+  type        = string
+  default     = null
+}

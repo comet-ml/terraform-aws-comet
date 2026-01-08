@@ -186,6 +186,7 @@ module "comet_rds" {
   rds_database_name           = var.rds_database_name
   rds_master_username         = var.rds_master_username
   rds_master_password         = var.rds_master_password
+  rds_snapshot_identifier     = var.rds_snapshot_identifier
 }
 
 module "comet_s3" {
