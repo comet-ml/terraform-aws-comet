@@ -228,6 +228,13 @@ module "eks" {
         labels = {
           nodegroup_name = "clickhouse"
         }
+        taints = [
+          {
+            key    = "clickhouse"
+            value  = "true"
+            effect = "NO_SCHEDULE"
+          }
+        ]
         tags                         = var.common_tags
         tags_propagate_at_launch     = true
         launch_template_version      = "$Latest"
