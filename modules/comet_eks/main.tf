@@ -30,6 +30,22 @@ locals {
     local.private_access_sg_rules,
     var.eks_cluster_security_group_additional_rules
   )
+
+  # Build access entries for admin roles
+  admin_access_entries = {
+    for arn in var.eks_admin_role_arns : arn => {
+      principal_arn = arn
+      type          = "STANDARD"
+      policy_associations = {
+        admin = {
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+          access_scope = {
+            type = "cluster"
+          }
+        }
+      }
+    }
+  }
 }
 
 data "aws_iam_policy" "ebs_csi_policy" {
@@ -84,6 +100,8 @@ module "eks" {
 
   authentication_mode                         = var.eks_authentication_mode
   enable_cluster_creator_admin_permissions    = var.eks_enable_cluster_creator_admin_permissions
+
+  access_entries = local.admin_access_entries
 
   vpc_id     = var.vpc_id
   subnet_ids = var.eks_private_subnets

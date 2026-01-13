@@ -199,6 +199,12 @@ variable "eks_enable_cluster_creator_admin_permissions" {
   default     = true
 }
 
+variable "eks_admin_role_arns" {
+  description = "List of IAM role ARNs to grant AmazonEKSClusterAdminPolicy via EKS Access Entries"
+  type        = list(string)
+  default     = []
+}
+
 variable "eks_mng_ami_type" {
   description = "AMI family to use for the EKS nodes"
   type        = string
