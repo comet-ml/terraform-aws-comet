@@ -28,6 +28,7 @@ resource "aws_rds_cluster" "cometml-db-cluster" {
   availability_zones                  = var.availability_zones
   database_name                       = var.rds_snapshot_identifier == null ? var.rds_database_name : null
   storage_encrypted                   = var.rds_storage_encrypted
+  kms_key_id                          = var.rds_kms_key_id
   iam_database_authentication_enabled = var.rds_iam_db_auth
   master_username                     = var.rds_snapshot_identifier == null ? var.rds_master_username : null
   master_password                     = var.rds_snapshot_identifier == null ? var.rds_master_password : null

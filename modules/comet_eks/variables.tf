@@ -340,6 +340,16 @@ variable "eks_clickhouse_delete_on_termination" {
   default     = true
 }
 
+variable "eks_clickhouse_taints" {
+  description = "Taints to apply to ClickHouse node group"
+  type = list(object({
+    key    = string
+    value  = string
+    effect = string
+  }))
+  default = []
+}
+
 variable "additional_node_groups" {
   description = "Additional EKS managed node groups to create beyond the predefined ones (admin, comet, druid, airflow, clickhouse)"
   type        = any

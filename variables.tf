@@ -459,6 +459,16 @@ variable "eks_clickhouse_delete_on_termination" {
   default     = true
 }
 
+variable "eks_clickhouse_taints" {
+  description = "Taints to apply to ClickHouse node group"
+  type = list(object({
+    key    = string
+    value  = string
+    effect = string
+  }))
+  default = []
+}
+
 variable "eks_additional_node_groups" {
   description = "Additional EKS managed node groups to create beyond the predefined ones (admin, comet, druid, airflow, clickhouse)"
   type        = any
@@ -594,6 +604,12 @@ variable "rds_master_password" {
 
 variable "rds_snapshot_identifier" {
   description = "Snapshot identifier to restore the RDS cluster from. If provided, the cluster will be restored from this snapshot instead of being created fresh."
+  type        = string
+  default     = null
+}
+
+variable "rds_kms_key_id" {
+  description = "ARN of the KMS key to use for encryption. Required when restoring from a KMS-encrypted shared snapshot. If not specified, the default RDS KMS key will be used."
   type        = string
   default     = null
 }
