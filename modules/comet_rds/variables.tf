@@ -90,3 +90,9 @@ variable "rds_snapshot_identifier" {
   type        = string
   default     = null
 }
+
+variable "rds_kms_key_id" {
+  description = "ARN of the KMS key to use for encryption. Required when restoring from a KMS-encrypted shared snapshot. If not specified, the default RDS KMS key will be used."
+  type        = string
+  default     = null
+}

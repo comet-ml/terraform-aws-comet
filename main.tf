@@ -76,6 +76,7 @@ module "comet_eks" {
   eks_private_access_cidrs                     = var.eks_private_access_cidrs
   eks_authentication_mode                      = var.eks_authentication_mode
   eks_enable_cluster_creator_admin_permissions = var.eks_enable_cluster_creator_admin_permissions
+  eks_admin_role_arns                          = var.eks_admin_role_arns
   eks_mng_ami_type                             = var.eks_mng_ami_type
   eks_mng_disk_size                   = var.eks_mng_disk_size
   eks_aws_load_balancer_controller    = var.eks_aws_load_balancer_controller
@@ -135,6 +136,7 @@ module "comet_eks" {
   eks_clickhouse_volume_type           = var.eks_clickhouse_volume_type
   eks_clickhouse_volume_encrypted      = var.eks_clickhouse_volume_encrypted
   eks_clickhouse_delete_on_termination = var.eks_clickhouse_delete_on_termination
+  eks_clickhouse_taints                = var.eks_clickhouse_taints
 
   # Additional custom node groups
   additional_node_groups = var.eks_additional_node_groups
@@ -187,6 +189,7 @@ module "comet_rds" {
   rds_master_username         = var.rds_master_username
   rds_master_password         = var.rds_master_password
   rds_snapshot_identifier     = var.rds_snapshot_identifier
+  rds_kms_key_id              = var.rds_kms_key_id
 }
 
 module "comet_s3" {

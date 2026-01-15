@@ -64,6 +64,12 @@ variable "eks_enable_cluster_creator_admin_permissions" {
   default     = true
 }
 
+variable "eks_admin_role_arns" {
+  description = "List of IAM role ARNs to grant AmazonEKSClusterAdminPolicy via EKS Access Entries"
+  type        = list(string)
+  default     = []
+}
+
 # Admin Node Group Variables
 variable "eks_admin_name" {
   description = "Name for the admin node group"
@@ -332,6 +338,16 @@ variable "eks_clickhouse_delete_on_termination" {
   description = "Delete EBS volumes on instance termination"
   type        = bool
   default     = true
+}
+
+variable "eks_clickhouse_taints" {
+  description = "Taints to apply to ClickHouse node group"
+  type = list(object({
+    key    = string
+    value  = string
+    effect = string
+  }))
+  default = []
 }
 
 variable "additional_node_groups" {
