@@ -646,19 +646,19 @@ variable "environment_tag" {
 
 #### RDS Monitoring ####
 variable "rds_enhanced_monitoring_interval" {
-  description = "Enhanced Monitoring interval in seconds. Valid values: 0, 1, 5, 10, 15, 30, 60. Set to 0 to disable."
+  description = "Interval in seconds for Enhanced Monitoring metrics collection. Valid values are 0, 1, 5, 10, 15, 30, 60. Set to 0 to disable Enhanced Monitoring."
   type        = number
-  default     = 0
+  default     = 60
 }
 
 variable "rds_performance_insights_enabled" {
   description = "Enable Performance Insights for RDS instances"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "rds_performance_insights_retention_period" {
-  description = "Performance Insights retention period in days. Valid values: 7, 731, or multiples of 31."
+  description = "Retention period for Performance Insights data in days. Valid values are 7, 31, 62, 93, 124, 155, 186, 217, 248, 279, 310, 341, 372, 403, 434, 465, 496, 527, 558, 589, 620, 651, 682, 713, or 731."
   type        = number
   default     = 7
 }
