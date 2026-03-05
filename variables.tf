@@ -645,7 +645,7 @@ variable "environment_tag" {
 }
 
 #### RDS Monitoring ####
-variable "rds_monitoring_interval" {
+variable "rds_enhanced_monitoring_interval" {
   description = "Enhanced Monitoring interval in seconds. Valid values: 0, 1, 5, 10, 15, 30, 60. Set to 0 to disable."
   type        = number
   default     = 0
