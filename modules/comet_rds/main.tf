@@ -21,7 +21,7 @@ resource "aws_rds_cluster_instance" "comet-ml-rds-mysql" {
   engine             = var.rds_engine
   engine_version     = var.rds_engine_version
 
-  monitoring_interval                   = var.rds_monitoring_interval
+  monitoring_interval                   = var.rds_enhanced_monitoring_interval
   performance_insights_enabled          = var.rds_performance_insights_enabled
   performance_insights_retention_period = var.rds_performance_insights_enabled ? var.rds_performance_insights_retention_period : null
 }
