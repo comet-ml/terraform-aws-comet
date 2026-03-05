@@ -190,6 +190,10 @@ module "comet_rds" {
   rds_master_password         = var.rds_master_password
   rds_snapshot_identifier     = var.rds_snapshot_identifier
   rds_kms_key_id              = var.rds_kms_key_id
+
+  rds_monitoring_interval                   = var.rds_monitoring_interval
+  rds_performance_insights_enabled          = var.rds_performance_insights_enabled
+  rds_performance_insights_retention_period = var.rds_performance_insights_retention_period
 }
 
 module "comet_s3" {
