@@ -1,5 +1,6 @@
 locals {
-  mysql_port = 3306
+  mysql_port                  = 3306
+  enhanced_monitoring_enabled = var.rds_enhanced_monitoring_interval > 0
 }
 
 resource "aws_db_subnet_group" "comet-ml-rds-subnet" {
@@ -13,6 +14,30 @@ resource "aws_db_subnet_group" "comet-ml-rds-subnet" {
   )
 }
 
+resource "aws_iam_role" "rds_enhanced_monitoring" {
+  count = local.enhanced_monitoring_enabled ? 1 : 0
+  name  = "cometml-rds-enhanced-monitoring-${var.environment}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "monitoring.rds.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring" {
+  count      = local.enhanced_monitoring_enabled ? 1 : 0
+  role       = aws_iam_role.rds_enhanced_monitoring[0].name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
+
 resource "aws_rds_cluster_instance" "comet-ml-rds-mysql" {
   count              = var.rds_instance_count
   identifier         = "cometml-rds-${var.environment}-${count.index}"
@@ -22,6 +47,7 @@ resource "aws_rds_cluster_instance" "comet-ml-rds-mysql" {
   engine_version     = var.rds_engine_version
 
   monitoring_interval                   = var.rds_enhanced_monitoring_interval
+  monitoring_role_arn                   = local.enhanced_monitoring_enabled ? aws_iam_role.rds_enhanced_monitoring[0].arn : null
   performance_insights_enabled          = var.rds_performance_insights_enabled
   performance_insights_retention_period = var.rds_performance_insights_enabled ? var.rds_performance_insights_retention_period : null
 }
