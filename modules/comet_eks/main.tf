@@ -114,7 +114,7 @@ module "eks" {
   eks_managed_node_groups = merge(
     # Admin Node Group
     var.enable_admin_node_group ? {
-      admin = {
+      admin = merge({
         name           = var.eks_admin_name
         instance_types = var.eks_admin_instance_types
         min_size       = var.eks_admin_min_size
@@ -139,11 +139,11 @@ module "eks" {
         tags_propagate_at_launch     = true
         launch_template_version      = "$Latest"
         iam_role_additional_policies = local.node_group_iam_policies
-      }
+      }, var.eks_admin_ami_type != null ? { ami_type = var.eks_admin_ami_type } : {})
     } : {},
     # Comet Node Group
     var.enable_comet_node_group ? {
-      comet = {
+      comet = merge({
         name           = var.eks_comet_name
         instance_types = var.eks_comet_instance_types
         min_size       = var.eks_comet_min_size
@@ -168,7 +168,7 @@ module "eks" {
         tags_propagate_at_launch     = true
         launch_template_version      = "$Latest"
         iam_role_additional_policies = local.node_group_iam_policies
-      }
+      }, var.eks_comet_ami_type != null ? { ami_type = var.eks_comet_ami_type } : {})
     } : {},
     # Druid Node Group
     (var.enable_druid_node_group && var.enable_mpm_infra) ? {
@@ -230,7 +230,7 @@ module "eks" {
     } : {},
     # ClickHouse Node Group
     var.enable_clickhouse_node_group ? {
-      clickhouse = {
+      clickhouse = merge({
         name           = var.eks_clickhouse_name
         instance_types = var.eks_clickhouse_instance_types
         min_size       = var.eks_clickhouse_min_size
@@ -256,7 +256,7 @@ module "eks" {
         tags_propagate_at_launch     = true
         launch_template_version      = "$Latest"
         iam_role_additional_policies = local.node_group_iam_policies
-      }
+      }, var.eks_clickhouse_ami_type != null ? { ami_type = var.eks_clickhouse_ami_type } : {})
     } : {},
     # Additional custom node groups
     var.additional_node_groups

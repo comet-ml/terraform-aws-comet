@@ -78,6 +78,9 @@ module "comet_eks" {
   eks_enable_cluster_creator_admin_permissions = var.eks_enable_cluster_creator_admin_permissions
   eks_admin_role_arns                          = var.eks_admin_role_arns
   eks_mng_ami_type                             = var.eks_mng_ami_type
+  eks_admin_ami_type                  = var.eks_admin_ami_type
+  eks_comet_ami_type                  = var.eks_comet_ami_type
+  eks_clickhouse_ami_type             = var.eks_clickhouse_ami_type
   eks_mng_disk_size                   = var.eks_mng_disk_size
   eks_aws_load_balancer_controller    = var.eks_aws_load_balancer_controller
   eks_cert_manager                    = var.eks_cert_manager
