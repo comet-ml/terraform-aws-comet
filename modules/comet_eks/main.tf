@@ -107,8 +107,10 @@ module "eks" {
   subnet_ids = var.eks_private_subnets
 
   eks_managed_node_group_defaults = {
-    ami_type = var.eks_mng_ami_type
-    tags     = var.common_tags
+    ami_type                   = var.eks_mng_ami_type
+    enable_bootstrap_user_data = true
+    platform                   = startswith(var.eks_mng_ami_type, "AL2023") ? "al2023" : "linux"
+    tags                       = var.common_tags
     }
 
   eks_managed_node_groups = merge(
