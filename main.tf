@@ -194,6 +194,9 @@ module "comet_rds" {
   rds_enhanced_monitoring_interval          = var.rds_enhanced_monitoring_interval
   rds_performance_insights_enabled          = var.rds_performance_insights_enabled
   rds_performance_insights_retention_period = var.rds_performance_insights_retention_period
+
+  # Storage type (aurora-iopt1 for I/O-Optimized)
+  rds_storage_type = var.rds_storage_type
 }
 
 module "comet_s3" {

@@ -72,6 +72,7 @@ resource "aws_rds_cluster" "cometml-db-cluster" {
   db_cluster_parameter_group_name     = aws_rds_cluster_parameter_group.cometml-cluster-pg.name
   db_instance_parameter_group_name    = aws_rds_cluster_parameter_group.cometml-cluster-pg.name
   allow_major_version_upgrade         = true
+  storage_type                        = var.rds_storage_type
 }
 
 resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {

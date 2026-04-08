@@ -662,3 +662,9 @@ variable "rds_performance_insights_retention_period" {
   type        = number
   default     = 7
 }
+
+variable "rds_storage_type" {
+  description = "Aurora storage type. Use 'aurora-iopt1' for I/O-Optimized (eliminates I/O charges, 30% instance surcharge). Default null uses Aurora Standard."
+  type        = string
+  default     = null
+}
