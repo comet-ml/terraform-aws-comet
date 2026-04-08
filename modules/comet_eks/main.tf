@@ -107,7 +107,10 @@ module "eks" {
   subnet_ids = var.eks_private_subnets
 
   eks_managed_node_group_defaults = {
-    ami_type = var.eks_mng_ami_type
+    ami_type                   = var.eks_mng_ami_type
+    enable_bootstrap_user_data = true
+    # Set platform based on AMI type - AL2023 uses nodeadm, AL2 uses bootstrap.sh
+    platform = startswith(var.eks_mng_ami_type, "AL2023") ? "al2023" : "linux"
     tags     = var.common_tags
     }
 
