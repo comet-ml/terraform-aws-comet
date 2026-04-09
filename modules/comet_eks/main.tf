@@ -134,8 +134,7 @@ module "eks" {
           }
         }
         labels = {
-          nodegroup_name                  = "admin"
-          "node-role.kubernetes.io/admin" = "true"
+          nodegroup_name = "admin"
         }
         tags                         = var.common_tags
         tags_propagate_at_launch     = true
