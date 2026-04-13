@@ -66,10 +66,10 @@ module "comet_eks" {
   environment = var.environment
   common_tags = local.all_tags
 
-  vpc_id                              = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
-  eks_private_subnets                 = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
-  eks_cluster_name                    = var.eks_cluster_name
-  eks_cluster_version                 = var.eks_cluster_version
+  vpc_id                                       = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
+  eks_private_subnets                          = var.enable_vpc ? module.comet_vpc[0].private_subnets : var.comet_private_subnets
+  eks_cluster_name                             = var.eks_cluster_name
+  eks_cluster_version                          = var.eks_cluster_version
   eks_cluster_endpoint_public_access           = var.eks_cluster_endpoint_public_access
   eks_cluster_endpoint_private_access          = var.eks_cluster_endpoint_private_access
   eks_cluster_security_group_additional_rules  = var.eks_cluster_security_group_additional_rules
@@ -78,15 +78,18 @@ module "comet_eks" {
   eks_enable_cluster_creator_admin_permissions = var.eks_enable_cluster_creator_admin_permissions
   eks_admin_role_arns                          = var.eks_admin_role_arns
   eks_mng_ami_type                             = var.eks_mng_ami_type
-  eks_admin_ami_type                  = var.eks_admin_ami_type
-  eks_comet_ami_type                  = var.eks_comet_ami_type
-  eks_clickhouse_ami_type             = var.eks_clickhouse_ami_type
-  eks_mng_disk_size                   = var.eks_mng_disk_size
-  eks_aws_load_balancer_controller    = var.eks_aws_load_balancer_controller
-  eks_cert_manager                    = var.eks_cert_manager
-  eks_aws_cloudwatch_metrics          = var.eks_aws_cloudwatch_metrics
-  eks_external_dns                    = var.eks_external_dns
-  eks_external_dns_r53_zones          = var.eks_external_dns_r53_zones
+  eks_admin_ami_type                           = var.eks_admin_ami_type
+  eks_comet_ami_type                           = var.eks_comet_ami_type
+  eks_clickhouse_ami_type                      = var.eks_clickhouse_ami_type
+  eks_mng_disk_size                            = var.eks_mng_disk_size
+  eks_aws_load_balancer_controller             = var.eks_aws_load_balancer_controller
+  eks_cert_manager                             = var.eks_cert_manager
+  eks_aws_cloudwatch_metrics                   = var.eks_aws_cloudwatch_metrics
+  eks_external_dns                             = var.eks_external_dns
+  eks_external_dns_r53_zones                   = var.eks_external_dns_r53_zones
+  eks_enable_metrics_server                    = var.eks_enable_metrics_server
+  eks_metrics_server_addon_version             = var.eks_metrics_server_addon_version
+  eks_enable_cluster_autoscaler                = var.eks_enable_cluster_autoscaler
 
   s3_enabled              = var.enable_s3
   comet_ec2_s3_iam_policy = var.enable_s3 ? module.comet_s3[0].comet_s3_iam_policy_arn : null

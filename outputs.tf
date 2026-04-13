@@ -45,3 +45,13 @@ output "comet_eks_token" {
   value       = var.enable_eks ? data.aws_eks_cluster_auth.this[0].token : null
   sensitive   = true
 }
+
+output "cluster_autoscaler_irsa_role_arn" {
+  description = "ARN of the Cluster Autoscaler IRSA role (bind to kube-system/cluster-autoscaler service account)"
+  value       = var.enable_eks && var.eks_enable_cluster_autoscaler ? module.comet_eks[0].cluster_autoscaler_irsa_role_arn : null
+}
+
+output "cluster_autoscaler_irsa_role_name" {
+  description = "Name of the Cluster Autoscaler IRSA role"
+  value       = var.enable_eks && var.eks_enable_cluster_autoscaler ? module.comet_eks[0].cluster_autoscaler_irsa_role_name : null
+}

@@ -31,6 +31,30 @@ locals {
     var.eks_cluster_security_group_additional_rules
   )
 
+  # Node SG rules opened for cluster-managed addons that expose metrics
+  # APIs the kube-apiserver must reach. metrics-server listens on 10251 by
+  # default on EKS builds; the upstream EKS module only opens the standard
+  # webhook ports (443/4443/6443/8443/9443) and kubelet (10250).
+  node_security_group_additional_rules = var.eks_enable_metrics_server ? {
+    metrics_server_10251 = {
+      description                   = "Cluster API to node metrics-server 10251/tcp"
+      protocol                      = "tcp"
+      from_port                     = 10251
+      to_port                       = 10251
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+  } : {}
+
+  # Tags the Cluster Autoscaler uses for auto-discovery of ASGs. Applied
+  # via `eks_managed_node_group_defaults.tags` so every managed nodegroup
+  # inherits them automatically. When CA is disabled this is empty and the
+  # tags are not applied.
+  cluster_autoscaler_asg_tags = var.eks_enable_cluster_autoscaler ? {
+    "k8s.io/cluster-autoscaler/enabled"                 = "true"
+    "k8s.io/cluster-autoscaler/${var.eks_cluster_name}" = "owned"
+  } : {}
+
   # Build access entries for admin roles
   admin_access_entries = {
     for arn in var.eks_admin_role_arns : arn => {
@@ -97,9 +121,10 @@ module "eks" {
   cluster_endpoint_private_access = var.eks_cluster_endpoint_private_access
 
   cluster_security_group_additional_rules = local.cluster_security_group_rules
+  node_security_group_additional_rules    = local.node_security_group_additional_rules
 
-  authentication_mode                         = var.eks_authentication_mode
-  enable_cluster_creator_admin_permissions    = var.eks_enable_cluster_creator_admin_permissions
+  authentication_mode                      = var.eks_authentication_mode
+  enable_cluster_creator_admin_permissions = var.eks_enable_cluster_creator_admin_permissions
 
   access_entries = local.admin_access_entries
 
@@ -110,8 +135,10 @@ module "eks" {
     ami_type                   = var.eks_mng_ami_type
     enable_bootstrap_user_data = true
     platform                   = startswith(var.eks_mng_ami_type, "AL2023") ? "al2023" : "linux"
-    tags                       = var.common_tags
-    }
+    # common_tags on the nodegroup propagate to instances; CA discovery
+    # tags must be on the ASG so the autoscaler can match them.
+    tags = merge(var.common_tags, local.cluster_autoscaler_asg_tags)
+  }
 
   eks_managed_node_groups = merge(
     # Admin Node Group
@@ -281,18 +308,64 @@ module "eks_blueprints_addons" {
   oidc_provider_arn = module.eks.oidc_provider_arn
   cluster_version   = module.eks.cluster_version
 
-  eks_addons = {
-    coredns            = {}
-    vpc-cni            = {}
-    kube-proxy         = {}
-    aws-ebs-csi-driver = { service_account_role_arn = module.irsa-ebs-csi.iam_role_arn }
-  }
+  eks_addons = merge(
+    {
+      coredns            = {}
+      vpc-cni            = {}
+      kube-proxy         = {}
+      aws-ebs-csi-driver = { service_account_role_arn = module.irsa-ebs-csi.iam_role_arn }
+    },
+    # metrics-server is required for HPA and `kubectl top`. It runs in
+    # kube-system and listens on port 10251; node SG rule above lets the
+    # kube-apiserver reach it.
+    var.eks_enable_metrics_server ? {
+      metrics-server = merge(
+        {},
+        var.eks_metrics_server_addon_version != null ? {
+          addon_version = var.eks_metrics_server_addon_version
+        } : {}
+      )
+    } : {}
+  )
 
   enable_aws_load_balancer_controller = var.eks_aws_load_balancer_controller
   enable_cert_manager                 = var.eks_cert_manager
   enable_aws_cloudwatch_metrics       = var.eks_aws_cloudwatch_metrics
   enable_external_dns                 = var.eks_external_dns
   external_dns_route53_zone_arns      = var.eks_external_dns_r53_zones
+}
+
+#########################################
+#### Cluster Autoscaler IRSA Role ####
+#########################################
+# Allows the cluster-autoscaler service account (deployed out-of-band by
+# ArgoCD) to describe and modify EKS-managed ASGs. ASG auto-discovery is
+# driven by the `k8s.io/cluster-autoscaler/*` tags applied via
+# `eks_managed_node_group_defaults.tags` above.
+module "cluster_autoscaler_irsa_role" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.39"
+
+  count = var.eks_enable_cluster_autoscaler ? 1 : 0
+
+  role_name                        = "${var.environment}-cluster-autoscaler"
+  attach_cluster_autoscaler_policy = true
+  cluster_autoscaler_cluster_names = [var.eks_cluster_name]
+
+  oidc_providers = {
+    ex = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:cluster-autoscaler"]
+    }
+  }
+
+  tags = merge(
+    var.common_tags,
+    {
+      Name        = "${var.environment}-cluster-autoscaler"
+      Description = "IRSA role for Cluster Autoscaler to manage EKS-managed ASGs"
+    }
+  )
 }
 
 resource "kubernetes_storage_class" "gp3" {
