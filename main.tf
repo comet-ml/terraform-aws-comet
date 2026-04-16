@@ -174,7 +174,7 @@ module "comet_elasticache" {
 module "comet_rds" {
   source      = "./modules/comet_rds"
   count       = var.enable_rds ? 1 : 0
-  environment = var.environment
+  environment = coalesce(var.rds_environment, var.environment)
   common_tags = local.all_tags
 
   availability_zones  = var.enable_vpc ? module.comet_vpc[0].azs : var.availability_zones
