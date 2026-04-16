@@ -57,6 +57,18 @@ variable "rds_environment" {
   default     = null
 }
 
+variable "rds_cluster_identifier" {
+  description = "Override for the RDS cluster identifier. When null, uses the default pattern. Use this when the cluster was created with a different naming convention than the current module version."
+  type        = string
+  default     = null
+}
+
+variable "rds_instance_identifier_prefix" {
+  description = "Override prefix for RDS instance identifiers. When null, uses the default pattern. Instance index is appended automatically."
+  type        = string
+  default     = null
+}
+
 variable "region" {
   description = "AWS region to provision resources in"
   type        = string
