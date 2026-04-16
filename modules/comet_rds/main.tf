@@ -40,7 +40,7 @@ resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring" {
 
 resource "aws_rds_cluster_instance" "comet-ml-rds-mysql" {
   count              = var.rds_instance_count
-  identifier         = "cometml-rds-${var.environment}-${count.index}"
+  identifier         = "${coalesce(var.rds_instance_identifier_prefix, "cometml-rds-${var.environment}")}-${count.index}"
   cluster_identifier = aws_rds_cluster.cometml-db-cluster.id
   instance_class     = var.rds_instance_type
   engine             = var.rds_engine
@@ -53,7 +53,7 @@ resource "aws_rds_cluster_instance" "comet-ml-rds-mysql" {
 }
 
 resource "aws_rds_cluster" "cometml-db-cluster" {
-  cluster_identifier                  = "cometml-rds-cluster-${var.environment}"
+  cluster_identifier                  = coalesce(var.rds_cluster_identifier, "cometml-rds-cluster-${var.environment}")
   db_subnet_group_name                = aws_db_subnet_group.comet-ml-rds-subnet.name
   availability_zones                  = var.availability_zones
   database_name                       = var.rds_snapshot_identifier == null ? var.rds_database_name : null

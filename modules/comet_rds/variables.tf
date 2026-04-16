@@ -3,6 +3,18 @@ variable "environment" {
   type        = string
 }
 
+variable "rds_cluster_identifier" {
+  description = "Override for RDS cluster identifier. When null, uses default pattern 'cometml-rds-cluster-{environment}'."
+  type        = string
+  default     = null
+}
+
+variable "rds_instance_identifier_prefix" {
+  description = "Override prefix for RDS instance identifiers. When null, uses default pattern 'cometml-rds-{environment}'. Instance index is appended."
+  type        = string
+  default     = null
+}
+
 variable "availability_zones" {
   description = "List of availability zones from VPC"
   type        = list(string)
@@ -71,7 +83,7 @@ variable "rds_database_name" {
 variable "rds_master_username" {
   description = "Master username for RDS database"
   type        = string
-	default     = "admin"
+  default     = "admin"
 }
 
 variable "rds_master_password" {

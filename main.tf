@@ -172,10 +172,12 @@ module "comet_elasticache" {
 }
 
 module "comet_rds" {
-  source      = "./modules/comet_rds"
-  count       = var.enable_rds ? 1 : 0
-  environment = coalesce(var.rds_environment, var.environment)
-  common_tags = local.all_tags
+  source                         = "./modules/comet_rds"
+  count                          = var.enable_rds ? 1 : 0
+  environment                    = coalesce(var.rds_environment, var.environment)
+  rds_cluster_identifier         = var.rds_cluster_identifier
+  rds_instance_identifier_prefix = var.rds_instance_identifier_prefix
+  common_tags                    = local.all_tags
 
   availability_zones  = var.enable_vpc ? module.comet_vpc[0].azs : var.availability_zones
   vpc_id              = var.enable_vpc ? module.comet_vpc[0].vpc_id : var.comet_vpc_id
