@@ -140,6 +140,15 @@ resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {
     name         = "log_bin_trust_function_creators"
     value        = "1"
   }
+
+  dynamic "parameter" {
+    for_each = var.rds_cluster_parameters
+    content {
+      apply_method = parameter.value.apply_method
+      name         = parameter.value.name
+      value        = parameter.value.value
+    }
+  }
 }
 
 resource "aws_security_group" "mysql_sg" {

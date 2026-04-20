@@ -71,7 +71,7 @@ variable "rds_database_name" {
 variable "rds_master_username" {
   description = "Master username for RDS database"
   type        = string
-	default     = "admin"
+  default     = "admin"
 }
 
 variable "rds_master_password" {
@@ -119,4 +119,22 @@ variable "rds_storage_type" {
   description = "Aurora storage type. Use 'aurora-iopt1' for I/O-Optimized (eliminates I/O charges, 30% instance surcharge). Default null uses Aurora Standard."
   type        = string
   default     = null
+}
+
+variable "rds_cluster_parameters" {
+  description = "Additional MySQL parameters applied to the cluster parameter group on top of the module's baseline character-set/collation/innodb defaults. Defaults include operational tunings (wait_timeout, max_execution_time, innodb purge settings, aurora_read_replica_read_committed) used across Comet STSAAS deployments. Pass [] to disable, or override with a custom list."
+  type = list(object({
+    name         = string
+    value        = string
+    apply_method = string
+  }))
+  default = [
+    { name = "aurora_read_replica_read_committed", value = "ON", apply_method = "immediate" },
+    { name = "innodb_max_purge_lag", value = "1000000", apply_method = "immediate" },
+    { name = "innodb_max_purge_lag_delay", value = "300000", apply_method = "immediate" },
+    { name = "innodb_purge_batch_size", value = "5000", apply_method = "immediate" },
+    { name = "innodb_purge_threads", value = "16", apply_method = "pending-reboot" },
+    { name = "max_execution_time", value = "60000", apply_method = "immediate" },
+    { name = "wait_timeout", value = "1800", apply_method = "immediate" },
+  ]
 }
