@@ -205,6 +205,9 @@ module "comet_rds" {
 
   # Storage type (aurora-iopt1 for I/O-Optimized)
   rds_storage_type = var.rds_storage_type
+
+  # Additional MySQL cluster parameters (defaults include operational tunings)
+  rds_cluster_parameters = var.rds_cluster_parameters
 }
 
 module "comet_s3" {
