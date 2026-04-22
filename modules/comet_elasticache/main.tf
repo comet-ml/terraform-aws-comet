@@ -7,7 +7,8 @@ resource "aws_elasticache_replication_group" "comet-ml-ec-redis" {
   engine_version             = var.elasticache_engine_version
   transit_encryption_enabled = var.elasticache_transit_encryption
   auth_token                 = var.elasticache_auth_token
-  automatic_failover_enabled = false
+  automatic_failover_enabled = var.elasticache_automatic_failover_enabled
+  multi_az_enabled           = var.elasticache_multi_az_enabled
   replication_group_id       = "cometml-ec-redis-${var.environment}"
   node_type                  = var.elasticache_instance_type
   num_cache_clusters         = var.elasticache_num_cache_nodes
