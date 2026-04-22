@@ -162,13 +162,15 @@ module "comet_elasticache" {
   elasticache_allow_from_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : (
     var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : (
   var.elasticache_allow_from_sg))
-  elasticache_engine             = var.elasticache_engine
-  elasticache_engine_version     = var.elasticache_engine_version
-  elasticache_instance_type      = var.elasticache_instance_type
-  elasticache_param_group_name   = var.elasticache_param_group_name
-  elasticache_num_cache_nodes    = var.elasticache_num_cache_nodes
-  elasticache_transit_encryption = var.elasticache_transit_encryption
-  elasticache_auth_token         = var.elasticache_auth_token
+  elasticache_engine                     = var.elasticache_engine
+  elasticache_engine_version             = var.elasticache_engine_version
+  elasticache_instance_type              = var.elasticache_instance_type
+  elasticache_param_group_name           = var.elasticache_param_group_name
+  elasticache_num_cache_nodes            = var.elasticache_num_cache_nodes
+  elasticache_transit_encryption         = var.elasticache_transit_encryption
+  elasticache_auth_token                 = var.elasticache_auth_token
+  elasticache_automatic_failover_enabled = var.elasticache_automatic_failover_enabled
+  elasticache_multi_az_enabled           = var.elasticache_multi_az_enabled
 }
 
 module "comet_rds" {

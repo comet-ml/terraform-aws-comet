@@ -48,6 +48,18 @@ variable "elasticache_transit_encryption" {
   type        = bool
 }
 
+variable "elasticache_automatic_failover_enabled" {
+  description = "Enable automatic failover for the ElastiCache replication group. Requires at least one replica (elasticache_num_cache_nodes >= 2)."
+  type        = bool
+  default     = false
+}
+
+variable "elasticache_multi_az_enabled" {
+  description = "Enable Multi-AZ for the ElastiCache replication group. Requires automatic_failover to also be enabled and at least one replica in a different AZ."
+  type        = bool
+  default     = false
+}
+
 variable "elasticache_auth_token" {
   description = "Auth token for ElastiCache"
   type        = string
