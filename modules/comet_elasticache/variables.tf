@@ -60,6 +60,12 @@ variable "elasticache_multi_az_enabled" {
   default     = false
 }
 
+variable "elasticache_preferred_cache_cluster_azs" {
+  description = "Preferred AZs for cache cluster nodes. Use to pin the replication group to a single AZ. List length must equal elasticache_num_cache_nodes when set. If null, AWS chooses from the subnet group."
+  type        = list(string)
+  default     = null
+}
+
 variable "elasticache_auth_token" {
   description = "Auth token for ElastiCache"
   type        = string

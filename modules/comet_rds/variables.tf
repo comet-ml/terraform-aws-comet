@@ -55,6 +55,12 @@ variable "rds_instance_count" {
   type        = number
 }
 
+variable "rds_instance_availability_zones" {
+  description = "Per-instance AZ placement for Aurora cluster compute, indexed by count.index. Use to pin all instances to a single AZ. List length must equal rds_instance_count when set. If null, AWS chooses from the cluster's storage AZs."
+  type        = list(string)
+  default     = null
+}
+
 variable "rds_storage_encrypted" {
   description = "Enables encryption for RDS storage"
   type        = bool
