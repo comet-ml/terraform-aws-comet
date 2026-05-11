@@ -101,6 +101,12 @@ variable "eks_admin_desired_size" {
   default     = 2
 }
 
+variable "eks_admin_subnet_ids" {
+  description = "Subnet IDs to constrain the admin node group to. Use to pin the NG to a single AZ. If null, inherits eks_private_subnets."
+  type        = list(string)
+  default     = null
+}
+
 # Comet Node Group Variables
 variable "eks_comet_name" {
   description = "Name for the comet node group"
@@ -153,6 +159,12 @@ variable "eks_comet_desired_size" {
   description = "Desired number of nodes in comet node group"
   type        = number
   default     = 3
+}
+
+variable "eks_comet_subnet_ids" {
+  description = "Subnet IDs to constrain the comet node group to. Use to pin the NG to a single AZ. If null, inherits eks_private_subnets."
+  type        = list(string)
+  default     = null
 }
 
 variable "eks_mng_disk_size" {
@@ -384,6 +396,12 @@ variable "eks_clickhouse_taints" {
     effect = string
   }))
   default = []
+}
+
+variable "eks_clickhouse_subnet_ids" {
+  description = "Subnet IDs to constrain the clickhouse node group to. Use to pin the NG to a single AZ. If null, inherits eks_private_subnets."
+  type        = list(string)
+  default     = null
 }
 
 variable "additional_node_groups" {

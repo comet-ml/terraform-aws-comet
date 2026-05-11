@@ -167,7 +167,9 @@ module "eks" {
         tags_propagate_at_launch     = true
         launch_template_version      = "$Latest"
         iam_role_additional_policies = local.node_group_iam_policies
-      }, var.eks_admin_ami_type != null ? { ami_type = var.eks_admin_ami_type } : {})
+        },
+        var.eks_admin_ami_type != null ? { ami_type = var.eks_admin_ami_type } : {},
+      var.eks_admin_subnet_ids != null ? { subnet_ids = var.eks_admin_subnet_ids } : {})
     } : {},
     # Comet Node Group
     var.enable_comet_node_group ? {
@@ -195,7 +197,9 @@ module "eks" {
         tags_propagate_at_launch     = true
         launch_template_version      = "$Latest"
         iam_role_additional_policies = local.node_group_iam_policies
-      }, var.eks_comet_ami_type != null ? { ami_type = var.eks_comet_ami_type } : {})
+        },
+        var.eks_comet_ami_type != null ? { ami_type = var.eks_comet_ami_type } : {},
+      var.eks_comet_subnet_ids != null ? { subnet_ids = var.eks_comet_subnet_ids } : {})
     } : {},
     # Druid Node Group
     (var.enable_druid_node_group && var.enable_mpm_infra) ? {
@@ -280,7 +284,9 @@ module "eks" {
         tags_propagate_at_launch     = true
         launch_template_version      = "$Latest"
         iam_role_additional_policies = local.node_group_iam_policies
-      }, var.eks_clickhouse_ami_type != null ? { ami_type = var.eks_clickhouse_ami_type } : {})
+        },
+        var.eks_clickhouse_ami_type != null ? { ami_type = var.eks_clickhouse_ami_type } : {},
+      var.eks_clickhouse_subnet_ids != null ? { subnet_ids = var.eks_clickhouse_subnet_ids } : {})
     } : {},
     # Additional custom node groups
     var.additional_node_groups

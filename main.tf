@@ -110,6 +110,7 @@ module "comet_eks" {
   eks_admin_min_size       = var.eks_admin_min_size
   eks_admin_max_size       = var.eks_admin_max_size
   eks_admin_desired_size   = var.eks_admin_desired_size
+  eks_admin_subnet_ids     = var.eks_admin_subnet_ids
 
   # Comet Node Group
   eks_comet_name           = var.eks_comet_name
@@ -117,6 +118,7 @@ module "comet_eks" {
   eks_comet_min_size       = var.eks_comet_min_size
   eks_comet_max_size       = var.eks_comet_max_size
   eks_comet_desired_size   = var.eks_comet_desired_size
+  eks_comet_subnet_ids     = var.eks_comet_subnet_ids
 
   # Druid Node Group
   eks_druid_name           = var.eks_druid_name
@@ -143,6 +145,7 @@ module "comet_eks" {
   eks_clickhouse_volume_encrypted      = var.eks_clickhouse_volume_encrypted
   eks_clickhouse_delete_on_termination = var.eks_clickhouse_delete_on_termination
   eks_clickhouse_taints                = var.eks_clickhouse_taints
+  eks_clickhouse_subnet_ids            = var.eks_clickhouse_subnet_ids
 
   # Additional custom node groups
   additional_node_groups = var.eks_additional_node_groups
@@ -162,15 +165,16 @@ module "comet_elasticache" {
   elasticache_allow_from_sg = var.enable_ec2 ? module.comet_ec2[0].comet_ec2_sg_id : (
     var.enable_eks ? module.comet_eks[0].nodegroup_sg_id : (
   var.elasticache_allow_from_sg))
-  elasticache_engine                     = var.elasticache_engine
-  elasticache_engine_version             = var.elasticache_engine_version
-  elasticache_instance_type              = var.elasticache_instance_type
-  elasticache_param_group_name           = var.elasticache_param_group_name
-  elasticache_num_cache_nodes            = var.elasticache_num_cache_nodes
-  elasticache_transit_encryption         = var.elasticache_transit_encryption
-  elasticache_auth_token                 = var.elasticache_auth_token
-  elasticache_automatic_failover_enabled = var.elasticache_automatic_failover_enabled
-  elasticache_multi_az_enabled           = var.elasticache_multi_az_enabled
+  elasticache_engine                      = var.elasticache_engine
+  elasticache_engine_version              = var.elasticache_engine_version
+  elasticache_instance_type               = var.elasticache_instance_type
+  elasticache_param_group_name            = var.elasticache_param_group_name
+  elasticache_num_cache_nodes             = var.elasticache_num_cache_nodes
+  elasticache_transit_encryption          = var.elasticache_transit_encryption
+  elasticache_auth_token                  = var.elasticache_auth_token
+  elasticache_automatic_failover_enabled  = var.elasticache_automatic_failover_enabled
+  elasticache_multi_az_enabled            = var.elasticache_multi_az_enabled
+  elasticache_preferred_cache_cluster_azs = var.elasticache_preferred_cache_cluster_azs
 }
 
 module "comet_rds" {

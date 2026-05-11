@@ -45,6 +45,7 @@ resource "aws_rds_cluster_instance" "comet-ml-rds-mysql" {
   instance_class     = var.rds_instance_type
   engine             = var.rds_engine
   engine_version     = var.rds_engine_version
+  availability_zone  = var.rds_instance_availability_zones != null ? var.rds_instance_availability_zones[count.index] : null
 
   monitoring_interval                   = var.rds_enhanced_monitoring_interval
   monitoring_role_arn                   = local.enhanced_monitoring_enabled ? aws_iam_role.rds_enhanced_monitoring[0].arn : null

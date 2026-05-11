@@ -309,6 +309,12 @@ variable "eks_admin_desired_size" {
   default     = 2
 }
 
+variable "eks_admin_subnet_ids" {
+  description = "Subnet IDs to constrain the admin node group to. Use to pin the NG to a single AZ. If null, inherits cluster-level eks_private_subnets."
+  type        = list(string)
+  default     = null
+}
+
 # Comet Node Group Variables
 variable "eks_comet_name" {
   description = "Name for the comet node group"
@@ -338,6 +344,12 @@ variable "eks_comet_desired_size" {
   description = "Desired number of nodes in comet node group"
   type        = number
   default     = 3
+}
+
+variable "eks_comet_subnet_ids" {
+  description = "Subnet IDs to constrain the comet node group to. Use to pin the NG to a single AZ. If null, inherits cluster-level eks_private_subnets."
+  type        = list(string)
+  default     = null
 }
 
 variable "eks_mng_disk_size" {
@@ -523,6 +535,12 @@ variable "eks_clickhouse_taints" {
   default = []
 }
 
+variable "eks_clickhouse_subnet_ids" {
+  description = "Subnet IDs to constrain the clickhouse node group to. Use to pin the NG to a single AZ. If null, inherits cluster-level eks_private_subnets."
+  type        = list(string)
+  default     = null
+}
+
 variable "eks_additional_node_groups" {
   description = "Additional EKS managed node groups to create beyond the predefined ones (admin, comet, druid, airflow, clickhouse)"
   type        = any
@@ -596,6 +614,12 @@ variable "elasticache_multi_az_enabled" {
   default     = false
 }
 
+variable "elasticache_preferred_cache_cluster_azs" {
+  description = "Preferred AZs for ElastiCache cache cluster nodes. Use to pin the replication group to a single AZ. List length must equal elasticache_num_cache_nodes when set. If null, AWS chooses from the subnet group."
+  type        = list(string)
+  default     = null
+}
+
 #### comet_rds ####
 variable "rds_allow_from_sg" {
   description = "Security group from which to allow connections to RDS, to use when provisioning with existing compute"
@@ -625,6 +649,12 @@ variable "rds_instance_count" {
   description = "Number of RDS instances in the database cluster"
   type        = number
   default     = 2
+}
+
+variable "rds_instance_availability_zones" {
+  description = "Per-instance AZ placement for Aurora cluster compute instances, indexed by instance count.index. Use to pin all instances to a single AZ. List length must equal rds_instance_count when set. If null, AWS chooses from the cluster's storage AZs."
+  type        = list(string)
+  default     = null
 }
 
 variable "rds_storage_encrypted" {
