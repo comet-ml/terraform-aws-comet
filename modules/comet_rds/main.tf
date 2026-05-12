@@ -124,7 +124,7 @@ resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {
   parameter {
     apply_method = "pending-reboot"
     name         = "max_allowed_packet"
-    value        = "157286400"
+    value        = var.rds_max_allowed_packet
   }
   parameter {
     apply_method = "pending-reboot"

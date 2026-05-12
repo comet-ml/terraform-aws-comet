@@ -139,6 +139,12 @@ variable "rds_storage_type" {
   default     = null
 }
 
+variable "rds_max_allowed_packet" {
+  description = "Cluster parameter group max_allowed_packet value (in bytes). Default 157286400 (150 MiB) matches the module's historical hardcoded value."
+  type        = string
+  default     = "157286400"
+}
+
 variable "rds_cluster_parameters" {
   description = "Additional MySQL parameters applied to the cluster parameter group on top of the module's baseline character-set/collation/innodb defaults. Defaults include operational tunings (wait_timeout, max_execution_time, innodb purge settings, aurora_read_replica_read_committed) used across Comet STSAAS deployments. Pass [] to disable, or override with a custom list."
   type = list(object({
