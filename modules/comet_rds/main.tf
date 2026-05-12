@@ -104,12 +104,12 @@ resource "aws_rds_cluster_parameter_group" "cometml-cluster-pg" {
   parameter {
     apply_method = "pending-reboot"
     name         = "collation_connection"
-    value        = "utf8mb4_unicode_ci"
+    value        = var.rds_collation_connection
   }
   parameter {
     apply_method = "pending-reboot"
     name         = "collation_server"
-    value        = "utf8mb4_unicode_ci"
+    value        = var.rds_collation_server
   }
   parameter {
     apply_method = "pending-reboot"
