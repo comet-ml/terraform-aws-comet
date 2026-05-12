@@ -217,6 +217,10 @@ module "comet_rds" {
 
   # Override for max_allowed_packet hardcoded baseline (per-customer query workload)
   rds_max_allowed_packet = var.rds_max_allowed_packet
+
+  # Override for collation hardcoded baselines (preserve Aurora 8.0 default for existing clusters)
+  rds_collation_server     = var.rds_collation_server
+  rds_collation_connection = var.rds_collation_connection
 }
 
 module "comet_s3" {

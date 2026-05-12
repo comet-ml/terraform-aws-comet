@@ -145,6 +145,18 @@ variable "rds_max_allowed_packet" {
   default     = "157286400"
 }
 
+variable "rds_collation_server" {
+  description = "Cluster parameter group collation_server value. Default 'utf8mb4_unicode_ci' matches the module's historical hardcoded value. Aurora MySQL 8.0's engine default is 'utf8mb4_0900_ai_ci' (newer Unicode standard); override to match engine default if migrating an existing cluster to avoid drift on next reboot."
+  type        = string
+  default     = "utf8mb4_unicode_ci"
+}
+
+variable "rds_collation_connection" {
+  description = "Cluster parameter group collation_connection value. Default 'utf8mb4_unicode_ci' matches the module's historical hardcoded value. See rds_collation_server for Aurora MySQL 8.0 considerations."
+  type        = string
+  default     = "utf8mb4_unicode_ci"
+}
+
 variable "rds_cluster_parameters" {
   description = "Additional MySQL parameters applied to the cluster parameter group on top of the module's baseline character-set/collation/innodb defaults. Defaults include operational tunings (wait_timeout, max_execution_time, innodb purge settings, aurora_read_replica_read_committed) used across Comet STSAAS deployments. Pass [] to disable, or override with a custom list."
   type = list(object({

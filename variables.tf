@@ -663,6 +663,18 @@ variable "rds_max_allowed_packet" {
   default     = "157286400"
 }
 
+variable "rds_collation_server" {
+  description = "Overrides the cluster parameter group's collation_server value. Default 'utf8mb4_unicode_ci' matches the module's historical hardcoded value (MySQL 5.x standard). Aurora MySQL 8.0's engine default is 'utf8mb4_0900_ai_ci'; override to match engine default to avoid drift on existing clusters."
+  type        = string
+  default     = "utf8mb4_unicode_ci"
+}
+
+variable "rds_collation_connection" {
+  description = "Overrides the cluster parameter group's collation_connection value. Default 'utf8mb4_unicode_ci' matches the module's historical hardcoded value. See rds_collation_server for Aurora MySQL 8.0 considerations."
+  type        = string
+  default     = "utf8mb4_unicode_ci"
+}
+
 variable "rds_storage_encrypted" {
   description = "Enables encryption for RDS storage"
   type        = bool
