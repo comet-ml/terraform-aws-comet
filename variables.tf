@@ -657,6 +657,12 @@ variable "rds_instance_availability_zones" {
   default     = null
 }
 
+variable "rds_max_allowed_packet" {
+  description = "Overrides the cluster parameter group's max_allowed_packet value (in bytes). Default 157286400 (150 MiB) matches the module's historical hardcoded value. Increase for customers running queries with large blob/JSON payloads or oversized prepared statements."
+  type        = string
+  default     = "157286400"
+}
+
 variable "rds_storage_encrypted" {
   description = "Enables encryption for RDS storage"
   type        = bool

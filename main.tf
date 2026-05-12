@@ -214,6 +214,9 @@ module "comet_rds" {
 
   # Additional MySQL cluster parameters (defaults include operational tunings)
   rds_cluster_parameters = var.rds_cluster_parameters
+
+  # Override for max_allowed_packet hardcoded baseline (per-customer query workload)
+  rds_max_allowed_packet = var.rds_max_allowed_packet
 }
 
 module "comet_s3" {
